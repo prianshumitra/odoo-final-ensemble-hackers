@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AlertCircle, ArrowRight, Lock, Mail, Store } from 'lucide-react';
 import { authService } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
+import { AuthFeatures } from '../../components/common/AuthFeatures';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -61,11 +62,14 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-12 bg-transparent">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-[#D4C4ED] shadow-2xl p-8 space-y-6">
-        <div className="text-center space-y-2">
-          <h1 className="text-3xl font-black text-[#7E3AF2] tracking-tight font-serif">EZRent</h1>
-          <h2 className="text-2xl font-extrabold text-[#18181B]">Sign In</h2>
+    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 bg-transparent">
+      <div className="w-full max-w-4xl bg-white rounded-3xl border border-[#D4C4ED] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+        <AuthFeatures type="customer" />
+        
+        <div className="w-full md:w-1/2 p-8 sm:p-10 space-y-6 flex flex-col justify-center">
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-black text-[#7E3AF2] tracking-tight font-serif">EZRent</h1>
+            <h2 className="text-2xl font-extrabold text-[#18181B]">Sign In</h2>
           <p className="text-xs font-semibold text-[#6E6A78]">
             Customer and vendor accounts use the same secure login.
           </p>
@@ -144,6 +148,7 @@ export const Login: React.FC = () => {
           </Link>
         </div>
       </div>
+    </div>
     </div>
   );
 };
