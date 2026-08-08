@@ -50,3 +50,42 @@ export const getMyRentals = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: 'Error fetching rentals' });
   }
 };
+
+export const getVendorRentals = async (req: AuthRequest, res: Response) => {
+  try {
+    const rentals = await Rental.find().sort({ createdAt: -1 });
+    res.json(rentals);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching vendor rentals' });
+  }
+};
+
+export const updateRentalStatus = async (req: AuthRequest, res: Response) => {
+  try {
+    const { status } = req.body;
+    const rental = await Rental.findById(req.params.id);
+    if (!rental) {
+      res.status(404).json({ message: 'Rental not found' });
+      return;
+    }
+
+    if (status) {
+      rental.status = status;
+    }
+
+    const updatedRental = await rental.save();
+
+    // ⚡ Realtime broadcast
+    try {
+      const io = getIO();
+      io.emit('rental:updated', updatedRental);
+      console.log(`📡 Broadcasted rental:updated for ${updatedRental._id}`);
+    } catch (err) {
+      console.warn('Socket broadcast error:', (err as Error).message);
+    }
+
+    res.json({ message: 'Rental status updated successfully', rental: updatedRental });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating rental status', error: (error as Error).message });
+  }
+};

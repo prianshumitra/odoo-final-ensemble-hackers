@@ -90,6 +90,38 @@ export const productService = {
     }
   },
 
+  async getVendorProducts(): Promise<Product[]> {
+    try {
+      const response = await api.get('/products/vendor/my-products');
+      return response.data.map((p: any) => ({ ...p, id: p._id || p.id }));
+    } catch (error) {
+      console.warn('Backend API unreachable for vendor products, returning initial products');
+      return INITIAL_PRODUCTS;
+    }
+  },
+
+  async updateProduct(id: string, productData: Partial<Product>): Promise<Product | null> {
+    try {
+      const response = await api.put(`/products/${id}`, {
+        name: productData.name,
+        brand: productData.brand,
+        category: productData.category,
+        amount: productData.pricing?.amount,
+        unit: productData.pricing?.unit,
+        duration: productData.duration,
+        description: productData.description,
+        image: productData.image,
+        colorVariants: productData.colorVariants,
+        sizeVariants: productData.sizeVariants,
+        inStock: productData.inStock,
+      });
+      return { ...response.data.product, id: response.data.product._id || response.data.product.id };
+    } catch (error) {
+      console.warn('Failed to update product via API:', error);
+      return null;
+    }
+  },
+
   async deleteProduct(id: string): Promise<boolean> {
     try {
       await api.delete(`/products/${id}`);
@@ -163,6 +195,24 @@ export const rentalService = {
       return response.data;
     } catch (error) {
       return [];
+    }
+  },
+
+  async getVendorRentals() {
+    try {
+      const response = await api.get('/rentals/vendor');
+      return response.data;
+    } catch (error) {
+      return [];
+    }
+  },
+
+  async updateRentalStatus(id: string, status: string) {
+    try {
+      const response = await api.put(`/rentals/${id}/status`, { status });
+      return response.data;
+    } catch (error) {
+      return { success: false, message: 'Failed to update status' };
     }
   },
 };

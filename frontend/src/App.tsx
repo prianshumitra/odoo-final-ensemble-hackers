@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
 import { CartDrawer } from './components/common/CartDrawer';
@@ -16,6 +16,17 @@ import { Orders } from './pages/Orders/Orders';
 import { Settings } from './pages/Settings/Settings';
 import { Login } from './pages/Login/Login';
 import { SignUp } from './pages/SignUp/SignUp';
+
+// Vendor Pages Imports
+import { VendorLayout } from './pages/Vendor/VendorLayout';
+import { VendorDashboard } from './pages/Vendor/VendorDashboard';
+import { VendorProducts } from './pages/Vendor/VendorProducts';
+import { VendorRentals } from './pages/Vendor/VendorRentals';
+import { VendorCustomers } from './pages/Vendor/VendorCustomers';
+import { VendorAnalytics } from './pages/Vendor/VendorAnalytics';
+import { VendorNotifications } from './pages/Vendor/VendorNotifications';
+import { VendorSettings } from './pages/Vendor/VendorSettings';
+
 import type { Product, CartItem } from './types';
 import { INITIAL_PRODUCTS } from './data/products';
 import { productService, rentalService, cartService, setAuthHeaders } from './services/api';
@@ -257,6 +268,67 @@ function AppContent() {
     wishlistIds.includes(p.id)
   );
 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isVendorPath = location.pathname.startsWith('/vendor');
+
+  const handleToggleRole = () => {
+    const nextRole = userRole === 'customer' ? 'vendor' : 'customer';
+    setUserRole(nextRole);
+    if (nextRole === 'vendor') {
+      navigate('/vendor');
+    } else {
+      navigate('/');
+    }
+  };
+
+  // If on a vendor path, render full Vendor Dashboard application
+  if (isVendorPath) {
+    if (userRole !== 'vendor') {
+      return <Navigate to="/" replace />;
+    }
+
+    return (
+      <>
+        <Routes>
+          <Route
+            element={
+              <VendorLayout
+                userRole={userRole}
+                onToggleRole={handleToggleRole}
+                onOpenAddProduct={() => setIsVendorModalOpen(true)}
+              />
+            }
+          >
+            <Route index element={<VendorDashboard onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
+            <Route path="products" element={<VendorProducts onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
+            <Route path="rentals" element={<VendorRentals />} />
+            <Route path="customers" element={<VendorCustomers />} />
+            <Route path="analytics" element={<VendorAnalytics />} />
+            <Route path="notifications" element={<VendorNotifications />} />
+            <Route path="settings" element={<VendorSettings />} />
+          </Route>
+        </Routes>
+
+        {/* Vendor List New Rental Product Modal */}
+        <AddProductModal
+          isOpen={isVendorModalOpen}
+          onClose={() => setIsVendorModalOpen(false)}
+          onProductAdded={handleProductAdded}
+        />
+
+        {/* Sign In Required Prompt Modal */}
+        <AuthPromptModal
+          isOpen={isAuthPromptOpen}
+          onClose={() => setIsAuthPromptOpen(false)}
+          actionMessage={authPromptMsg}
+          onSelectRole={handleSelectRole}
+        />
+      </>
+    );
+  }
+
+  // Otherwise, render Customer Marketplace application
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#1E1B26] selection:bg-[#EFE9F6] selection:text-[#7E3AF2]">
       {/* Reusable Header Navbar */}
@@ -283,13 +355,13 @@ function AppContent() {
           if (!user) {
             handleRequireAuth('Please sign in as a Vendor to list products.');
           } else if (userRole !== 'vendor') {
-            alert('Please switch to Vendor mode in the menu to list products.');
+            handleToggleRole();
           } else {
             setIsVendorModalOpen(true);
           }
         }}
         userRole={userRole}
-        onToggleRole={() => setUserRole(userRole === 'customer' ? 'vendor' : 'customer')}
+        onToggleRole={handleToggleRole}
         onSelectRole={handleSelectRole}
       />
 

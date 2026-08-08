@@ -32,3 +32,45 @@ export interface CartItem {
   selectedSize?: string;
   rentDuration: string;
 }
+
+export interface RentalOrder {
+  id: string;
+  _id?: string;
+  userEmail: string;
+  userName: string;
+  productId: string;
+  productName: string;
+  productImage: string;
+  selectedColor?: string;
+  selectedSize?: string;
+  rentDuration: string;
+  amount: number;
+  unit: string;
+  status: 'Pending' | 'Approved' | 'Active Subscription' | 'Returned & Completed' | 'Cancelled' | 'Rejected';
+  createdAt: string;
+}
+
+export interface VendorStats {
+  totalProducts: number;
+  activeRentals: number;
+  totalRevenue: number;
+  pendingRequests: number;
+}
+
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  type: 'rental' | 'product' | 'system';
+  timestamp: string;
+  read: boolean;
+}
+
+export interface RenterCustomer {
+  email: string;
+  name: string;
+  totalRentals: number;
+  activeRentals: number;
+  totalSpent: number;
+  lastRentalDate: string;
+}

@@ -11,7 +11,7 @@ export interface IRental extends Document {
   rentDuration: string;
   amount: number;
   unit: string;
-  status: 'Active Subscription' | 'Returned & Completed' | 'Cancelled';
+  status: 'Pending' | 'Approved' | 'Active Subscription' | 'Returned & Completed' | 'Cancelled' | 'Rejected';
   createdAt: Date;
 }
 
@@ -29,8 +29,8 @@ const rentalSchema = new Schema<IRental>(
     unit: { type: String, default: 'Month' },
     status: {
       type: String,
-      enum: ['Active Subscription', 'Returned & Completed', 'Cancelled'],
-      default: 'Active Subscription',
+      enum: ['Pending', 'Approved', 'Active Subscription', 'Returned & Completed', 'Cancelled', 'Rejected'],
+      default: 'Pending',
     },
   },
   { timestamps: true }

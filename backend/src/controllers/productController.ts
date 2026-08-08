@@ -121,6 +121,58 @@ export const getVendorProducts = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const updateProduct = async (req: AuthRequest, res: Response) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      res.status(404).json({ message: 'Product not found' });
+      return;
+    }
+
+    const {
+      name,
+      brand,
+      category,
+      amount,
+      unit,
+      duration,
+      description,
+      image,
+      colorVariants,
+      sizeVariants,
+      inStock,
+    } = req.body;
+
+    if (name !== undefined) product.name = name;
+    if (brand !== undefined) product.brand = brand;
+    if (category !== undefined) product.category = category;
+    if (amount !== undefined) product.pricing = { amount: Number(amount), unit: unit || product.pricing.unit };
+    if (duration !== undefined) product.duration = duration;
+    if (description !== undefined) product.description = description;
+    if (image !== undefined) product.image = image;
+    if (colorVariants !== undefined) product.colorVariants = colorVariants;
+    if (sizeVariants !== undefined) product.sizeVariants = sizeVariants;
+    if (inStock !== undefined) product.inStock = inStock;
+
+    const updatedProduct = await product.save();
+
+    // ⚡ Realtime broadcast
+    try {
+      getIO().emit('product:updated', updatedProduct);
+      console.log(`📡 Broadcasted product:updated for "${updatedProduct.name}"`);
+    } catch (err) {
+      console.warn('Socket broadcast warning:', (err as Error).message);
+    }
+
+    res.json({
+      message: 'Product updated successfully',
+      product: updatedProduct,
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating product', error: (error as Error).message });
+  }
+};
+
 export const deleteProduct = async (req: AuthRequest, res: Response) => {
   try {
     const product = await Product.findById(req.params.id);
