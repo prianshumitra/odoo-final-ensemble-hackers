@@ -99,7 +99,7 @@ export const Footer: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
-                className="w-full bg-white text-[#1E1B26] text-xs rounded-full pl-9 pr-24 py-3 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2] shadow-xs"
+                className="w-full bg-[#EFE9F6] text-[#18181B] text-xs font-medium rounded-full pl-9 pr-24 py-3 border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] focus:bg-white transition-all shadow-xs"
               />
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694]" />
               <button
