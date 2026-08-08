@@ -17,10 +17,10 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#FAF7F2] border-t border-[#EAE4DB] pt-14 pb-8 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <footer className="bg-[#FAF7F2] border-t border-[#EAE4DB] pt-10 pb-6 mt-auto">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Value Proposition Highlights */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-10 border-b border-[#E4DFD6]">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-[#E4DFD6]">
           <div className="flex items-center gap-4 bg-[#EFE9F6] p-5 rounded-2xl border border-[#D4C4ED] shadow-xs">
             <div className="w-12 h-12 rounded-xl bg-white text-[#7E3AF2] flex items-center justify-center shrink-0 shadow-xs">
               <Truck className="w-6 h-6" />
@@ -55,9 +55,9 @@ export const Footer: React.FC = () => {
         {/* Main Footer Links */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Brand Info */}
-          <div className="md:col-span-4 space-y-4">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <img src={logoImg} alt="Logo" className="h-20 sm:h-24 w-auto object-contain" />
+          <div className="md:col-span-4 space-y-2">
+            <Link to="/" className="inline-block -ml-1 -mt-1">
+              <img src={logoImg} alt="Logo" className="h-10 sm:h-12 w-auto object-contain" />
             </Link>
             <p className="text-xs text-[#6E6A78] leading-relaxed max-w-sm">
               EZRent is your premier subscription platform for high-end furniture, home electronics, gaming consoles, and smart appliances.
