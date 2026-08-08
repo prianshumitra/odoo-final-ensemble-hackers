@@ -4,7 +4,7 @@ import { FileText, CheckCircle2 } from 'lucide-react';
 export const Terms: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1">
-      <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-md">
+      <div className="p-[3px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-md">
         <div className="bg-gradient-to-br from-[#EFE9F6] via-[#FAF7F2] to-[#F5EBE0] p-8 sm:p-12 rounded-[23px] space-y-6">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-white text-[#7E3AF2] flex items-center justify-center shadow-xs border border-[#D4C4ED]">
