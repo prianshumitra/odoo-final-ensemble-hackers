@@ -5,7 +5,7 @@ export const About: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12 space-y-10 flex-1">
       {/* Hero Header */}
-      <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-md">
+      <div className="p-[3px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-md">
         <div className="bg-gradient-to-r from-[#EFE9F6] via-[#FAF7F2] to-[#F5EBE0] rounded-[23px] p-8 sm:p-12 text-center space-y-4">
           <span className="inline-flex items-center gap-1.5 bg-white text-[#7E3AF2] text-xs font-extrabold px-3.5 py-1 rounded-full border border-[#D4C4ED] shadow-xs">
             <Sparkles className="w-3.5 h-3.5" />
