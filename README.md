@@ -48,3 +48,17 @@ CLERK_SECRET_KEY=sk_test_your_clerk_secret_key
    ```
 
 3. Open `http://localhost:5173` in your browser. Open multiple windows/tabs to watch products and vendor listings update live in real-time!
+
+---
+
+## 🐳 Running with Docker (Recommended for Team Collaboration)
+
+Run the entire stack (Frontend + Backend) with a single command without installing Node dependencies locally:
+
+```bash
+docker compose up --build
+```
+
+- **Frontend**: Available at `http://localhost:5173`
+- **Backend API**: Available at `http://localhost:5000`
+- To stop the containers: `docker compose down`
