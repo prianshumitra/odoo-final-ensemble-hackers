@@ -27,7 +27,7 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF7F2] text-[#1E1B26] flex">
+    <div className="min-h-screen bg-[#FAF7F2]/60 text-[#1E1B26] flex backdrop-blur-xs">
       {/* Sidebar Navigation */}
       <VendorSidebar
         onToggleRole={handleRoleToggle}

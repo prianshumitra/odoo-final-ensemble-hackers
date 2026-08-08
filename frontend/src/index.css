@@ -5,6 +5,24 @@
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     background-color: #FAF7F2;
     color: #1E1B26;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -5%;
+    left: -5%;
+    width: 110vw;
+    height: 110vh;
+    z-index: -50;
+    background-image: url('/app-bg.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    transform: scale(1.1); /* Zoomed in to hide bottom-right watermark */
+    pointer-events: none;
   }
 }
 
