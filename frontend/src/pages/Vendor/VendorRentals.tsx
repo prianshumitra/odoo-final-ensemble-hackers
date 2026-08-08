@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { ShoppingBag, Search } from 'lucide-react';
 import { VendorRentalTable } from '../../components/vendor/VendorRentalTable';
+import { CustomSelect } from '../../components/common/CustomSelect';
 import { RentalDetailModal } from '../../components/vendor/RentalDetailModal';
 import { vendorService } from '../../services/vendorService';
 import type { RentalOrder } from '../../types';
@@ -81,19 +82,12 @@ export const VendorRentals: React.FC = () => {
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <span className="text-xs font-bold text-[#8A8694] hidden sm:inline-block">Status:</span>
-            <div className="bg-white px-3 py-1.5 rounded-xl border border-[#D4C4ED] text-xs font-semibold text-[#18181B] flex-1 sm:flex-none">
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="bg-transparent focus:outline-none text-xs font-bold cursor-pointer w-full"
-              >
-                {statusOptions.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <CustomSelect
+              value={selectedStatus}
+              onChange={setSelectedStatus}
+              options={statusOptions}
+              className="w-44"
+            />
           </div>
         </div>
 

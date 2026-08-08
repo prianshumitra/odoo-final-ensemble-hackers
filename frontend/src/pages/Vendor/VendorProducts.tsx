@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Plus, Search, Filter, Package } from 'lucide-react';
+import { Plus, Search, Package } from 'lucide-react';
 import { VendorProductTable } from '../../components/vendor/VendorProductTable';
+import { CustomSelect } from '../../components/common/CustomSelect';
 import { EditProductModal } from '../../components/vendor/EditProductModal';
 import { DeleteConfirmModal } from '../../components/vendor/DeleteConfirmModal';
 import { ProductDetailModal } from '../../components/common/ProductDetailModal';
@@ -113,32 +114,29 @@ export const VendorProducts: React.FC<VendorProductsProps> = ({ onOpenAddProduct
 
         {/* Category & Stock Selectors */}
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <div className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-[#D4C4ED] text-xs font-semibold text-[#18181B] flex-1 sm:flex-none">
-            <Filter className="w-3.5 h-3.5 text-[#7E3AF2]" />
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="bg-transparent focus:outline-none text-xs font-bold cursor-pointer"
-            >
-              <option value="All">All Categories</option>
-              <option value="Furniture">Furniture</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Gaming">Gaming</option>
-              <option value="Cameras">Cameras</option>
-            </select>
-          </div>
+          <CustomSelect
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            options={[
+              { label: 'All Categories', value: 'All' },
+              { label: 'Furniture', value: 'Furniture' },
+              { label: 'Electronics', value: 'Electronics' },
+              { label: 'Gaming', value: 'Gaming' },
+              { label: 'Cameras', value: 'Cameras' },
+            ]}
+            className="w-40"
+          />
 
-          <div className="bg-white px-3 py-1.5 rounded-xl border border-[#D4C4ED] text-xs font-semibold text-[#18181B] flex-1 sm:flex-none">
-            <select
-              value={selectedStock}
-              onChange={(e) => setSelectedStock(e.target.value)}
-              className="bg-transparent focus:outline-none text-xs font-bold cursor-pointer"
-            >
-              <option value="All">All Stock</option>
-              <option value="in-stock">In Stock</option>
-              <option value="out-of-stock">Out of Stock</option>
-            </select>
-          </div>
+          <CustomSelect
+            value={selectedStock}
+            onChange={setSelectedStock}
+            options={[
+              { label: 'All Stock', value: 'All' },
+              { label: 'In Stock', value: 'in-stock' },
+              { label: 'Out of Stock', value: 'out-of-stock' },
+            ]}
+            className="w-36"
+          />
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Edit3, Image, CheckCircle2 } from 'lucide-react';
+import { CustomSelect } from '../common/CustomSelect';
 import type { Product } from '../../types';
 
 interface EditProductModalProps {
@@ -120,32 +121,20 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-[#18181B] mb-1">Brand</label>
-              <select
+              <CustomSelect
                 value={brand}
-                onChange={(e) => setBrand(e.target.value)}
-                className="w-full bg-[#FAF7F2] text-xs font-medium rounded-xl px-3.5 py-2.5 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2]"
-              >
-                <option value="IKEA">IKEA</option>
-                <option value="Sony">Sony</option>
-                <option value="Apple">Apple</option>
-                <option value="Dell">Dell</option>
-                <option value="Herman Miller">Herman Miller</option>
-                <option value="Canon">Canon</option>
-              </select>
+                onChange={setBrand}
+                options={['IKEA', 'Sony', 'Apple', 'Dell', 'Herman Miller', 'Canon']}
+              />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-[#18181B] mb-1">Category</label>
-              <select
+              <CustomSelect
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-[#FAF7F2] text-xs font-medium rounded-xl px-3.5 py-2.5 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2]"
-              >
-                <option value="Furniture">Furniture</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Gaming">Gaming</option>
-                <option value="Cameras">Cameras</option>
-              </select>
+                onChange={setCategory}
+                options={['Furniture', 'Electronics', 'Gaming', 'Cameras']}
+              />
             </div>
           </div>
 
@@ -164,27 +153,27 @@ export const EditProductModal: React.FC<EditProductModalProps> = ({
 
             <div>
               <label className="block text-xs font-bold text-[#18181B] mb-1">Pricing Unit</label>
-              <select
+              <CustomSelect
                 value={unit}
-                onChange={(e) => setUnit(e.target.value as any)}
-                className="w-full bg-[#FAF7F2] text-xs font-medium rounded-xl px-3 py-2.5 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2]"
-              >
-                <option value="hour">per hour</option>
-                <option value="day">per day</option>
-                <option value="Month">per Month</option>
-              </select>
+                onChange={(val) => setUnit(val as any)}
+                options={[
+                  { label: 'per hour', value: 'hour' },
+                  { label: 'per day', value: 'day' },
+                  { label: 'per Month', value: 'Month' },
+                ]}
+              />
             </div>
 
             <div>
               <label className="block text-xs font-bold text-[#18181B] mb-1">Stock Availability</label>
-              <select
+              <CustomSelect
                 value={inStock ? 'true' : 'false'}
-                onChange={(e) => setInStock(e.target.value === 'true')}
-                className="w-full bg-[#FAF7F2] text-xs font-medium rounded-xl px-3 py-2.5 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2]"
-              >
-                <option value="true">In Stock</option>
-                <option value="false">Out of Stock</option>
-              </select>
+                onChange={(val) => setInStock(val === 'true')}
+                options={[
+                  { label: 'In Stock', value: 'true' },
+                  { label: 'Out of Stock', value: 'false' },
+                ]}
+              />
             </div>
           </div>
 

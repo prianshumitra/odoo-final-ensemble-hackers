@@ -1,5 +1,6 @@
 import React from 'react';
-import { Filter, RotateCcw, ChevronDown, Check } from 'lucide-react';
+import { Filter, RotateCcw, Check } from 'lucide-react';
+import { CustomSelect } from './CustomSelect';
 import { BRANDS, DURATION_OPTIONS, COLOR_SWATCHES } from '../../data/products';
 import type { FilterState } from '../../types';
 
@@ -37,21 +38,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
           Brand
         </label>
-        <div className="relative">
-          <select
-            value={filters.selectedBrand}
-            onChange={(e) => onFilterChange({ selectedBrand: e.target.value })}
-            aria-label="Select Brand"
-            className="w-full appearance-none bg-white/90 text-[#1E1B26] text-sm font-medium rounded-xl px-4 py-2.5 pr-10 border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#7E3AF2]/20 transition-all cursor-pointer shadow-xs"
-          >
-            {BRANDS.map((brand) => (
-              <option key={brand} value={brand}>
-                {brand}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694] pointer-events-none" />
-        </div>
+        <CustomSelect
+          value={filters.selectedBrand}
+          onChange={(val) => onFilterChange({ selectedBrand: val })}
+          options={BRANDS}
+          placeholder="All Brands"
+        />
       </div>
 
       {/* 2. Color Swatches Filter */}
@@ -108,21 +100,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
           Rental Duration
         </label>
-        <div className="relative">
-          <select
-            value={filters.selectedDuration}
-            onChange={(e) => onFilterChange({ selectedDuration: e.target.value })}
-            aria-label="Select Rental Duration"
-            className="w-full appearance-none bg-white/90 text-[#1E1B26] text-sm font-medium rounded-xl px-4 py-2.5 pr-10 border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#7E3AF2]/20 transition-all cursor-pointer shadow-xs"
-          >
-            {DURATION_OPTIONS.map((duration) => (
-              <option key={duration} value={duration}>
-                {duration}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694] pointer-events-none" />
-        </div>
+        <CustomSelect
+          value={filters.selectedDuration}
+          onChange={(val) => onFilterChange({ selectedDuration: val })}
+          options={DURATION_OPTIONS}
+          placeholder="All Durations"
+        />
       </div>
 
       {/* 4. Price Range Filter */}
