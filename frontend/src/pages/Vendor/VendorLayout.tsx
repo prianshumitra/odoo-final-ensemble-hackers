@@ -37,8 +37,8 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
-        {/* Top Header Bar */}
-        <header className="sticky top-0 z-30 bg-[#FAF7F2]/90 backdrop-blur-md border-b border-[#EAE4DB] px-4 sm:px-8 py-3.5 flex items-center justify-between">
+        {/* Top Header Bar — Glassmorphic Light Purple / Off-white */}
+        <header className="sticky top-0 z-30 bg-[#EFE9F6]/75 backdrop-blur-xl backdrop-saturate-150 border-b border-[#D4C4ED]/60 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setIsMobileSidebarOpen(true)}

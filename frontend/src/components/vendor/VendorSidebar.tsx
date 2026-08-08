@@ -86,7 +86,7 @@ export const VendorSidebar: React.FC<VendorSidebarProps> = ({
                 className={({ isActive }) =>
                   `flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
                     isActive
-                      ? 'bg-[#18181B] text-white shadow-md'
+                      ? 'bg-[#7E3AF2] text-white shadow-md shadow-[#7E3AF2]/30'
                       : 'text-[#3E3A47] hover:bg-white/80 hover:text-[#7E3AF2]'
                   }`
                 }
