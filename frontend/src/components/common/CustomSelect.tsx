@@ -72,7 +72,7 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
 
       {/* Floating Menu List */}
       {isOpen && (
-        <div className="absolute left-0 right-[#0] top-full mt-1.5 z-50 bg-[#FAF7F2] rounded-2xl border border-[#D4C4ED] shadow-xl p-1.5 max-h-60 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150 space-y-0.5">
+        <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-[#FAF7F2] rounded-2xl border border-[#D4C4ED] shadow-xl p-1.5 max-h-60 overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden animate-in fade-in slide-in-from-top-2 duration-150 space-y-0.5">
           {normalizedOptions.map((opt) => {
             const isSelected = opt.value === value;
             return (
