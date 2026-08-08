@@ -58,7 +58,7 @@ export const Footer: React.FC = () => {
             <Link to="/" className="inline-flex items-center gap-2">
               <div className="flex items-center justify-center px-3.5 py-1.5 rounded-xl bg-[#18181B] text-white font-bold tracking-tight shadow-md">
                 <span className="text-xs uppercase tracking-widest text-[#D4C4ED] mr-1.5 font-semibold">BR.F</span>
-                <span className="font-extrabold text-sm tracking-wide">Your Logo</span>
+                <span className="font-extrabold text-sm tracking-wide">EZ Rent</span>
               </div>
             </Link>
             <p className="text-xs text-[#6E6A78] leading-relaxed max-w-sm">
@@ -122,7 +122,7 @@ export const Footer: React.FC = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-[#E4DFD6] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#8A8694]">
-          <p>© {new Date().getFullYear()} Diligent Wombat Inc. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} EZ Rent Inc. All rights reserved.</p>
           <p className="flex items-center gap-1">
             Crafted with <Heart className="w-3.5 h-3.5 text-rose-500 fill-current" /> for Odoo Ensemble Hackers
           </p>

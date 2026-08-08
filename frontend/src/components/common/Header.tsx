@@ -95,6 +95,22 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Actions: Wishlist, Cart & Profile */}
           <div className="flex items-center gap-3 shrink-0">
+            {/* Login/Signup Links for Guest */}
+            <div className="hidden sm:flex items-center gap-4 mr-2">
+              <Link 
+                to="/login" 
+                className="text-sm font-bold text-[#6E6A78] hover:text-[#7E3AF2] transition-colors"
+              >
+                Log in
+              </Link>
+              <Link 
+                to="/signup" 
+                className="px-4 py-2 bg-[#18181B] text-white text-sm font-bold rounded-xl hover:bg-[#7E3AF2] transition-all shadow-sm"
+              >
+                Sign Up
+              </Link>
+            </div>
+
             {/* Wishlist Icon */}
             <button
               onClick={onOpenWishlist}

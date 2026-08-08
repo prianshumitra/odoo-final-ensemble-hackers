@@ -11,6 +11,8 @@ import { Contact } from './pages/Contact/Contact';
 import { Account } from './pages/Account/Account';
 import { Orders } from './pages/Orders/Orders';
 import { Settings } from './pages/Settings/Settings';
+import { Login } from './pages/Login/Login';
+import { SignUp } from './pages/SignUp/SignUp';
 import type { Product, CartItem } from './types';
 import { INITIAL_PRODUCTS } from './data/products';
 
@@ -117,6 +119,8 @@ function AppContent() {
         <Route path="/account" element={<Account />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
 
       {/* Reusable Footer */}
