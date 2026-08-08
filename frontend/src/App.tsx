@@ -363,8 +363,8 @@ function AppContent() {
                 <Route path="/account" element={<Account />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
+                <Route path="/login" element={<Login onSelectRole={handleSelectRole} />} />
+                <Route path="/signup" element={<SignUp onSelectRole={handleSelectRole} />} />
               </Routes>
 
               <Footer />

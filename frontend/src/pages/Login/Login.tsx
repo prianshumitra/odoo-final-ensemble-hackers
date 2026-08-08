@@ -1,125 +1,128 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { Mail, Lock, ArrowRight, UserCheck, Store } from 'lucide-react';
 
-export const Login: React.FC = () => {
+interface LoginProps {
+  onSelectRole?: (role: 'customer' | 'vendor') => void;
+}
+
+export const Login: React.FC<LoginProps> = ({ onSelectRole }) => {
   const navigate = useNavigate();
+  const [role, setRole] = useState<'customer' | 'vendor'>('customer');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const handleRoleChange = (selectedRole: 'customer' | 'vendor') => {
+    setRole(selectedRole);
+    onSelectRole?.(selectedRole);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate login
-    console.log('Login attempt:', { email, password });
-    navigate('/');
+    onSelectRole?.(role);
+    if (role === 'vendor') {
+      navigate('/vendor');
+    } else {
+      navigate('/');
+    }
   };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-3xl border border-[#EAE4DB] shadow-sm">
+      <div className="max-w-md w-full space-y-6 bg-[#FAF7F2] p-8 rounded-3xl border border-[#D4C4ED] shadow-xl">
+        {/* Role Selector Tabs */}
+        <div className="bg-[#EFE9F6] p-1.5 rounded-2xl flex items-center gap-1 border border-[#D4C4ED]/60">
+          <button
+            type="button"
+            onClick={() => handleRoleChange('customer')}
+            className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+              role === 'customer'
+                ? 'bg-[#18181B] text-white shadow-md'
+                : 'text-[#6E6A78] hover:text-[#18181B]'
+            }`}
+          >
+            <UserCheck className="w-4 h-4" />
+            <span>Customer Login</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleRoleChange('vendor')}
+            className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+              role === 'vendor'
+                ? 'bg-[#7E3AF2] text-white shadow-md shadow-[#7E3AF2]/30'
+                : 'text-[#6E6A78] hover:text-[#7E3AF2]'
+            }`}
+          >
+            <Store className="w-4 h-4" />
+            <span>Vendor Login</span>
+          </button>
+        </div>
+
         <div className="text-center">
-          <div className="inline-flex items-center justify-center px-4 py-2 rounded-2xl bg-[#18181B] text-white font-bold mb-4">
-            <span className="text-xl">EZ</span>
-          </div>
-          <h2 className="text-3xl font-extrabold text-[#18181B]">Welcome Back</h2>
-          <p className="mt-2 text-sm text-[#6E6A78]">
-            Log in to your account to manage your rentals
+          <h2 className="text-2xl font-extrabold text-[#18181B]">
+            {role === 'vendor' ? 'Vendor Portal Access' : 'Customer Sign In'}
+          </h2>
+          <p className="mt-1 text-xs text-[#6E6A78]">
+            {role === 'vendor'
+              ? 'Sign in to manage listings, rentals & earnings'
+              : 'Log in to browse, rent items & manage subscriptions'}
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email-address" className="block text-sm font-semibold text-[#3E3A47] mb-1.5">
-                Email Address
-              </label>
-              <div className="relative">
-                <input
-                  id="email-address"
-                  name="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none relative block w-full px-10 py-3 border border-[#E4DFD6] placeholder-[#A09BA6] text-[#1E1B26] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#EFE9F6] focus:border-[#7E3AF2] focus:z-10 sm:text-sm transition-all"
-                  placeholder="name@example.com"
-                />
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#8A8694]" />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-[#3E3A47] mb-1.5">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none relative block w-full px-10 py-3 border border-[#E4DFD6] placeholder-[#A09BA6] text-[#1E1B26] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#EFE9F6] focus:border-[#7E3AF2] focus:z-10 sm:text-sm transition-all"
-                  placeholder="••••••••"
-                />
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#8A8694]" />
-              </div>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="email-address" className="block text-xs font-bold text-[#18181B] mb-1">
+              Email Address
+            </label>
+            <div className="relative">
+              <input
+                id="email-address"
+                name="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-white px-9 py-2.5 border border-[#D4C4ED] text-xs font-medium rounded-xl focus:outline-none focus:border-[#7E3AF2]"
+                placeholder="name@example.com"
+              />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694]" />
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
+          <div>
+            <label htmlFor="password" className="block text-xs font-bold text-[#18181B] mb-1">
+              Password
+            </label>
+            <div className="relative">
               <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-[#7E3AF2] focus:ring-[#EFE9F6] border-[#E4DFD6] rounded-md cursor-pointer"
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white px-9 py-2.5 border border-[#D4C4ED] text-xs font-medium rounded-xl focus:outline-none focus:border-[#7E3AF2]"
+                placeholder="••••••••"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-[#6E6A78] cursor-pointer">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a href="#" className="font-semibold text-[#7E3AF2] hover:text-[#6D28D9]">
-                Forgot password?
-              </a>
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694]" />
             </div>
           </div>
 
           <button
             type="submit"
-            className="group relative w-full flex justify-center py-3.5 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-[#18181B] hover:bg-[#7E3AF2] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#7E3AF2] transition-all shadow-md"
+            className={`w-full py-3 px-4 text-xs font-bold rounded-xl text-white transition-all shadow-md flex items-center justify-center gap-2 ${
+              role === 'vendor' ? 'bg-[#7E3AF2] hover:bg-[#6C2BD9]' : 'bg-[#18181B] hover:bg-[#7E3AF2]'
+            }`}
           >
-            Sign in
-            <ArrowRight className="ml-2 w-4 h-4" />
+            <span>{role === 'vendor' ? 'Access Vendor Dashboard' : 'Open Customer Marketplace'}</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <div className="mt-6">
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#EAE4DB]"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-[#8A8694]">Or continue with</span>
-            </div>
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center py-2.5 px-4 border border-[#E4DFD6] rounded-xl bg-white text-sm font-semibold text-[#3E3A47] hover:bg-[#FAF7F2] transition-colors">
-              Google
-            </button>
-            <button className="flex items-center justify-center py-2.5 px-4 border border-[#E4DFD6] rounded-xl bg-white text-sm font-semibold text-[#3E3A47] hover:bg-[#FAF7F2] transition-colors">
-              GitHub
-            </button>
-          </div>
-        </div>
-
-        <p className="mt-8 text-center text-sm text-[#6E6A78]">
+        <p className="text-center text-xs text-[#6E6A78] pt-2">
           Don't have an account?{' '}
-          <Link to="/signup" className="font-bold text-[#7E3AF2] hover:text-[#6D28D9]">
+          <Link to="/signup" className="font-bold text-[#7E3AF2] hover:underline">
             Create an account
           </Link>
         </p>
