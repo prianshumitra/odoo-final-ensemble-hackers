@@ -7,14 +7,18 @@ Welcome to **EZRent**, a full-stack, real-time flexible rental marketplace for f
 ## 📐 Key Architecture & Features
 
 ### 🎨 1. Premium UI Design System & Aesthetics
-- **Cohesive Light Purple Palette:** Custom design system built on `#EFE9F6` light purple background, crisp `#D4C4ED` / `#C4B2E2` borders, and `#7E3AF2` accent purple.
-- **Sticky Glassmorphism Header:** Light purple backdrop-blur navbar (`#EFE9F6`/90) with an off-white search bar (`#FAF7F2`) enclosed by a purple accent border (`#C4B2E2`).
+- **Global Pattern Background:** Full-screen seamless background pattern (`app-bg.jpg`) scaled and fixed globally, visible underneath all floating components.
+- **Glassmorphism Everywhere:** Headers, Footers, and Cards use semi-transparent backgrounds (e.g. `bg-[#EFE9F6]/65`, `bg-white/80`) paired with `backdrop-blur` for a modern, frosty depth effect.
+- **Cohesive Light Purple Palette:** Custom design system built on crisp `#D4C4ED` / `#C4B2E2` borders, and `#7E3AF2` accent purple.
+- **Elevated Navbar:** Sticky navbar with a precise 2px bottom border and subtle black drop shadow to pop against the global background pattern.
+- **Custom Sort Selector & Inputs:** Completely custom styled dropdown menus (replacing native `<select>` tags) and newsletter inputs tailored to the app's light purple theme.
 - **Dynamic Gradient Hero Banner:** Subtle `1px` gradient border smoothly transitioning from light purple (`#C4B2E2`) to warm off-white (`#EAE4DB`).
 - **Custom Price Range Slider:** Tailored HTML range input featuring a dynamic purple gradient track fill (`linear-gradient`), custom thumb knob with drop shadows, and hover micro-animations.
 
 ---
 
 ### 🛒 2. Interactive Product Catalog & Navigation
+- **Smart Click-Outside Detection:** Custom dropdowns (like the Profile Menu and Sort Selector) instantly dismiss when clicking anywhere outside their bounding boxes for seamless UX.
 - **Rich Product Cards:**
   - Real-time stock status badge (*Out of Stock* overlay / blurring).
   - Color variant swatches with active selection highlight.
