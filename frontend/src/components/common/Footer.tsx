@@ -55,9 +55,9 @@ export const Footer: React.FC = () => {
         {/* Main Footer Links */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Brand Info */}
-          <div className="md:col-span-4 space-y-1.5">
+          <div className="md:col-span-4 space-y-1 -mt-5 sm:-mt-6">
             <Link to="/" className="inline-flex items-center gap-2">
-              <img src={logoImg} alt="Logo" className="h-20 sm:h-24 w-auto object-contain -my-2" />
+              <img src={logoImg} alt="Logo" className="h-20 sm:h-24 w-auto object-contain -mt-3 -mb-1" />
             </Link>
             <p className="text-xs text-[#6E6A78] leading-relaxed max-w-sm">
               EZRent is your premier subscription platform for high-end furniture, home electronics, gaming consoles, and smart appliances.
