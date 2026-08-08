@@ -56,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
               <img
                 src={logoImg}
                 alt="Logo"
-                className="h-16 sm:h-[72px] w-auto object-contain group-hover:scale-105 transition-transform"
+                className="h-16 sm:h-[72px] w-auto object-contain group-hover:scale-105 transition-all duration-200 drop-shadow-[0_2px_8px_rgba(126,58,242,0.08)]"
               />
             </Link>
 
