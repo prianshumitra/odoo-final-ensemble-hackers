@@ -119,7 +119,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-[#E4DFD6] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#8A8694]">
+        <div className="pt-8 border-t border-[#D4C4ED] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold text-[#7E3AF2]">
           <p>© {new Date().getFullYear()} EZ Rent Inc. All rights reserved.</p>
           <p className="flex items-center gap-1">
             Crafted with <Heart className="w-3.5 h-3.5 text-rose-500 fill-current" /> for Odoo Ensemble Hackers
