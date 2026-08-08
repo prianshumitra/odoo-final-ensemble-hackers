@@ -57,9 +57,7 @@ export const Footer: React.FC = () => {
           {/* Brand Info */}
           <div className="md:col-span-4 space-y-4">
             <Link to="/" className="inline-flex items-center gap-2">
-              <div className="inline-flex rounded-3xl border border-[#C4B2E2] shadow-xs overflow-hidden">
-                <img src={logoImg} alt="Logo" className="h-14 w-auto object-contain" />
-              </div>
+              <img src={logoImg} alt="Logo" className="h-16 w-auto object-contain" />
             </Link>
             <p className="text-xs text-[#6E6A78] leading-relaxed max-w-sm">
               Diligent Wombat is your premier subscription platform for high-end furniture, home electronics, gaming consoles, and smart appliances.

@@ -53,13 +53,11 @@ export const Header: React.FC<HeaderProps> = ({
               to="/" 
               className="flex items-center gap-2 group focus:outline-none"
             >
-              <div className="inline-flex rounded-3xl border border-[#C4B2E2] shadow-xs overflow-hidden group-hover:scale-105 transition-transform">
-                <img
-                  src={logoImg}
-                  alt="Logo"
-                  className="h-14 sm:h-16 w-auto object-contain"
-                />
-              </div>
+              <img
+                src={logoImg}
+                alt="Logo"
+                className="h-16 sm:h-[72px] w-auto object-contain group-hover:scale-105 transition-transform"
+              />
             </Link>
 
             {/* Desktop Navigation Links */}
