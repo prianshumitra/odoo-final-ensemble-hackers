@@ -85,7 +85,6 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
       });
 
       if (res._id) {
-        await orderService.confirmOrder(res._id);
         setCompletedOrderRef(res.orderRef || 'SO0010');
       } else {
         setCompletedOrderRef('SO0010');
@@ -120,8 +119,15 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
           </div>
 
           <div>
-            <h2 className="text-3xl font-black text-[#18181B]">Thank You For Your Order!</h2>
-            <p className="text-sm font-semibold text-[#7E3AF2] mt-1">Your Payment has been successfully processed</p>
+            <h2 className="text-3xl font-black text-[#18181B]">Order Submitted to Vendor!</h2>
+            <p className="text-sm font-semibold text-[#7E3AF2] mt-1">
+              Your rental order has been placed and sent to the vendor for fulfillment confirmation.
+            </p>
+          </div>
+
+          <div className="bg-[#EFE9F6] p-3 rounded-2xl border border-[#D4C4ED] text-xs text-[#7E3AF2] font-bold flex items-center justify-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#7E3AF2] animate-ping" />
+            <span>Status: Submitted (Awaiting Vendor Confirmation & Shipping)</span>
           </div>
 
           <div className="bg-white p-4 rounded-2xl border border-[#D4C4ED]/60 space-y-2 text-xs text-left">
@@ -130,7 +136,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
               <span className="font-extrabold text-[#18181B]">{completedOrderRef}</span>
             </div>
             <div className="flex justify-between border-b pb-2">
-              <span className="text-[#6E6A78]">Delivery Method:</span>
+              <span className="text-[#6E6A78]">Fulfillment Method:</span>
               <span className="font-bold">{deliveryMethod}</span>
             </div>
             <div className="flex justify-between border-b pb-2">
@@ -138,7 +144,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
               <span className="font-bold text-amber-600">Rs. {securityDeposit.toLocaleString()}</span>
             </div>
             <div className="flex justify-between pt-1 font-bold text-sm text-[#7E3AF2]">
-              <span>Total Paid:</span>
+              <span>Total Amount:</span>
               <span>Rs. {grandTotal.toLocaleString()}</span>
             </div>
           </div>

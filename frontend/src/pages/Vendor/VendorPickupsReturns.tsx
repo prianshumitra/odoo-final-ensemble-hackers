@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Truck, RotateCcw, CheckCircle2, ShieldCheck } from 'lucide-react';
 import type { FullRentalOrder } from '../../types';
 import { orderService } from '../../services/api';
+import { getSocket } from '../../services/socket';
 
 export const VendorPickupsReturns: React.FC = () => {
   const [orders, setOrders] = useState<FullRentalOrder[]>([]);
@@ -20,6 +21,19 @@ export const VendorPickupsReturns: React.FC = () => {
 
   useEffect(() => {
     fetchOrders();
+
+    const socket = getSocket();
+    const handleOrderChange = () => {
+      fetchOrders();
+    };
+
+    socket.on('order:created', handleOrderChange);
+    socket.on('order:updated', handleOrderChange);
+
+    return () => {
+      socket.off('order:created', handleOrderChange);
+      socket.off('order:updated', handleOrderChange);
+    };
   }, []);
 
   const handleConfirmPickup = async (id: string) => {

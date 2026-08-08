@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { FullRentalOrder, Product } from '../../types';
 import { orderService, productService } from '../../services/api';
+import { getSocket } from '../../services/socket';
 
 export const VendorOrders: React.FC = () => {
   const [orders, setOrders] = useState<FullRentalOrder[]>([]);
@@ -45,6 +46,19 @@ export const VendorOrders: React.FC = () => {
 
   useEffect(() => {
     fetchOrdersAndProducts();
+
+    const socket = getSocket();
+    const handleOrderChange = () => {
+      fetchOrdersAndProducts();
+    };
+
+    socket.on('order:created', handleOrderChange);
+    socket.on('order:updated', handleOrderChange);
+
+    return () => {
+      socket.off('order:created', handleOrderChange);
+      socket.off('order:updated', handleOrderChange);
+    };
   }, []);
 
   const handleCreateQuotation = async (e: React.FormEvent) => {

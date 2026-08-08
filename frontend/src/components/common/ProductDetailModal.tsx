@@ -159,6 +159,23 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Refundable Security Deposit: Rs. {depositAmount}</span>
                 </p>
+                {product.rental && (
+                  <div className="pt-2 border-t border-[#EAE4DB] mt-2 grid grid-cols-2 gap-2 text-[11px] text-[#6E6A78]">
+                    <div>
+                      <span className="font-semibold text-[#18181B]">Operating Hours:</span>{' '}
+                      {product.rental.windowStart || '10:00'} - {product.rental.windowEnd || '19:00'}
+                    </div>
+                    <div>
+                      <span className="font-semibold text-[#18181B]">Periodicity:</span>{' '}
+                      <span className="capitalize">{product.rental.periodicity || 'day'}</span>
+                    </div>
+                    {product.rental.lateFeeRatePerUnit ? (
+                      <div className="col-span-2 text-rose-600 font-medium">
+                        Late Fee Rate: Rs. {product.rental.lateFeeRatePerUnit} / unit after return time
+                      </div>
+                    ) : null}
+                  </div>
+                )}
               </div>
 
               {/* Rental Period Picker */}

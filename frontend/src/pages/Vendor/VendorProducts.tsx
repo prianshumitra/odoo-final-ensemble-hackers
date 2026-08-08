@@ -6,6 +6,7 @@ import { EditProductModal } from '../../components/vendor/EditProductModal';
 import { DeleteConfirmModal } from '../../components/vendor/DeleteConfirmModal';
 import { ProductDetailModal } from '../../components/common/ProductDetailModal';
 import { vendorService } from '../../services/vendorService';
+import { getSocket } from '../../services/socket';
 import type { Product } from '../../types';
 
 interface VendorProductsProps {
@@ -31,6 +32,21 @@ export const VendorProducts: React.FC<VendorProductsProps> = ({ onOpenAddProduct
 
   useEffect(() => {
     loadProducts();
+
+    const socket = getSocket();
+    const handleProductChange = () => {
+      loadProducts();
+    };
+
+    socket.on('product:created', handleProductChange);
+    socket.on('product:updated', handleProductChange);
+    socket.on('product:deleted', handleProductChange);
+
+    return () => {
+      socket.off('product:created', handleProductChange);
+      socket.off('product:updated', handleProductChange);
+      socket.off('product:deleted', handleProductChange);
+    };
   }, []);
 
   // Filtered product list

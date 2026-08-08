@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Package, Printer } from 'lucide-react';
 import type { FullRentalOrder } from '../../types';
 import { orderService } from '../../services/api';
+import { getSocket } from '../../services/socket';
 
 export const Orders: React.FC = () => {
   const [orders, setOrders] = useState<FullRentalOrder[]>([]);
@@ -17,7 +18,58 @@ export const Orders: React.FC = () => {
 
   useEffect(() => {
     fetchMyOrders();
+
+    const socket = getSocket();
+    const handleOrderChange = () => {
+      fetchMyOrders();
+    };
+
+    socket.on('order:created', handleOrderChange);
+    socket.on('order:updated', handleOrderChange);
+
+    return () => {
+      socket.off('order:created', handleOrderChange);
+      socket.off('order:updated', handleOrderChange);
+    };
   }, []);
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'quotation':
+      case 'quotation_sent':
+        return {
+          label: 'Submitted (Awaiting Vendor Confirmation)',
+          cls: 'bg-amber-100 text-amber-900 border border-amber-300',
+        };
+      case 'confirmed':
+      case 'reserved':
+        return {
+          label: 'Confirmed by Vendor (Preparing Shipment)',
+          cls: 'bg-blue-100 text-blue-900 border border-blue-300',
+        };
+      case 'picked_up':
+        return {
+          label: 'Shipped / In Transit',
+          cls: 'bg-purple-100 text-[#7E3AF2] border border-[#D4C4ED]',
+        };
+      case 'late_return':
+      case 'late_pickup':
+        return {
+          label: '⚠️ Overdue Return',
+          cls: 'bg-rose-100 text-rose-900 border border-rose-300 animate-pulse',
+        };
+      case 'completed':
+        return {
+          label: 'Completed & Deposit Refunded',
+          cls: 'bg-emerald-100 text-emerald-900 border border-emerald-300',
+        };
+      default:
+        return {
+          label: status.toUpperCase(),
+          cls: 'bg-gray-100 text-gray-800 border border-gray-300',
+        };
+    }
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1">
@@ -54,15 +106,14 @@ export const Orders: React.FC = () => {
                         • Placed on {new Date(order.createdAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <span
-                      className={`text-xs font-extrabold px-3 py-1 rounded-full ${
-                        order.status === 'confirmed' || order.status === 'picked_up'
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                          : 'bg-purple-100 text-[#7E3AF2] border border-[#D4C4ED]'
-                      }`}
-                    >
-                      {order.status.toUpperCase()}
-                    </span>
+                    {(() => {
+                      const b = getStatusBadge(order.status);
+                      return (
+                        <span className={`text-xs font-extrabold px-3 py-1 rounded-full ${b.cls}`}>
+                          {b.label}
+                        </span>
+                      );
+                    })()}
                   </div>
 
                   {/* Order Lines */}

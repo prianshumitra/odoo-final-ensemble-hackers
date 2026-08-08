@@ -139,12 +139,23 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
     const start = rentalPeriod?.start ? new Date(rentalPeriod.start) : new Date();
     const end = rentalPeriod?.end ? new Date(rentalPeriod.end) : new Date(Date.now() + 7 * 86400000);
 
+    // Find vendorId from primary ordered product if not provided
+    let targetVendorId = req.user?.role === 'vendor' ? req.user.id : undefined;
+    if (!targetVendorId && lines[0] && (lines[0].product || lines[0].productId)) {
+      try {
+        const primaryProduct = await Product.findById(lines[0].product || lines[0].productId);
+        if (primaryProduct && primaryProduct.vendorId) {
+          targetVendorId = primaryProduct.vendorId;
+        }
+      } catch (err) {}
+    }
+
     const order = await RentalOrder.create({
       orderRef,
       customer: req.user?.id || 'customer_demo',
       customerName: customerName || req.user?.name || 'Valued Customer',
       customerEmail: customerEmail || req.user?.email || 'customer@example.com',
-      vendorId: req.user?.role === 'vendor' ? req.user.id : undefined,
+      vendorId: targetVendorId,
       status: 'quotation',
       invoiceStatus: 'nothing_to_invoice',
       invoiceAddress: invoiceAddress || {},
@@ -305,11 +316,30 @@ export const processPickup = async (req: Request, res: Response) => {
     order.pickupDate = new Date();
     await order.save();
 
+    // Automatic stock updates (§ 4 Pickup Management)
+    if (order.lines && order.lines.length > 0) {
+      for (const line of order.lines) {
+        if (line.product && line.product !== 'system_deposit') {
+          try {
+            const product = await Product.findById(line.product);
+            if (product && !product.isSystemProduct) {
+              product.quantityOnHand = Math.max(0, (product.quantityOnHand || 1) - (line.quantity || 1));
+              product.inStock = product.quantityOnHand > 0;
+              await product.save();
+              try {
+                getIO().emit('product:updated', product);
+              } catch (err) {}
+            }
+          } catch (err) {}
+        }
+      }
+    }
+
     try {
       getIO().emit('order:updated', order);
     } catch (err) {}
 
-    res.json({ message: 'Item picked up successfully', order });
+    res.json({ message: 'Item picked up successfully and stock updated', order });
   } catch (error) {
     res.status(500).json({ message: 'Error processing pickup' });
   }
@@ -401,6 +431,25 @@ export const processReturn = async (req: Request, res: Response) => {
     }
 
     await order.save();
+
+    // Automatic stock restoration (§ 4 Return Management)
+    if (order.lines && order.lines.length > 0) {
+      for (const line of order.lines) {
+        if (line.product && line.product !== 'system_deposit') {
+          try {
+            const product = await Product.findById(line.product);
+            if (product && !product.isSystemProduct) {
+              product.quantityOnHand = (product.quantityOnHand || 0) + (line.quantity || 1);
+              product.inStock = product.quantityOnHand > 0;
+              await product.save();
+              try {
+                getIO().emit('product:updated', product);
+              } catch (err) {}
+            }
+          } catch (err) {}
+        }
+      }
+    }
 
     try {
       getIO().emit('order:updated', order);

@@ -8,6 +8,7 @@ import { RentalDetailModal } from '../../components/vendor/RentalDetailModal';
 import { vendorService } from '../../services/vendorService';
 import type { Product, RentalOrder, VendorStats } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import { getSocket } from '../../services/socket';
 
 interface VendorDashboardProps {
   onOpenAddProduct: () => void;
@@ -33,18 +34,37 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
   });
   const [selectedRental, setSelectedRental] = useState<RentalOrder | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const prods = await vendorService.getProducts();
-      const rents = await vendorService.getRentals();
-      setProducts(prods);
-      setRentals(rents);
+  const fetchData = async () => {
+    const prods = await vendorService.getProducts();
+    const rents = await vendorService.getRentals();
+    setProducts(prods);
+    setRentals(rents);
 
-      const computedStats = await vendorService.getStats(prods, rents);
-      setStats(computedStats);
+    const computedStats = await vendorService.getStats(prods, rents);
+    setStats(computedStats);
+  };
+
+  useEffect(() => {
+    fetchData();
+
+    const socket = getSocket();
+    const handleRealtimeChange = () => {
+      fetchData();
     };
 
-    fetchData();
+    socket.on('order:created', handleRealtimeChange);
+    socket.on('order:updated', handleRealtimeChange);
+    socket.on('product:created', handleRealtimeChange);
+    socket.on('product:updated', handleRealtimeChange);
+    socket.on('product:deleted', handleRealtimeChange);
+
+    return () => {
+      socket.off('order:created', handleRealtimeChange);
+      socket.off('order:updated', handleRealtimeChange);
+      socket.off('product:created', handleRealtimeChange);
+      socket.off('product:updated', handleRealtimeChange);
+      socket.off('product:deleted', handleRealtimeChange);
+    };
   }, []);
 
   const handleUpdateStatus = async (id: string, status: RentalOrder['status']) => {

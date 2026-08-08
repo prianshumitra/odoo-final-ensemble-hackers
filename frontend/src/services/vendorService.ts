@@ -1,4 +1,4 @@
-import { productService, orderService } from './api';
+import { productService, orderService, dashboardService } from './api';
 import type { Product, FullRentalOrder, VendorStats, NotificationItem, RenterCustomer } from '../types';
 
 export const vendorService = {
@@ -42,6 +42,28 @@ export const vendorService = {
   },
 
   async getStats(products: Product[], rentals: FullRentalOrder[]): Promise<VendorStats> {
+    try {
+      const liveData = await dashboardService.getKPIs();
+      if (liveData) {
+        return {
+          totalProducts: products.length,
+          activeRentals: liveData.activeRentals ?? 0,
+          rentalsDueToday: liveData.rentalsDueToday ?? 0,
+          upcomingPickups: liveData.upcomingPickups ?? 0,
+          upcomingReturns: liveData.upcomingReturns ?? 0,
+          overdueRentals: liveData.overdueRentals ?? 0,
+          totalRevenue: liveData.revenueFromRentals ?? 0,
+          securityDepositsHeld: liveData.securityDepositsHeld ?? 0,
+          lateFeeCollection: liveData.lateFeeCollection ?? 0,
+          pendingRequests: rentals.filter((r) => r.status === 'quotation' || r.status === 'quotation_sent').length,
+          quickCounts: liveData.quickCounts,
+          last7DaysSales: liveData.last7DaysSales,
+        };
+      }
+    } catch (err) {
+      console.warn('Live API dashboard KPIs fallback to local calculation:', err);
+    }
+
     const totalProducts = products.length;
     const activeRentals = rentals.filter((r) => r.status === 'confirmed' || r.status === 'picked_up' || r.status === 'reserved').length;
     const pendingRequests = rentals.filter((r) => r.status === 'quotation' || r.status === 'quotation_sent').length;
