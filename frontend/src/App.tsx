@@ -320,7 +320,7 @@ function AppContent() {
         <Route
           path="/*"
           element={
-            <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#1E1B26] selection:bg-[#EFE9F6] selection:text-[#7E3AF2]">
+            <div className="min-h-screen flex flex-col bg-transparent text-[#1E1B26] selection:bg-[#EFE9F6] selection:text-[#7E3AF2]">
               <Header
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
