@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { VendorSidebar } from '../../components/vendor/VendorSidebar';
+import { AddProductModal } from '../../components/vendor/AddProductModal';
 import { Menu, Bell, Store } from 'lucide-react';
 import { ProfileDropdown } from '../../components/common/ProfileDropdown';
 import { useAuth } from '../../context/AuthContext';
@@ -16,6 +17,7 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -50,7 +52,7 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
           {/* Right Controls */}
           <div className="flex items-center gap-3">
             <button
-              onClick={onOpenAddProduct}
+              onClick={() => setIsAddProductOpen(true)}
               className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 bg-[#18181B] hover:bg-[#7E3AF2] text-white text-xs font-bold rounded-xl shadow-sm transition-colors"
             >
               <Store className="w-3.5 h-3.5" />
@@ -103,6 +105,14 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
           <Outlet />
         </main>
       </div>
+
+      {/* Add Product Modal - mounted inside vendor layout */}
+      <AddProductModal
+        isOpen={isAddProductOpen}
+        onClose={() => setIsAddProductOpen(false)}
+        onProductAdded={() => setIsAddProductOpen(false)}
+        userRole={userRole}
+      />
     </div>
   );
 };
