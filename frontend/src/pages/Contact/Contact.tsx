@@ -56,7 +56,7 @@ export const Contact: React.FC = () => {
           </div>
 
           {/* Contact Form */}
-          <form onSubmit={handleSubmit} className="space-y-4 bg-white/80 p-6 rounded-2xl border border-[#D4C4ED] shadow-xs">
+          <form onSubmit={handleSubmit} className="space-y-4 bg-[#EFE9F6] p-6 rounded-2xl border border-[#D4C4ED] shadow-xs">
             <h3 className="text-sm font-extrabold text-[#18181B]">Send us a Message</h3>
             
             <div>
