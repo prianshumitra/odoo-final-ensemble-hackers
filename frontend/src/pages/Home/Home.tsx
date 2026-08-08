@@ -95,29 +95,31 @@ export const Home: React.FC<HomeProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1">
-      {/* Top Banner Tagline matching Image 1 & 2 aesthetic */}
-      <div className="bg-gradient-to-r from-[#EFE9F6] via-[#FAF7F2] to-[#F5EBE0] p-6 sm:p-8 rounded-3xl border border-[#EAE4DB] shadow-xs relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="space-y-2 z-10 text-center md:text-left">
-          <div className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-xs text-[#7E3AF2] text-xs font-bold px-3 py-1 rounded-full border border-[#D4C4ED]">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Premium Flexible Rentals</span>
+      {/* Top Banner Tagline with Light Purple to Off-White Gradient Border */}
+      <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-xs">
+        <div className="bg-gradient-to-r from-[#EFE9F6] via-[#FAF7F2] to-[#F5EBE0] p-6 sm:p-8 rounded-[23px] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-2 z-10 text-center md:text-left">
+            <div className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-xs text-[#7E3AF2] text-xs font-bold px-3 py-1 rounded-full border border-[#D4C4ED]">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Premium Flexible Rentals</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight">
+              Rent Furniture, Electronics & Tech on Your Terms
+            </h1>
+            <p className="text-sm text-[#6E6A78] max-w-xl">
+              Choose from flexible monthly, daily, or hourly plans with zero upfront commitment and free delivery.
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight">
-            Rent Furniture, Electronics & Tech on Your Terms
-          </h1>
-          <p className="text-sm text-[#6E6A78] max-w-xl">
-            Choose from flexible monthly, daily, or hourly plans with zero upfront commitment and free delivery.
-          </p>
-        </div>
 
-        <div className="flex items-center gap-3 z-10 shrink-0">
-          <div className="bg-white px-4 py-3 rounded-2xl border border-[#EAE4DB] shadow-xs text-center">
-            <span className="block text-xl font-extrabold text-[#18181B]">100%</span>
-            <span className="text-[11px] font-semibold text-[#8A8694] uppercase">Inspected</span>
-          </div>
-          <div className="bg-white px-4 py-3 rounded-2xl border border-[#EAE4DB] shadow-xs text-center">
-            <span className="block text-xl font-extrabold text-[#7E3AF2]">Free</span>
-            <span className="text-[11px] font-semibold text-[#8A8694] uppercase">Delivery</span>
+          <div className="flex items-center gap-3 z-10 shrink-0">
+            <div className="bg-white px-4 py-3 rounded-2xl border border-[#EAE4DB] shadow-xs text-center">
+              <span className="block text-xl font-extrabold text-[#18181B]">100%</span>
+              <span className="text-[11px] font-semibold text-[#8A8694] uppercase">Inspected</span>
+            </div>
+            <div className="bg-white px-4 py-3 rounded-2xl border border-[#EAE4DB] shadow-xs text-center">
+              <span className="block text-xl font-extrabold text-[#7E3AF2]">Free</span>
+              <span className="text-[11px] font-semibold text-[#8A8694] uppercase">Delivery</span>
+            </div>
           </div>
         </div>
       </div>
@@ -134,7 +136,7 @@ export const Home: React.FC<HomeProps> = ({
         {/* Right Main Product Area */}
         <main className="flex-1 w-full space-y-6">
           {/* Header Controls Bar */}
-          <div className="bg-white rounded-2xl p-4 border border-[#EAE4DB] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-[#EFE9F6] rounded-2xl p-4 border border-[#D4C4ED] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 text-sm text-[#6E6A78]">
               <SlidersHorizontal className="w-4 h-4 text-[#7E3AF2]" />
               <span>
@@ -150,7 +152,7 @@ export const Home: React.FC<HomeProps> = ({
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 aria-label="Sort products by"
-                className="bg-[#FAF7F2] text-[#1E1B26] text-xs font-semibold rounded-xl px-3 py-2 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2] cursor-pointer"
+                className="bg-white/90 text-[#1E1B26] text-xs font-semibold rounded-xl px-3 py-2 border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] cursor-pointer shadow-xs"
               >
                 <option value="featured">Featured Items</option>
                 <option value="price-low">Price: Low to High</option>

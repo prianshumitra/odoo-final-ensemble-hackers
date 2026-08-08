@@ -31,7 +31,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   return (
-    <div className="group bg-white rounded-3xl p-4 border border-[#EAE4DB] hover:border-[#D4C4ED] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+    <div className="group bg-[#EFE9F6] rounded-3xl p-4 border border-[#D4C4ED] hover:border-[#7E3AF2] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
       {/* Top Image Container */}
       <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#FAF7F2] mb-3 group-hover:shadow-inner">
         <img
@@ -138,7 +138,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Bottom Pricing & Add to Cart Action */}
-      <div className="pt-2 border-t border-[#F4EFEA] flex items-center justify-between mt-auto">
+      <div className="pt-2 border-t border-[#D4C4ED]/60 flex items-center justify-between mt-auto">
         <div>
           <span className="text-xs font-semibold text-[#8A8694] block text-[11px] uppercase">
             Rental Rate

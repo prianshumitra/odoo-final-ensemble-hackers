@@ -32,7 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-[#FAF7F2]/90 backdrop-blur-md border-b border-[#EAE4DB] transition-all">
+    <header className="sticky top-0 z-30 bg-[#EFE9F6]/90 backdrop-blur-md border-b border-[#D4C4ED] transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search furniture, electronics & gadgets..."
-                className="w-full bg-[#FAF7F2] text-[#1E1B26] placeholder-[#A09BA6] text-sm rounded-full pl-10 pr-10 py-2.5 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#EFE9F6] transition-all shadow-inner"
+                className="w-full bg-[#FAF7F2] text-[#1E1B26] placeholder-[#8A8694] text-sm rounded-full pl-10 pr-10 py-2.5 border border-[#C4B2E2] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#7E3AF2]/20 transition-all shadow-xs"
               />
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694]" />
               {searchQuery && (
@@ -98,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Wishlist Icon */}
             <button
               onClick={onOpenWishlist}
-              className="relative p-2.5 rounded-full text-[#3E3A47] hover:bg-[#EFE9F6] hover:text-[#7E3AF2] transition-colors focus:outline-none"
+              className="relative p-2.5 rounded-full text-[#3E3A47] hover:bg-white/80 hover:text-[#7E3AF2] transition-colors focus:outline-none"
               title="Wishlist"
             >
               <Heart className="w-5 h-5" />
@@ -112,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Cart Icon */}
             <button
               onClick={onOpenCart}
-              className="relative p-2.5 rounded-full text-[#3E3A47] hover:bg-[#EFE9F6] hover:text-[#7E3AF2] transition-colors focus:outline-none"
+              className="relative p-2.5 rounded-full text-[#3E3A47] hover:bg-white/80 hover:text-[#7E3AF2] transition-colors focus:outline-none"
               title="Cart"
             >
               <ShoppingBag className="w-5 h-5" />
@@ -125,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="relative ml-1">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 p-1.5 rounded-full hover:bg-[#EFE9F6] transition-all focus:outline-none ring-2 ring-transparent focus:ring-[#7E3AF2]"
+                className="flex items-center gap-2 p-1.5 rounded-full hover:bg-white/80 transition-all focus:outline-none ring-2 ring-transparent focus:ring-[#7E3AF2]"
                 title="User Profile"
               >
                 <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3E3A47] to-[#18181B] flex items-center justify-center text-white text-xs font-bold shadow-md border-2 border-white">
@@ -142,7 +142,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-[#3E3A47] rounded-xl hover:bg-[#EFE9F6]"
+              className="lg:hidden p-2 text-[#3E3A47] rounded-xl hover:bg-white/80"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -157,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search items..."
-              className="w-full bg-[#FAF7F2] text-[#1E1B26] placeholder-[#A09BA6] text-sm rounded-full pl-10 pr-4 py-2 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2]"
+              className="w-full bg-[#FAF7F2] text-[#1E1B26] placeholder-[#8A8694] text-sm rounded-full pl-10 pr-4 py-2 border border-[#C4B2E2] focus:outline-none focus:border-[#7E3AF2]"
             />
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694]" />
           </div>

@@ -15,9 +15,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onResetFilters,
 }) => {
   return (
-    <aside className="w-full lg:w-72 bg-white rounded-3xl p-6 border border-[#EAE4DB] shadow-sm space-y-7 shrink-0 self-start sticky top-24">
+    <aside className="w-full lg:w-72 bg-[#EFE9F6] rounded-3xl p-6 border border-[#D4C4ED] shadow-sm space-y-7 shrink-0 self-start sticky top-24">
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between border-b border-[#F4EFEA] pb-4">
+      <div className="flex items-center justify-between border-b border-[#D4C4ED]/60 pb-4">
         <div className="flex items-center gap-2 text-[#18181B] font-bold text-base">
           <Filter className="w-4 h-4 text-[#7E3AF2]" />
           <span>Filter Products</span>
@@ -42,7 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             value={filters.selectedBrand}
             onChange={(e) => onFilterChange({ selectedBrand: e.target.value })}
             aria-label="Select Brand"
-            className="w-full appearance-none bg-[#FAF7F2] text-[#1E1B26] text-sm font-medium rounded-xl px-4 py-2.5 pr-10 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#EFE9F6] transition-all cursor-pointer"
+            className="w-full appearance-none bg-white/90 text-[#1E1B26] text-sm font-medium rounded-xl px-4 py-2.5 pr-10 border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#7E3AF2]/20 transition-all cursor-pointer shadow-xs"
           >
             {BRANDS.map((brand) => (
               <option key={brand} value={brand}>
@@ -113,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             value={filters.selectedDuration}
             onChange={(e) => onFilterChange({ selectedDuration: e.target.value })}
             aria-label="Select Rental Duration"
-            className="w-full appearance-none bg-[#FAF7F2] text-[#1E1B26] text-sm font-medium rounded-xl px-4 py-2.5 pr-10 border border-[#E4DFD6] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#EFE9F6] transition-all cursor-pointer"
+            className="w-full appearance-none bg-white/90 text-[#1E1B26] text-sm font-medium rounded-xl px-4 py-2.5 pr-10 border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#7E3AF2]/20 transition-all cursor-pointer shadow-xs"
           >
             {DURATION_OPTIONS.map((duration) => (
               <option key={duration} value={duration}>
@@ -126,33 +126,41 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* 4. Price Range Filter */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
-            Price Range
-          </label>
-          <span className="text-xs font-bold text-[#7E3AF2]">
-            Up to Rs. {filters.priceRange[1].toLocaleString()}
-          </span>
-        </div>
-        <input
-          type="range"
-          min={0}
-          max={10000}
-          step={100}
-          value={filters.priceRange[1]}
-          onChange={(e) =>
-            onFilterChange({
-              priceRange: [filters.priceRange[0], Number(e.target.value)],
-            })
-          }
-          className="w-full h-2 bg-[#EFE9F6] rounded-lg appearance-none cursor-pointer accent-[#7E3AF2]"
-        />
-        <div className="flex items-center justify-between text-[11px] font-semibold text-[#8A8694]">
-          <span>Rs. 0</span>
-          <span>Rs. 10,000+</span>
-        </div>
-      </div>
+      {(() => {
+        const pricePercent = Math.min(100, Math.max(0, (filters.priceRange[1] / 10000) * 100));
+        return (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
+                Price Range
+              </label>
+              <span className="text-xs font-bold text-[#7E3AF2] bg-white/80 px-2 py-0.5 rounded-md border border-[#D4C4ED]">
+                Up to Rs. {filters.priceRange[1].toLocaleString()}
+              </span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={10000}
+              step={100}
+              value={filters.priceRange[1]}
+              onChange={(e) =>
+                onFilterChange({
+                  priceRange: [filters.priceRange[0], Number(e.target.value)],
+                })
+              }
+              style={{
+                background: `linear-gradient(to right, #7E3AF2 0%, #7E3AF2 ${pricePercent}%, #D4C4ED ${pricePercent}%, #D4C4ED 100%)`,
+              }}
+              className="w-full h-2.5 rounded-lg cursor-pointer transition-all border border-[#C4B2E2]/60 shadow-inner"
+            />
+            <div className="flex items-center justify-between text-[11px] font-semibold text-[#8A8694]">
+              <span>Rs. 0</span>
+              <span>Rs. 10,000+</span>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Filter Quick Badges Summary */}
       {(filters.selectedBrand !== 'All Brands' ||

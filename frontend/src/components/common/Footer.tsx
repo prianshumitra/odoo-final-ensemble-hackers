@@ -20,8 +20,8 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Value Proposition Highlights */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-10 border-b border-[#E4DFD6]">
-          <div className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-[#EAE4DB] shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-[#EFE9F6] text-[#7E3AF2] flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-4 bg-[#EFE9F6] p-5 rounded-2xl border border-[#D4C4ED] shadow-xs">
+            <div className="w-12 h-12 rounded-xl bg-white text-[#7E3AF2] flex items-center justify-center shrink-0 shadow-xs">
               <Truck className="w-6 h-6" />
             </div>
             <div>
@@ -30,8 +30,8 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-[#EAE4DB] shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-[#EFE9F6] text-[#7E3AF2] flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-4 bg-[#EFE9F6] p-5 rounded-2xl border border-[#D4C4ED] shadow-xs">
+            <div className="w-12 h-12 rounded-xl bg-white text-[#7E3AF2] flex items-center justify-center shrink-0 shadow-xs">
               <RefreshCw className="w-6 h-6" />
             </div>
             <div>
@@ -40,8 +40,8 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 bg-white p-5 rounded-2xl border border-[#EAE4DB] shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-[#EFE9F6] text-[#7E3AF2] flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-4 bg-[#EFE9F6] p-5 rounded-2xl border border-[#D4C4ED] shadow-xs">
+            <div className="w-12 h-12 rounded-xl bg-white text-[#7E3AF2] flex items-center justify-center shrink-0 shadow-xs">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
