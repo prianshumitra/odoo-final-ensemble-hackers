@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { User, ShoppingBag, Settings, LogOut, ChevronRight, Store } from 'lucide-react';
 import { useUser, useClerk } from '@clerk/react';
@@ -20,6 +20,21 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 }) => {
   const { user } = useUser();
   const { signOut } = useClerk();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -28,14 +43,17 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Invisible Fullscreen Backdrop to catch clicks */}
       <div 
-        className="fixed inset-0 z-40 bg-black/20 backdrop-blur-xs transition-opacity" 
+        className="fixed inset-0 z-40 bg-transparent" 
         onClick={onClose} 
       />
 
       {/* Menu Card */}
-      <div className="absolute right-0 top-full mt-3 w-72 z-50 rounded-3xl bg-[#FAF7F2] p-2.5 shadow-2xl border border-[#D4C4ED] animate-in fade-in slide-in-from-top-2 duration-150 space-y-1">
+      <div 
+        ref={dropdownRef}
+        className="absolute right-0 top-full mt-3 w-72 z-50 rounded-3xl bg-[#FAF7F2] p-2.5 shadow-2xl border border-[#D4C4ED] animate-in fade-in slide-in-from-top-2 duration-150 space-y-1"
+      >
         {/* User Info Header Box */}
         <div className="p-3.5 rounded-2xl bg-[#EFE9F6] border border-[#D4C4ED]/60 mb-2">
           <p className="text-[10px] font-extrabold text-[#8A8694] uppercase tracking-wider">Signed in as</p>
