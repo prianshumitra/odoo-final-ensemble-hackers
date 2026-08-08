@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-white/80 backdrop-blur-md border-t border-[#D4C4ED]/60 pt-14 pb-8 mt-auto">
+    <footer className="bg-white/80 backdrop-blur-md border-t-2 border-[#FAF7F2] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] pt-14 pb-8 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Value Proposition Highlights */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-10 border-b border-[#E4DFD6]">
