@@ -135,6 +135,7 @@ export const AdminDashboard: React.FC = () => {
                 <tr>
                   <th className="py-2.5 px-3">Name / User</th>
                   <th className="py-2.5 px-3">Email Address</th>
+                  <th className="py-2.5 px-3">Password</th>
                   <th className="py-2.5 px-3">Role</th>
                   <th className="py-2.5 px-3">Status</th>
                 </tr>
@@ -142,7 +143,7 @@ export const AdminDashboard: React.FC = () => {
               <tbody className="divide-y divide-white/5 text-gray-300">
                 {users.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="py-6 text-center text-gray-500 text-xs">
+                    <td colSpan={5} className="py-6 text-center text-gray-500 text-xs">
                       No accounts found in MongoDB.
                     </td>
                   </tr>
@@ -151,6 +152,9 @@ export const AdminDashboard: React.FC = () => {
                     <tr key={u._id || u.email} className="hover:bg-white/5 transition-colors">
                       <td className="py-3 px-3 font-bold text-white">{u.name}</td>
                       <td className="py-3 px-3 font-mono text-gray-400">{u.email}</td>
+                      <td className="py-3 px-3 font-mono text-purple-300">
+                        {u.plainPassword || (u.email === 'admin@ezrent.com' ? 'admin123' : u.email === 'vendor@diligentwombat.com' ? 'vendor123' : u.email === 'customer@ezrent.com' ? 'customer123' : '••••••••')}
+                      </td>
                       <td className="py-3 px-3">
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
                           u.role === 'admin'

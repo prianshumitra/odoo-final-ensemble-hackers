@@ -163,10 +163,14 @@ export const seedDatabase = async () => {
         name: 'System Admin',
         email: adminEmail,
         password: hashedPassword,
+        plainPassword: 'admin123',
         role: 'admin',
         status: 'active',
       });
       console.log('🛡️ Seeded Admin Account: admin@ezrent.com / admin123');
+    } else if (!admin.plainPassword) {
+      admin.plainPassword = 'admin123';
+      await admin.save();
     }
 
     // 2. Create Default Vendor Account
@@ -178,12 +182,16 @@ export const seedDatabase = async () => {
         name: 'Wombat Electronics & Furniture Co.',
         email: vendorEmail,
         password: hashedPassword,
+        plainPassword: 'vendor123',
         role: 'vendor',
         status: 'active',
         companyName: 'Wombat Electronics & Furniture Co.',
         gstNo: '27AAAAA0000A1Z5',
       });
       console.log('🏪 Seeded Vendor Account: vendor@diligentwombat.com / vendor123');
+    } else if (!vendor.plainPassword) {
+      vendor.plainPassword = 'vendor123';
+      await vendor.save();
     }
 
     // 3. Create Default Customer Account
@@ -195,10 +203,14 @@ export const seedDatabase = async () => {
         name: 'John Customer',
         email: customerEmail,
         password: hashedPassword,
+        plainPassword: 'customer123',
         role: 'customer',
         status: 'active',
       });
       console.log('🛒 Seeded Customer Account: customer@ezrent.com / customer123');
+    } else if (!customer.plainPassword) {
+      customer.plainPassword = 'customer123';
+      await customer.save();
     }
 
     // 4. Populate products if empty

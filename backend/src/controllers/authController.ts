@@ -79,6 +79,7 @@ export const registerUser = async (req: Request, res: Response) => {
       lastName: lastName || '',
       email: userEmail,
       password: hashedPassword,
+      plainPassword: password,
       role: 'customer',
       status: 'active',
     });
@@ -146,6 +147,7 @@ export const registerVendor = async (req: Request, res: Response) => {
       gstNo: gstNo || '',
       email: userEmail,
       password: hashedPassword,
+      plainPassword: password,
       role: 'vendor',
       status: 'pending',
     });
@@ -391,7 +393,17 @@ export const getMe = async (req: any, res: Response) => {
 export const listUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find().select('-password').sort({ createdAt: -1 });
-    res.json(users);
+    const formatted = users.map((u: any) => {
+      const doc = u.toObject();
+      if (!doc.plainPassword) {
+        if (doc.email === 'admin@ezrent.com') doc.plainPassword = 'admin123';
+        else if (doc.email === 'vendor@diligentwombat.com') doc.plainPassword = 'vendor123';
+        else if (doc.email === 'customer@ezrent.com') doc.plainPassword = 'customer123';
+        else doc.plainPassword = '••••••••';
+      }
+      return doc;
+    });
+    res.json(formatted);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching users' });
   }
