@@ -29,7 +29,7 @@ export const DeleteConfirmModal: React.FC<DeleteConfirmModalProps> = ({
       />
 
       {/* Modal Card */}
-      <div className="relative bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl z-10 border border-[#EAE4DB] animate-in zoom-in-95 duration-200">
+      <div className="relative bg-[#FAF7F2] rounded-3xl max-w-md w-full p-6 shadow-2xl z-10 border border-[#D4C4ED] animate-in zoom-in-95 duration-200">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 text-[#8A8694] hover:text-[#18181B] bg-[#FAF7F2] hover:bg-[#EFE9F6] rounded-full transition-colors"

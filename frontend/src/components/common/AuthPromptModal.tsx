@@ -26,7 +26,7 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
       />
 
       {/* Modal Card */}
-      <div className="relative bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl z-10 border border-[#EAE4DB] animate-in zoom-in-95 duration-200">
+      <div className="relative bg-[#FAF7F2] rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl z-10 border border-[#D4C4ED] animate-in zoom-in-95 duration-200">
         
         {/* Close Button */}
         <button

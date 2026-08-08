@@ -27,16 +27,16 @@ export const RentalDetailModal: React.FC<RentalDetailModalProps> = ({
       />
 
       {/* Modal Card */}
-      <div className="relative bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl z-10 border border-[#EAE4DB] animate-in zoom-in-95 duration-200">
+      <div className="relative bg-[#FAF7F2] rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl z-10 border border-[#D4C4ED] animate-in zoom-in-95 duration-200">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-[#8A8694] hover:text-[#18181B] bg-[#FAF7F2] hover:bg-[#EFE9F6] rounded-full transition-colors"
+          className="absolute top-4 right-4 p-2 text-[#8A8694] hover:text-[#18181B] bg-[#EFE9F6] hover:bg-[#D4C4ED] rounded-full transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3 border-b border-[#F4EFEA] pb-4 mb-5">
+        <div className="flex items-center gap-3 border-b border-[#D4C4ED]/60 pb-4 mb-5">
           <div className="w-11 h-11 rounded-2xl bg-[#EFE9F6] text-[#7E3AF2] flex items-center justify-center font-bold">
             <ShoppingBag className="w-6 h-6" />
           </div>

@@ -74,10 +74,10 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
       />
 
       {/* Modal Card */}
-      <div className="relative bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl z-10 border border-[#EAE4DB] animate-in zoom-in-95 duration-200">
+      <div className="relative bg-[#FAF7F2] rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl z-10 border border-[#D4C4ED] animate-in zoom-in-95 duration-200">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between border-b border-[#F4EFEA] pb-4 mb-6">
+        <div className="flex items-center justify-between border-b border-[#D4C4ED]/60 pb-4 mb-6">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-[#EFE9F6] text-[#7E3AF2] flex items-center justify-center font-bold">
               <Store className="w-5 h-5" />

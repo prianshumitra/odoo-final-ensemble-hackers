@@ -69,7 +69,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       />
 
       {/* Modal Card */}
-      <div className="relative bg-white rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl z-10 border border-[#EAE4DB] animate-in zoom-in-95 duration-200 my-8">
+      <div className="relative bg-[#FAF7F2] rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl z-10 border border-[#D4C4ED] animate-in zoom-in-95 duration-200 my-8">
         
         {/* Close Button */}
         <button

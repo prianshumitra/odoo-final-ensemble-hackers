@@ -35,8 +35,8 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       />
 
       {/* Menu Card */}
-      <div className="absolute right-0 top-full mt-3 w-72 z-50 rounded-2xl bg-white p-2 shadow-xl ring-1 ring-black/5 animate-in fade-in slide-in-from-top-2 duration-150">
-        <div className="p-3 border-b border-[#F4EFEA] mb-1">
+      <div className="absolute right-0 top-full mt-3 w-72 z-50 rounded-2xl bg-[#FAF7F2] p-2 shadow-xl border border-[#D4C4ED] animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="p-3 border-b border-[#D4C4ED]/60 mb-1">
           <p className="text-xs font-medium text-[#8A8694] uppercase tracking-wider">Signed in as</p>
           <p className="text-sm font-bold text-[#1E1B26] truncate">{name}</p>
           <p className="text-xs text-[#6E6A78] truncate">{email}</p>

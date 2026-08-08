@@ -33,10 +33,10 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
       />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+        <div className="w-screen max-w-md bg-[#FAF7F2] border-l border-[#D4C4ED] shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
           
           {/* Header */}
-          <div className="p-6 border-b border-[#EAE4DB] flex items-center justify-between bg-[#FAF7F2]">
+          <div className="p-6 border-b border-[#D4C4ED]/60 flex items-center justify-between bg-[#EFE9F6]">
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-[#7E3AF2]" />
               <h2 className="text-lg font-bold text-[#18181B]">Rental Cart</h2>
