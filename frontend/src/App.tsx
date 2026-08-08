@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
 import { CartDrawer } from './components/common/CartDrawer';
@@ -272,6 +272,13 @@ function AppContent() {
   const navigate = useNavigate();
   const isVendorPath = location.pathname.startsWith('/vendor');
 
+  // Sync role if user directly navigates to a /vendor path
+  useEffect(() => {
+    if (isVendorPath && userRole !== 'vendor') {
+      setUserRole('vendor');
+    }
+  }, [isVendorPath, userRole]);
+
   const handleToggleRole = () => {
     const nextRole = userRole === 'customer' ? 'vendor' : 'customer';
     setUserRole(nextRole);
@@ -284,10 +291,6 @@ function AppContent() {
 
   // If on a vendor path, render full Vendor Dashboard application
   if (isVendorPath) {
-    if (userRole !== 'vendor') {
-      return <Navigate to="/" replace />;
-    }
-
     return (
       <>
         <Routes>
