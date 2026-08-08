@@ -53,7 +53,13 @@ export interface RentalOrder {
 export interface VendorStats {
   totalProducts: number;
   activeRentals: number;
+  rentalsDueToday: number;
+  upcomingPickups: number;
+  upcomingReturns: number;
+  overdueRentals: number;
   totalRevenue: number;
+  securityDepositsHeld: number;
+  lateFeeCollection: number;
   pendingRequests: number;
 }
 

@@ -8,7 +8,13 @@ export const VendorAnalytics: React.FC = () => {
   const [stats, setStats] = useState<VendorStats>({
     totalProducts: 0,
     activeRentals: 0,
+    rentalsDueToday: 0,
+    upcomingPickups: 0,
+    upcomingReturns: 0,
+    overdueRentals: 0,
     totalRevenue: 0,
+    securityDepositsHeld: 0,
+    lateFeeCollection: 0,
     pendingRequests: 0,
   });
 

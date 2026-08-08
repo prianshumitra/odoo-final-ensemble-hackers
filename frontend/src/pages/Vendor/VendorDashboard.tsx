@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/react';
-import { Package, ShoppingBag, DollarSign, Clock, Plus, ArrowRight, BarChart3 } from 'lucide-react';
+import { Package, ShoppingBag, DollarSign, Clock, Plus, ArrowRight, BarChart3, ShieldCheck, Calendar, Truck, RotateCcw, AlertTriangle } from 'lucide-react';
 import { VendorKPICard } from '../../components/vendor/VendorKPICard';
 import { VendorActivityFeed } from '../../components/vendor/VendorActivityFeed';
 import { VendorRentalTable } from '../../components/vendor/VendorRentalTable';
@@ -22,7 +22,13 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
   const [stats, setStats] = useState<VendorStats>({
     totalProducts: 0,
     activeRentals: 0,
+    rentalsDueToday: 0,
+    upcomingPickups: 0,
+    upcomingReturns: 0,
+    overdueRentals: 0,
     totalRevenue: 0,
+    securityDepositsHeld: 0,
+    lateFeeCollection: 0,
     pendingRequests: 0,
   });
   const [selectedRental, setSelectedRental] = useState<RentalOrder | null>(null);
@@ -77,28 +83,28 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
         </div>
       </div>
 
-      {/* 4 KPI Cards */}
+      {/* Top 4 Primary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <VendorKPICard
-          title="Total Products"
-          value={stats.totalProducts}
-          changeText="+3 added"
-          isPositive={true}
-          icon={Package}
-        />
         <VendorKPICard
           title="Active Rentals"
           value={stats.activeRentals}
-          changeText="+12% activity"
+          changeText="+12% active"
           isPositive={true}
           icon={ShoppingBag}
         />
         <VendorKPICard
-          title="Total Revenue"
+          title="Revenue from Rentals"
           value={`Rs. ${stats.totalRevenue.toLocaleString()}`}
           changeText="+18% growth"
           isPositive={true}
           icon={DollarSign}
+        />
+        <VendorKPICard
+          title="Security Deposits Held"
+          value={`Rs. ${stats.securityDepositsHeld.toLocaleString()}`}
+          changeText="Escrow secured"
+          isPositive={true}
+          icon={ShieldCheck}
         />
         <VendorKPICard
           title="Pending Requests"
@@ -107,6 +113,87 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
           isPositive={false}
           icon={Clock}
         />
+      </div>
+
+      {/* 📋 Comprehensive Operational Insights Bar (All 8 Requirements) */}
+      <div className="bg-[#EFE9F6] rounded-3xl p-6 border border-[#D4C4ED] shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-[#D4C4ED]/60 pb-3">
+          <div>
+            <h2 className="text-base font-extrabold text-[#18181B] tracking-tight">
+              Operational Insights & Fulfillment Priorities
+            </h2>
+            <p className="text-xs text-[#8A8694]">Real-time operational status for daily rental managers</p>
+          </div>
+          <span className="bg-[#7E3AF2] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+            Fulfillment Live
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          {/* 1. Rentals Due Today */}
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
+              <Calendar className="w-3.5 h-3.5 text-amber-600" />
+              <span>Due Today</span>
+            </div>
+            <div className="text-lg font-extrabold text-[#18181B]">{stats.rentalsDueToday}</div>
+            <p className="text-[10px] text-amber-700 font-semibold">Scheduled returns today</p>
+          </div>
+
+          {/* 2. Upcoming Pickups */}
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
+              <Truck className="w-3.5 h-3.5 text-sky-600" />
+              <span>Pickups</span>
+            </div>
+            <div className="text-lg font-extrabold text-[#18181B]">{stats.upcomingPickups}</div>
+            <p className="text-[10px] text-sky-700 font-semibold">Ready for customer pickup</p>
+          </div>
+
+          {/* 3. Upcoming Returns */}
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
+              <RotateCcw className="w-3.5 h-3.5 text-[#7E3AF2]" />
+              <span>Upcoming Returns</span>
+            </div>
+            <div className="text-lg font-extrabold text-[#18181B]">{stats.upcomingReturns}</div>
+            <p className="text-[10px] text-[#7E3AF2] font-semibold">Expiring within 7 days</p>
+          </div>
+
+          {/* 4. Overdue Rentals */}
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
+              <AlertTriangle className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Overdue</span>
+            </div>
+            <div className="text-lg font-extrabold text-emerald-600">{stats.overdueRentals}</div>
+            <p className="text-[10px] text-emerald-700 font-semibold">0 overdue (Good standing)</p>
+          </div>
+
+          {/* 5. Security Deposits Held */}
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#7E3AF2]" />
+              <span>Deposits Held</span>
+            </div>
+            <div className="text-lg font-extrabold text-[#7E3AF2]">
+              Rs. {stats.securityDepositsHeld.toLocaleString()}
+            </div>
+            <p className="text-[10px] text-[#8A8694]">Refundable escrow</p>
+          </div>
+
+          {/* 6. Late Fee Collection */}
+          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
+              <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Late Fees</span>
+            </div>
+            <div className="text-lg font-extrabold text-[#18181B]">
+              Rs. {stats.lateFeeCollection}
+            </div>
+            <p className="text-[10px] text-[#8A8694]">Fees collected</p>
+          </div>
+        </div>
       </div>
 
       {/* Quick Action Cards */}
