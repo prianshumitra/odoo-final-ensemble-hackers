@@ -46,8 +46,10 @@ export const VendorSignUp: React.FC = () => {
 
   return (
     <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-12 bg-transparent">
-      <div className="w-full max-w-xl bg-white rounded-3xl border border-[#D4C4ED] shadow-2xl p-8 space-y-6">
-        <div className="text-center space-y-2">
+      {/* Gradient border wrapper */}
+      <div className="w-full max-w-xl p-[2px] rounded-3xl bg-gradient-to-br from-[#7E3AF2] via-[#C4B2E2] to-[#F5F0FF] shadow-2xl">
+        <div className="w-full bg-gradient-to-br from-[#C4B2E2] via-[#EFE9F6] to-[#FAF7F2] rounded-[22px] overflow-hidden p-8 space-y-6">
+          <div className="text-center space-y-2">
           <h1 className="text-3xl font-black text-[#7E3AF2] tracking-tight font-serif">EZRent</h1>
           <h2 className="text-2xl font-extrabold text-[#18181B]">Vendor Partner Registration</h2>
           <p className="text-xs font-semibold text-[#6E6A78]">
@@ -156,6 +158,7 @@ export const VendorSignUp: React.FC = () => {
             Log In
           </Link>
         </p>
+        </div>
       </div>
     </div>
   );
