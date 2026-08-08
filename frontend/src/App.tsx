@@ -76,7 +76,7 @@ function VendorRouteGuard({ children }: { children: React.ReactNode }) {
 
   if (!isVendorApproved) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#FAF7F2] text-center space-y-4">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-transparent text-center space-y-4">
         <div className="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shadow-md">
           <ShieldAlert className="w-8 h-8" />
         </div>
@@ -215,7 +215,7 @@ function AppContent() {
   const wishlistedProducts = products.filter((p) => wishlistIds.includes(p.id));
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF7F2] font-sans antialiased text-[#1E1B26]">
+    <div className="min-h-screen flex flex-col bg-transparent font-sans antialiased text-[#1E1B26]">
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

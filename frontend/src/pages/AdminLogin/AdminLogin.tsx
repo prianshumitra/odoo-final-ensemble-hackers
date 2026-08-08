@@ -31,7 +31,7 @@ export const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#120F1D] via-[#1E1B26] to-[#0A090E] text-white">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-black/60 backdrop-blur-xl text-white">
       <div className="max-w-md w-full bg-white/5 backdrop-blur-2xl p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6">
         
         {/* Header Branding */}

@@ -37,7 +37,7 @@ export const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F0D15] text-white p-6 sm:p-12 font-sans space-y-8">
+    <div className="min-h-screen bg-black/60 backdrop-blur-xl text-white p-6 sm:p-12 font-sans space-y-8">
       {/* Top Header */}
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
         <div className="flex items-center gap-3">
