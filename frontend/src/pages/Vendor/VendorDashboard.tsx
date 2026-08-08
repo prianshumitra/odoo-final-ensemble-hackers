@@ -79,25 +79,25 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
   return (
     <div className="space-y-8">
       {/* Top Welcome Header */}
-      <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-xs">
-        <div className="bg-gradient-to-r from-[#EFE9F6] via-[#FAF7F2] to-[#F5EBE0] p-6 sm:p-8 rounded-[23px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
+        <div className="bg-[#FAF8F5] p-6 sm:p-8 rounded-[23px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-[#E8E4DE]">
           <div>
-            <span className="inline-block bg-white/80 text-[#7E3AF2] text-xs font-extrabold px-3 py-1 rounded-full border border-[#D4C4ED] mb-2">
-              EZ Rent Business Suite
+            <span className="inline-block bg-white text-[#1C1C1C] text-xs font-black px-3 py-1 rounded-full border border-[#E8E4DE] shadow-2xs mb-2">
+              EZRent Rental Operations Console
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1C1C1C] tracking-tight">
               Welcome back, {vendorName}! 👋
             </h1>
-            <p className="text-xs sm:text-sm text-[#6E6A78] mt-1">
-              Manage your rental products, incoming orders, customers, and revenue from one place.
+            <p className="text-xs sm:text-sm text-[#8A857F] mt-1 font-medium">
+              Manage your rental inventory, incoming orders, customer returns, security deposits, and late fees from one central console.
             </p>
           </div>
 
           <button
             onClick={onOpenAddProduct}
-            className="px-5 py-3 bg-[#18181B] hover:bg-[#7E3AF2] text-white text-xs font-bold rounded-2xl transition-all shadow-md flex items-center gap-2 shrink-0 active:scale-95"
+            className="px-5 py-3 bg-[#0A0A0A] hover:bg-[#2A2A2A] text-white text-xs font-bold rounded-full transition-all shadow-warm-xs flex items-center gap-2 shrink-0 active:scale-95"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-[#E8B923]" />
             <span>+ Add New Product</span>
           </button>
         </div>
@@ -136,82 +136,82 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
       </div>
 
       {/* 📋 Comprehensive Operational Insights Bar (All 8 Requirements) */}
-      <div className="bg-[#EFE9F6] rounded-3xl p-6 border border-[#D4C4ED] shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-[#D4C4ED]/60 pb-3">
+      <div className="bg-[#FAF8F5] rounded-3xl p-6 border border-[#E8E4DE] shadow-warm-xs space-y-4">
+        <div className="flex items-center justify-between border-b border-[#E8E4DE] pb-3">
           <div>
-            <h2 className="text-base font-extrabold text-[#18181B] tracking-tight">
+            <h2 className="text-base font-black text-[#1C1C1C] tracking-tight">
               Operational Insights & Fulfillment Priorities
             </h2>
-            <p className="text-xs text-[#8A8694]">Real-time operational status for daily rental managers</p>
+            <p className="text-xs text-[#8A857F] font-bold">Real-time operational status for daily rental managers</p>
           </div>
-          <span className="bg-[#7E3AF2] text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+          <span className="bg-[#0A0A0A] text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-2xs">
             Fulfillment Live
           </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {/* 1. Rentals Due Today */}
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
-              <Calendar className="w-3.5 h-3.5 text-amber-600" />
+          <div className="p-3.5 rounded-2xl bg-white border border-[#E8E4DE] space-y-1 shadow-warm-xs">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A857F] uppercase tracking-wider">
+              <Calendar className="w-3.5 h-3.5 text-[#E8B923]" />
               <span>Due Today</span>
             </div>
-            <div className="text-lg font-extrabold text-[#18181B]">{stats.rentalsDueToday}</div>
-            <p className="text-[10px] text-amber-700 font-semibold">Scheduled returns today</p>
+            <div className="text-lg font-black text-[#1C1C1C]">{stats.rentalsDueToday}</div>
+            <p className="text-[10px] text-amber-800 font-bold">Scheduled returns today</p>
           </div>
 
           {/* 2. Upcoming Pickups */}
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
-              <Truck className="w-3.5 h-3.5 text-sky-600" />
+          <div className="p-3.5 rounded-2xl bg-white border border-[#E8E4DE] space-y-1 shadow-warm-xs">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A857F] uppercase tracking-wider">
+              <Truck className="w-3.5 h-3.5 text-[#1C1C1C]" />
               <span>Pickups</span>
             </div>
-            <div className="text-lg font-extrabold text-[#18181B]">{stats.upcomingPickups}</div>
-            <p className="text-[10px] text-sky-700 font-semibold">Ready for customer pickup</p>
+            <div className="text-lg font-black text-[#1C1C1C]">{stats.upcomingPickups}</div>
+            <p className="text-[10px] text-[#1C1C1C] font-bold">Ready for pickup</p>
           </div>
 
           {/* 3. Upcoming Returns */}
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
-              <RotateCcw className="w-3.5 h-3.5 text-[#7E3AF2]" />
+          <div className="p-3.5 rounded-2xl bg-white border border-[#E8E4DE] space-y-1 shadow-warm-xs">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A857F] uppercase tracking-wider">
+              <RotateCcw className="w-3.5 h-3.5 text-[#1C1C1C]" />
               <span>Upcoming Returns</span>
             </div>
-            <div className="text-lg font-extrabold text-[#18181B]">{stats.upcomingReturns}</div>
-            <p className="text-[10px] text-[#7E3AF2] font-semibold">Expiring within 7 days</p>
+            <div className="text-lg font-black text-[#1C1C1C]">{stats.upcomingReturns}</div>
+            <p className="text-[10px] text-[#8A857F] font-bold">Expiring in 7 days</p>
           </div>
 
           {/* 4. Overdue Rentals */}
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
-              <AlertTriangle className="w-3.5 h-3.5 text-emerald-600" />
+          <div className="p-3.5 rounded-2xl bg-white border border-[#E8E4DE] space-y-1 shadow-warm-xs">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A857F] uppercase tracking-wider">
+              <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
               <span>Overdue</span>
             </div>
-            <div className="text-lg font-extrabold text-emerald-600">{stats.overdueRentals}</div>
-            <p className="text-[10px] text-emerald-700 font-semibold">0 overdue (Good standing)</p>
+            <div className="text-lg font-black text-emerald-700">{stats.overdueRentals}</div>
+            <p className="text-[10px] text-emerald-800 font-bold">Good standing</p>
           </div>
 
           {/* 5. Security Deposits Held */}
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#7E3AF2]" />
+          <div className="p-3.5 rounded-2xl bg-white border border-[#E8E4DE] space-y-1 shadow-warm-xs">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A857F] uppercase tracking-wider">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#E8B923]" />
               <span>Deposits Held</span>
             </div>
-            <div className="text-lg font-extrabold text-[#7E3AF2]">
+            <div className="text-lg font-black text-[#1C1C1C]">
               Rs. {stats.securityDepositsHeld.toLocaleString()}
             </div>
-            <p className="text-[10px] text-[#8A8694]">Refundable escrow</p>
+            <p className="text-[10px] text-[#8A857F] font-bold">Refundable escrow</p>
           </div>
 
           {/* 6. Late Fee Collection */}
-          <div className="p-3.5 rounded-2xl bg-white/80 border border-[#D4C4ED] space-y-1">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A8694] uppercase tracking-wider">
-              <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
+          <div className="p-3.5 rounded-2xl bg-white border border-[#E8E4DE] space-y-1 shadow-warm-xs">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold text-[#8A857F] uppercase tracking-wider">
+              <DollarSign className="w-3.5 h-3.5 text-[#1C1C1C]" />
               <span>Late Fees</span>
             </div>
-            <div className="text-lg font-extrabold text-[#18181B]">
+            <div className="text-lg font-black text-[#1C1C1C]">
               Rs. {stats.lateFeeCollection}
             </div>
-            <p className="text-[10px] text-[#8A8694]">Fees collected</p>
+            <p className="text-[10px] text-[#8A857F] font-bold">Fees collected</p>
           </div>
         </div>
       </div>
@@ -220,46 +220,46 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <button
           onClick={onOpenAddProduct}
-          className="p-4 bg-[#EFE9F6] hover:bg-white rounded-2xl border border-[#D4C4ED] hover:border-[#7E3AF2] transition-all text-left group shadow-xs"
+          className="p-4 bg-[#FAF8F5] hover:bg-white rounded-2xl border border-[#E8E4DE] hover:border-[#0A0A0A] transition-all text-left group shadow-warm-xs"
         >
-          <div className="w-8 h-8 rounded-xl bg-[#7E3AF2] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
-            <Plus className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-xl bg-[#0A0A0A] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
+            <Plus className="w-4 h-4 text-[#E8B923]" />
           </div>
-          <span className="block text-xs font-bold text-[#18181B]">Add Product</span>
-          <span className="text-[10px] text-[#8A8694]">List new rental item</span>
+          <span className="block text-xs font-black text-[#1C1C1C]">Add Product</span>
+          <span className="text-[10px] font-bold text-[#8A857F]">List new rental item</span>
         </button>
 
         <button
           onClick={() => navigate('/vendor/products')}
-          className="p-4 bg-[#EFE9F6] hover:bg-white rounded-2xl border border-[#D4C4ED] hover:border-[#7E3AF2] transition-all text-left group shadow-xs"
+          className="p-4 bg-[#FAF8F5] hover:bg-white rounded-2xl border border-[#E8E4DE] hover:border-[#0A0A0A] transition-all text-left group shadow-warm-xs"
         >
-          <div className="w-8 h-8 rounded-xl bg-[#18181B] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
-            <Package className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-xl bg-[#0A0A0A] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
+            <Package className="w-4 h-4 text-white" />
           </div>
-          <span className="block text-xs font-bold text-[#18181B]">Manage Products</span>
-          <span className="text-[10px] text-[#8A8694]">{products.length} listed</span>
+          <span className="block text-xs font-black text-[#1C1C1C]">Manage Products</span>
+          <span className="text-[10px] font-bold text-[#8A857F]">{products.length} listed</span>
         </button>
 
         <button
-          onClick={() => navigate('/vendor/rentals')}
-          className="p-4 bg-[#EFE9F6] hover:bg-white rounded-2xl border border-[#D4C4ED] hover:border-[#7E3AF2] transition-all text-left group shadow-xs"
+          onClick={() => navigate('/vendor/orders')}
+          className="p-4 bg-[#FAF8F5] hover:bg-white rounded-2xl border border-[#E8E4DE] hover:border-[#0A0A0A] transition-all text-left group shadow-warm-xs"
         >
-          <div className="w-8 h-8 rounded-xl bg-[#18181B] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
-            <ShoppingBag className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-xl bg-[#0A0A0A] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
+            <ShoppingBag className="w-4 h-4 text-white" />
           </div>
-          <span className="block text-xs font-bold text-[#18181B]">View Rentals</span>
-          <span className="text-[10px] text-[#8A8694]">{rentals.length} orders</span>
+          <span className="block text-xs font-black text-[#1C1C1C]">View Orders</span>
+          <span className="text-[10px] font-bold text-[#8A857F]">{rentals.length} orders</span>
         </button>
 
         <button
-          onClick={() => navigate('/vendor/analytics')}
-          className="p-4 bg-[#EFE9F6] hover:bg-white rounded-2xl border border-[#D4C4ED] hover:border-[#7E3AF2] transition-all text-left group shadow-xs"
+          onClick={() => navigate('/vendor/reports')}
+          className="p-4 bg-[#FAF8F5] hover:bg-white rounded-2xl border border-[#E8E4DE] hover:border-[#0A0A0A] transition-all text-left group shadow-warm-xs"
         >
-          <div className="w-8 h-8 rounded-xl bg-[#18181B] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
-            <BarChart3 className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-xl bg-[#0A0A0A] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
+            <BarChart3 className="w-4 h-4 text-white" />
           </div>
-          <span className="block text-xs font-bold text-[#18181B]">Analytics</span>
-          <span className="text-[10px] text-[#8A8694]">Revenue & performance</span>
+          <span className="block text-xs font-black text-[#1C1C1C]">Analytics</span>
+          <span className="text-[10px] font-bold text-[#8A857F]">Revenue & reports</span>
         </button>
       </div>
 
@@ -269,13 +269,13 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-extrabold text-[#18181B]">Recent Rental Orders</h2>
-              <p className="text-xs text-[#8A8694]">Review and update incoming rental requests</p>
+              <h2 className="text-lg font-black text-[#1C1C1C]">Recent Rental Orders</h2>
+              <p className="text-xs font-bold text-[#8A857F]">Review and update incoming rental requests</p>
             </div>
 
             <button
-              onClick={() => navigate('/vendor/rentals')}
-              className="flex items-center gap-1 text-xs font-bold text-[#7E3AF2] hover:underline"
+              onClick={() => navigate('/vendor/orders')}
+              className="flex items-center gap-1 text-xs font-bold text-[#0A0A0A] hover:underline"
             >
               <span>View All</span>
               <ArrowRight className="w-3.5 h-3.5" />

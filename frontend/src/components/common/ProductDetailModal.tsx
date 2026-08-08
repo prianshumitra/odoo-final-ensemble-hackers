@@ -85,25 +85,25 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         onClick={onClose}
       />
 
-      <div className="relative bg-[#FAF7F2] rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl z-10 border border-[#D4C4ED] animate-in zoom-in-95 duration-200 my-8">
+      <div className="relative bg-[#FAF8F5] rounded-3xl max-w-3xl w-full overflow-hidden shadow-warm-lg z-10 border border-[#E8E4DE] animate-in zoom-in-95 duration-200 my-8">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 text-[#8A8694] hover:text-[#18181B] bg-white/80 hover:bg-white backdrop-blur-md rounded-full shadow-md transition-colors"
+          className="absolute top-4 right-4 z-20 p-2 text-[#8A857F] hover:text-[#1C1C1C] bg-white/90 hover:bg-white backdrop-blur-md rounded-full shadow-warm-xs transition-colors border border-[#E8E4DE]"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Product Image */}
-          <div className="relative bg-[#FAF7F2] aspect-square md:aspect-auto flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-[#EAE4DB]">
+          <div className="relative bg-[#F3EFE8] aspect-square md:aspect-auto flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-[#E8E4DE]">
             <img
               src={product.image}
               alt={product.name}
-              className="w-full h-full object-cover rounded-2xl shadow-sm"
+              className="w-full h-full object-contain rounded-2xl"
             />
             {!product.inStock && (
               <div className="absolute inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center">
-                <span className="bg-[#18181B] text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider">
+                <span className="bg-[#0A0A0A] text-white text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider">
                   Out of Stock
                 </span>
               </div>
@@ -114,59 +114,59 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <div className="p-6 sm:p-8 space-y-5 flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#7E3AF2] uppercase tracking-wider bg-[#EFE9F6] px-3 py-1 rounded-full">
+                <span className="text-xs font-bold text-[#1C1C1C] uppercase tracking-wider bg-white border border-[#E8E4DE] px-3 py-1 rounded-full shadow-2xs">
                   {product.brand} • {product.category}
                 </span>
                 <button
                   onClick={handleWishlist}
-                  className={`p-2 rounded-full transition-colors ${
-                    isWishlisted ? 'text-rose-500 bg-rose-50' : 'text-[#8A8694] hover:bg-[#EFE9F6]'
+                  className={`p-2 rounded-full transition-colors border ${
+                    isWishlisted ? 'text-rose-500 bg-rose-50 border-rose-200' : 'text-[#8A857F] hover:bg-white border-[#E8E4DE]'
                   }`}
                 >
                   <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-current' : ''}`} />
                 </button>
               </div>
 
-              <h2 className="text-xl sm:text-2xl font-extrabold text-[#18181B] leading-snug">
+              <h2 className="text-xl sm:text-2xl font-black text-[#1C1C1C] leading-snug">
                 {product.name}
               </h2>
 
               <div className="flex items-center gap-2">
-                <div className="flex text-[#F59E0B]">
+                <div className="flex text-[#E8B923]">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
                       className={`w-4 h-4 ${
-                        i < Math.floor(product.rating || 4.8) ? 'fill-current text-[#F59E0B]' : 'text-[#E4DFD6]'
+                        i < Math.floor(product.rating || 4.8) ? 'fill-current text-[#E8B923]' : 'text-[#E8E4DE]'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-xs font-bold text-[#18181B]">{product.rating || 4.8}</span>
+                <span className="text-xs font-bold text-[#1C1C1C]">{product.rating || 4.8}</span>
               </div>
 
-              <div className="bg-[#FAF7F2] p-4 rounded-2xl border border-[#EAE4DB] space-y-1">
-                <span className="text-xs font-semibold text-[#8A8694] uppercase block">
+              <div className="bg-white p-4 rounded-2xl border border-[#E8E4DE] space-y-1 shadow-warm-xs">
+                <span className="text-xs font-bold text-[#8A857F] uppercase tracking-wider block">
                   Rental Rate
                 </span>
-                <span className="text-2xl font-extrabold text-[#18181B]">
+                <span className="text-2xl font-black text-[#1C1C1C]">
                   Rs. {(product.pricing?.amount || product.salesPrice || 999).toLocaleString()}
-                  <span className="text-sm font-medium text-[#6E6A78]">
+                  <span className="text-sm font-medium text-[#8A857F]">
                     {' '}/ per {product.pricing?.unit || 'Month'}
                   </span>
                 </span>
-                <p className="text-[11px] text-amber-700 font-bold flex items-center gap-1 pt-1">
-                  <ShieldCheck className="w-3.5 h-3.5" />
+                <p className="text-[11px] text-amber-800 font-bold flex items-center gap-1 pt-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#E8B923]" />
                   <span>Refundable Security Deposit: Rs. {depositAmount}</span>
                 </p>
                 {product.rental && (
-                  <div className="pt-2 border-t border-[#EAE4DB] mt-2 grid grid-cols-2 gap-2 text-[11px] text-[#6E6A78]">
+                  <div className="pt-2 border-t border-[#E8E4DE] mt-2 grid grid-cols-2 gap-2 text-[11px] text-[#8A857F]">
                     <div>
-                      <span className="font-semibold text-[#18181B]">Operating Hours:</span>{' '}
+                      <span className="font-semibold text-[#1C1C1C]">Operating Hours:</span>{' '}
                       {product.rental.windowStart || '10:00'} - {product.rental.windowEnd || '19:00'}
                     </div>
                     <div>
-                      <span className="font-semibold text-[#18181B]">Periodicity:</span>{' '}
+                      <span className="font-semibold text-[#1C1C1C]">Periodicity:</span>{' '}
                       <span className="capitalize">{product.rental.periodicity || 'day'}</span>
                     </div>
                     {product.rental.lateFeeRatePerUnit ? (
@@ -179,28 +179,28 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
 
               {/* Rental Period Picker */}
-              <div className="space-y-2 bg-white p-3 rounded-2xl border border-[#D4C4ED]">
-                <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider flex items-center gap-1.5">
-                  <Calendar className="w-4 h-4 text-[#7E3AF2]" />
+              <div className="space-y-2 bg-white p-3 rounded-2xl border border-[#E8E4DE] shadow-warm-xs">
+                <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-[#0A0A0A]" />
                   <span>Choose Rental Period</span>
                 </label>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
-                    <span className="text-[10px] text-[#6E6A78]">Start Date</span>
+                    <span className="text-[10px] text-[#8A857F] font-bold">Start Date</span>
                     <input
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full bg-[#FAF7F2] px-2 py-1.5 border border-[#D4C4ED] rounded-xl font-medium"
+                      className="w-full bg-[#FAF8F5] px-2.5 py-1.5 border border-[#E8E4DE] rounded-xl font-bold"
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-[#6E6A78]">End Date</span>
+                    <span className="text-[10px] text-[#8A857F] font-bold">End Date</span>
                     <input
                       type="date"
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="w-full bg-[#FAF7F2] px-2 py-1.5 border border-[#D4C4ED] rounded-xl font-medium"
+                      className="w-full bg-[#FAF8F5] px-2.5 py-1.5 border border-[#E8E4DE] rounded-xl font-bold"
                     />
                   </div>
                 </div>
@@ -209,18 +209,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {/* Color Swatches */}
               {product.colorVariants && product.colorVariants.length > 0 && (
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
-                    Select Color: <span className="font-normal text-[#7E3AF2]">{selectedColor}</span>
+                  <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">
+                    Select Color: <span className="font-normal text-[#8A857F]">{selectedColor}</span>
                   </label>
                   <div className="flex items-center gap-2">
                     {product.colorVariants.map((variant) => (
                       <button
                         key={variant.name}
                         onClick={() => setSelectedColor(variant.name)}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
                           selectedColor === variant.name
-                            ? 'border-[#7E3AF2] bg-[#EFE9F6] text-[#7E3AF2] font-bold ring-1 ring-[#7E3AF2]'
-                            : 'border-[#E4DFD6] hover:bg-[#FAF7F2]'
+                            ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white font-bold'
+                            : 'border-[#E8E4DE] bg-white text-[#1C1C1C] hover:bg-[#FAF8F5]'
                         }`}
                       >
                         <span
@@ -237,18 +237,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               {/* Size Variants */}
               {product.sizeVariants && product.sizeVariants.length > 0 && (
                 <div className="space-y-2">
-                  <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
-                    Select Size: <span className="font-normal text-[#7E3AF2]">{selectedSize}</span>
+                  <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">
+                    Select Size: <span className="font-normal text-[#8A857F]">{selectedSize}</span>
                   </label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {product.sizeVariants.map((sz) => (
                       <button
                         key={sz}
                         onClick={() => setSelectedSize(sz)}
-                        className={`px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
+                        className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all ${
                           selectedSize === sz
-                            ? 'border-[#7E3AF2] bg-[#EFE9F6] text-[#7E3AF2] font-bold ring-1 ring-[#7E3AF2]'
-                            : 'border-[#E4DFD6] hover:bg-[#FAF7F2]'
+                            ? 'border-[#0A0A0A] bg-[#0A0A0A] text-white font-bold'
+                            : 'border-[#E8E4DE] bg-white text-[#1C1C1C] hover:bg-[#FAF8F5]'
                         }`}
                       >
                         {sz}
@@ -263,12 +263,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <button
                 onClick={handleRent}
                 disabled={!product.inStock}
-                className={`w-full py-3.5 rounded-2xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 ${
+                className={`w-full py-4 rounded-full text-xs font-black transition-all shadow-warm-md flex items-center justify-center gap-2 ${
                   !product.inStock
-                    ? 'bg-[#E4DFD6] text-[#8A8694] cursor-not-allowed'
+                    ? 'bg-[#E8E4DE] text-[#8A857F] cursor-not-allowed'
                     : isAdded
                     ? 'bg-emerald-600 text-white'
-                    : 'bg-[#18181B] hover:bg-[#7E3AF2] text-white'
+                    : 'bg-[#0A0A0A] hover:bg-[#2A2A2A] text-white active:scale-98'
                 }`}
               >
                 {isAdded ? (

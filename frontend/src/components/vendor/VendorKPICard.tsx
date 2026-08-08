@@ -18,31 +18,31 @@ export const VendorKPICard: React.FC<VendorKPICardProps> = ({
   icon: Icon,
 }) => {
   return (
-    <div className="bg-[#EFE9F6] rounded-3xl p-5 border border-[#D4C4ED] shadow-sm hover:border-[#7E3AF2] transition-all group flex flex-col justify-between">
+    <div className="bg-[#FAF8F5] rounded-3xl p-5 border border-[#E8E4DE] shadow-warm-xs hover:border-[#0A0A0A] transition-all group flex flex-col justify-between hover:scale-[1.02]">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-bold uppercase tracking-wider text-[#8A8694]">
+        <span className="text-xs font-black uppercase tracking-wider text-[#8A857F]">
           {title}
         </span>
-        <div className="w-10 h-10 rounded-2xl bg-white/80 border border-[#D4C4ED] text-[#7E3AF2] flex items-center justify-center group-hover:bg-[#7E3AF2] group-hover:text-white transition-colors shadow-xs">
-          <Icon className="w-5 h-5" />
+        <div className="w-10 h-10 rounded-2xl bg-white border border-[#E8E4DE] text-[#0A0A0A] flex items-center justify-center group-hover:bg-[#0A0A0A] group-hover:text-white transition-colors shadow-2xs">
+          <Icon className="w-5 h-5 group-hover:text-[#E8B923]" />
         </div>
       </div>
 
       <div>
-        <div className="text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight">
+        <div className="text-2xl sm:text-3xl font-black text-[#1C1C1C] tracking-tight">
           {value}
         </div>
 
         {changeText && (
-          <div className="flex items-center gap-1 mt-1 text-xs font-semibold">
+          <div className="flex items-center gap-1 mt-1 text-xs font-bold">
             <span
               className={
-                isPositive ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'
+                isPositive ? 'text-emerald-700 font-black' : 'text-rose-600 font-black'
               }
             >
               {changeText}
             </span>
-            <span className="text-[#8A8694] font-normal">vs last month</span>
+            <span className="text-[#8A857F] font-medium">vs last month</span>
           </div>
         )}
       </div>

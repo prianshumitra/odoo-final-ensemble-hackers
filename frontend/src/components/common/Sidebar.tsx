@@ -16,16 +16,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onResetFilters,
 }) => {
   return (
-    <aside className="w-full lg:w-72 bg-[#EFE9F6] rounded-3xl p-6 border border-[#D4C4ED] shadow-sm space-y-7 shrink-0 self-start sticky top-24">
+    <aside className="w-full lg:w-72 bg-[#FAF8F5] rounded-3xl p-6 border border-[#E8E4DE] shadow-warm-xs space-y-7 shrink-0 self-start sticky top-24">
       {/* Sidebar Header */}
-      <div className="flex items-center justify-between border-b border-[#D4C4ED]/60 pb-4">
-        <div className="flex items-center gap-2 text-[#18181B] font-bold text-base">
-          <Filter className="w-4 h-4 text-[#7E3AF2]" />
+      <div className="flex items-center justify-between border-b border-[#E8E4DE] pb-4">
+        <div className="flex items-center gap-2 text-[#1C1C1C] font-black text-base tracking-tight">
+          <Filter className="w-4 h-4 text-[#0A0A0A]" />
           <span>Filter Products</span>
         </div>
         <button
           onClick={onResetFilters}
-          className="flex items-center gap-1 text-xs font-semibold text-[#8A8694] hover:text-[#7E3AF2] transition-colors"
+          className="flex items-center gap-1 text-xs font-bold text-[#8A857F] hover:text-[#0A0A0A] transition-colors"
           title="Reset all filters"
         >
           <RotateCcw className="w-3 h-3" />
@@ -35,7 +35,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* 1. Brand Filter */}
       <div className="space-y-2.5">
-        <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
+        <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">
           Brand
         </label>
         <CustomSelect
@@ -49,13 +49,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* 2. Color Swatches Filter */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
+          <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">
             Color Palette
           </label>
           {filters.selectedColor && (
             <button
               onClick={() => onFilterChange({ selectedColor: '' })}
-              className="text-[11px] font-semibold text-[#7E3AF2] hover:underline"
+              className="text-[11px] font-bold text-[#0A0A0A] underline hover:opacity-80"
             >
               Clear
             </button>
@@ -73,10 +73,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   })
                 }
                 title={swatch.name}
-                className={`relative w-full aspect-square rounded-xl flex items-center justify-center transition-all shadow-inner ${
+                className={`relative w-full aspect-square rounded-xl flex items-center justify-center transition-all shadow-2xs ${
                   isSelected
-                    ? 'ring-2 ring-offset-2 ring-[#7E3AF2] scale-105'
-                    : 'hover:scale-105 border border-[#E4DFD6]'
+                    ? 'ring-2 ring-offset-2 ring-[#0A0A0A] scale-105 border-transparent'
+                    : 'hover:scale-105 border border-[#E8E4DE]'
                 }`}
                 style={{ backgroundColor: swatch.hex }}
               >
@@ -84,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   <Check
                     className={`w-4 h-4 ${
                       swatch.hex === '#F8FAFC' || swatch.hex === '#F5EBE0'
-                        ? 'text-[#18181B]'
+                        ? 'text-[#1C1C1C]'
                         : 'text-white'
                     }`}
                   />
@@ -97,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* 3. Duration Filter */}
       <div className="space-y-2.5">
-        <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
+        <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">
           Rental Duration
         </label>
         <CustomSelect
@@ -114,10 +114,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         return (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-[#18181B] uppercase tracking-wider">
+              <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">
                 Price Range
               </label>
-              <span className="text-xs font-bold text-[#7E3AF2] bg-white/80 px-2 py-0.5 rounded-md border border-[#D4C4ED]">
+              <span className="text-xs font-bold text-[#1C1C1C] bg-white px-2.5 py-1 rounded-full border border-[#E8E4DE] shadow-warm-xs">
                 Up to Rs. {filters.priceRange[1].toLocaleString()}
               </span>
             </div>
@@ -133,11 +133,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 })
               }
               style={{
-                background: `linear-gradient(to right, #7E3AF2 0%, #7E3AF2 ${pricePercent}%, #D4C4ED ${pricePercent}%, #D4C4ED 100%)`,
+                background: `linear-gradient(to right, #0A0A0A 0%, #0A0A0A ${pricePercent}%, #E8E4DE ${pricePercent}%, #E8E4DE 100%)`,
               }}
-              className="w-full h-2.5 rounded-lg cursor-pointer transition-all border border-[#C4B2E2]/60 shadow-inner"
+              className="w-full h-2.5 rounded-lg cursor-pointer transition-all border border-[#E8E4DE] shadow-inner"
             />
-            <div className="flex items-center justify-between text-[11px] font-semibold text-[#8A8694]">
+            <div className="flex items-center justify-between text-[11px] font-bold text-[#8A857F]">
               <span>Rs. 0</span>
               <span>Rs. 10,000+</span>
             </div>
@@ -150,28 +150,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
         filters.selectedColor ||
         filters.selectedDuration !== 'All Duration' ||
         filters.priceRange[1] < 10000) && (
-        <div className="pt-3 border-t border-[#F4EFEA] space-y-2">
-          <span className="text-[11px] font-bold text-[#8A8694] uppercase">
+        <div className="pt-3 border-t border-[#E8E4DE] space-y-2">
+          <span className="text-[11px] font-bold text-[#8A857F] uppercase tracking-wider">
             Active Filters:
           </span>
           <div className="flex flex-wrap gap-1.5">
             {filters.selectedBrand !== 'All Brands' && (
-              <span className="inline-flex items-center gap-1 bg-[#EFE9F6] text-[#7E3AF2] text-xs font-semibold px-2.5 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1 bg-[#0A0A0A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-xs">
                 Brand: {filters.selectedBrand}
               </span>
             )}
             {filters.selectedColor && (
-              <span className="inline-flex items-center gap-1 bg-[#EFE9F6] text-[#7E3AF2] text-xs font-semibold px-2.5 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1 bg-[#0A0A0A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-xs">
                 Color: {filters.selectedColor}
               </span>
             )}
             {filters.selectedDuration !== 'All Duration' && (
-              <span className="inline-flex items-center gap-1 bg-[#EFE9F6] text-[#7E3AF2] text-xs font-semibold px-2.5 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1 bg-[#0A0A0A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-xs">
                 Duration: {filters.selectedDuration}
               </span>
             )}
             {filters.priceRange[1] < 10000 && (
-              <span className="inline-flex items-center gap-1 bg-[#EFE9F6] text-[#7E3AF2] text-xs font-semibold px-2.5 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1 bg-[#0A0A0A] text-white text-xs font-bold px-3 py-1 rounded-full shadow-xs">
                 Max: Rs. {filters.priceRange[1]}
               </span>
             )}

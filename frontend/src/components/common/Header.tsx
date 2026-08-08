@@ -46,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
   const showVendorButton = !isCustomerLoggedIn;
 
   return (
-    <header className="sticky top-0 z-30 bg-[#EFE9F6]/85 backdrop-blur-xl backdrop-saturate-150 border-b-2 border-[#D4C4ED] shadow-[0_6px_15px_rgba(0,0,0,0.12)] transition-all">
+    <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-[#E8E4DE] shadow-warm-xs transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
@@ -58,10 +58,10 @@ export const Header: React.FC<HeaderProps> = ({
               className="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105"
             />
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#18181B] group-hover:text-[#7E3AF2] transition-colors leading-none font-serif">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#1C1C1C] group-hover:text-[#E8B923] transition-colors leading-none font-serif">
                 EZRent
               </span>
-              <span className="text-[10px] font-bold tracking-widest text-[#7E3AF2] uppercase mt-0.5">
+              <span className="text-[10px] font-extrabold tracking-widest text-[#8A857F] uppercase mt-0.5">
                 Rental Storefront
               </span>
             </div>
@@ -75,13 +75,13 @@ export const Header: React.FC<HeaderProps> = ({
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search rentals (e.g. Sofa, Gaming Laptop, Sony TV)..."
-                className="w-full bg-white/90 text-xs font-semibold text-[#18181B] placeholder-[#8A8694] pl-10 pr-4 py-2.5 rounded-2xl border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] focus:ring-2 focus:ring-[#7E3AF2]/20 shadow-xs transition-all"
+                className="w-full bg-[#FAF8F5] text-xs font-semibold text-[#1C1C1C] placeholder-[#8A857F] pl-10 pr-4 py-2.5 rounded-full border border-[#E8E4DE] focus:outline-none focus:border-[#0A0A0A] focus:bg-white focus:ring-2 focus:ring-[#0A0A0A]/10 shadow-inner transition-all"
               />
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694]" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A857F]" />
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8A8694] hover:text-[#18181B]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8A857F] hover:text-[#1C1C1C]"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -90,15 +90,15 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-[#3E3A47]">
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-[#1C1C1C]">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
               return (
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`transition-colors hover:text-[#7E3AF2] ${
-                    isActive ? 'text-[#7E3AF2] font-black underline underline-offset-4' : ''
+                  className={`transition-colors hover:text-[#0A0A0A] ${
+                    isActive ? 'text-[#0A0A0A] font-black underline underline-offset-4' : 'text-[#8A857F]'
                   }`}
                 >
                   {link.name}
@@ -114,10 +114,10 @@ export const Header: React.FC<HeaderProps> = ({
             {showVendorButton && (
               <Link
                 to={userRole === 'vendor' || userRole === 'admin' ? '/vendor' : '/vendor-signup'}
-                className="hidden sm:flex items-center gap-1.5 bg-[#18181B] hover:bg-[#7E3AF2] text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm group"
+                className="hidden sm:flex items-center gap-1.5 bg-[#0A0A0A] hover:bg-[#2A2A2A] text-white text-xs font-bold px-4 py-2.5 rounded-full transition-all shadow-warm-xs group"
                 title={userRole === 'vendor' ? 'Go to Vendor Operations Console' : 'Partner as a Vendor'}
               >
-                <Store className="w-4 h-4 text-purple-400 group-hover:text-white transition-colors" />
+                <Store className="w-4 h-4 text-[#E8B923] group-hover:text-white transition-colors" />
                 <span>{userRole === 'vendor' || userRole === 'admin' ? 'Vendor Console' : 'Vendor Mode'}</span>
               </Link>
             )}
@@ -125,9 +125,9 @@ export const Header: React.FC<HeaderProps> = ({
             {(userRole === 'vendor' || userRole === 'admin') && (
               <button
                 onClick={onOpenVendorModal}
-                className="hidden sm:flex items-center gap-1.5 bg-[#7E3AF2] hover:bg-[#6C2BD9] text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm"
+                className="hidden sm:flex items-center gap-1.5 bg-[#E8B923] hover:bg-[#D4A71B] text-[#1C1C1C] text-xs font-black px-4 py-2.5 rounded-full transition-all shadow-warm-xs"
               >
-                <PlusCircle className="w-4 h-4 text-white" />
+                <PlusCircle className="w-4 h-4 text-[#1C1C1C]" />
                 <span>List Item</span>
               </button>
             )}
@@ -136,8 +136,8 @@ export const Header: React.FC<HeaderProps> = ({
             {isAuthenticated && (
               <span className={`hidden md:flex items-center gap-1.5 text-[11px] font-bold px-3 py-1 rounded-full border ${
                 userRole === 'vendor' || userRole === 'admin'
-                  ? 'bg-amber-100 text-amber-900 border-amber-300'
-                  : 'bg-[#EFE9F6] text-[#7E3AF2] border-[#D4C4ED]'
+                  ? 'bg-[#E8B923]/15 text-[#1C1C1C] border-[#E8B923]/40'
+                  : 'bg-[#FAF8F5] text-[#1C1C1C] border-[#E8E4DE]'
               }`}>
                 <UserCheck className="w-3.5 h-3.5" />
                 <span>{userRole === 'vendor' ? 'Vendor' : userRole === 'admin' ? 'Admin' : 'Customer'}</span>
@@ -147,12 +147,12 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Wishlist Icon */}
             <button
               onClick={onOpenWishlist}
-              className="relative p-2.5 rounded-full text-[#3E3A47] hover:bg-white/80 hover:text-[#7E3AF2] transition-colors focus:outline-none"
+              className="relative p-2.5 rounded-full text-[#1C1C1C] hover:bg-[#FAF8F5] transition-colors focus:outline-none border border-transparent hover:border-[#E8E4DE]"
               title="Wishlist"
             >
               <Heart className="w-5 h-5" />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-bold text-white bg-[#7E3AF2] rounded-full shadow-sm">
+                <span className="absolute top-1 right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-black text-white bg-[#0A0A0A] rounded-full shadow-xs">
                   {wishlistCount}
                 </span>
               )}
@@ -161,24 +161,24 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Rental Cart Icon */}
             <button
               onClick={onOpenCart}
-              className="relative p-2.5 rounded-full text-[#3E3A47] hover:bg-white/80 hover:text-[#7E3AF2] transition-colors focus:outline-none"
+              className="relative p-2.5 rounded-full text-[#1C1C1C] hover:bg-[#FAF8F5] transition-colors focus:outline-none border border-transparent hover:border-[#E8E4DE]"
               title="Rental Cart"
             >
               <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-bold text-white bg-[#7E3AF2] rounded-full shadow-sm">
+                <span className="absolute top-1 right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[11px] font-black text-white bg-[#0A0A0A] rounded-full shadow-xs">
                   {cartCount}
                 </span>
               )}
             </button>
 
             {/* Auth / Profile Button */}
-            <div className="relative pl-1 border-l border-[#D4C4ED]/60">
+            <div className="relative pl-1 border-l border-[#E8E4DE]">
               {isAuthenticated ? (
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setIsProfileOpen(!isProfileOpen)}
-                    className="flex items-center gap-2 p-1 rounded-2xl bg-white/80 border border-[#D4C4ED] hover:border-[#7E3AF2] transition-all shadow-xs"
+                    className="flex items-center gap-2 p-1 rounded-2xl bg-white border border-[#E8E4DE] hover:border-[#0A0A0A] transition-all shadow-warm-xs"
                   >
                     {user?.profileImageUrl ? (
                       <img
@@ -187,7 +187,7 @@ export const Header: React.FC<HeaderProps> = ({
                         className="w-8 h-8 rounded-xl object-cover"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-xl bg-[#7E3AF2] text-white flex items-center justify-center font-extrabold text-xs">
+                      <div className="w-8 h-8 rounded-xl bg-[#0A0A0A] text-white flex items-center justify-center font-black text-xs">
                         {(user?.firstName?.[0] || user?.email?.[0] || 'U').toUpperCase()}
                       </div>
                     )}
@@ -204,13 +204,13 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center gap-2">
                   <Link
                     to="/login"
-                    className="text-xs font-extrabold text-[#7E3AF2] hover:bg-[#EFE9F6] px-3 py-2 rounded-xl border border-[#D4C4ED] transition-colors"
+                    className="text-xs font-bold text-[#1C1C1C] hover:bg-[#FAF8F5] px-3.5 py-2 rounded-full border border-[#E8E4DE] transition-colors"
                   >
                     Sign In
                   </Link>
                   <Link
                     to="/signup"
-                    className="text-xs font-extrabold text-white bg-[#18181B] hover:bg-[#7E3AF2] px-3.5 py-2 rounded-xl transition-all shadow-xs"
+                    className="text-xs font-bold text-white bg-[#0A0A0A] hover:bg-[#2A2A2A] px-4 py-2 rounded-full transition-all shadow-warm-xs"
                   >
                     Sign Up
                   </Link>
@@ -221,7 +221,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Menu Hamburger Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-[#3E3A47] hover:bg-white/80 rounded-xl transition-colors"
+              className="lg:hidden p-2 text-[#1C1C1C] hover:bg-[#FAF8F5] rounded-xl transition-colors"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

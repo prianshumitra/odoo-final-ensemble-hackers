@@ -104,121 +104,122 @@ export const Home: React.FC<HomeProps> = ({
   }, [filteredProducts, currentPage]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1">
-      {/* Top Banner Tagline with Light Purple to Off-White Gradient Border */}
-      <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-xs">
-        <div className="bg-gradient-to-r from-[#EFE9F6] via-[#FAF7F2] to-[#F5EBE0] p-6 sm:p-8 rounded-[23px] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 z-10 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-xs text-[#7E3AF2] text-xs font-bold px-3 py-1 rounded-full border border-[#D4C4ED]">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Premium Flexible Rentals</span>
+    <div className="bg-[#F7F4EF] min-h-screen text-[#1C1C1C] flex flex-col flex-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full">
+        {/* Top Banner Tagline */}
+        <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
+          <div className="bg-[#FAF8F5] p-6 sm:p-8 rounded-[23px] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-[#E8E4DE]">
+            <div className="space-y-2 z-10 text-center md:text-left">
+              <div className="inline-flex items-center gap-1.5 bg-white text-[#1C1C1C] text-xs font-black px-3 py-1 rounded-full border border-[#E8E4DE] shadow-2xs">
+                <Sparkles className="w-3.5 h-3.5 text-[#E8B923]" />
+                <span>EZRent Premium Equipment Rentals</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-[#1C1C1C] tracking-tight">
+                Rent Furniture, Electronics & Sportswear on Your Terms
+              </h1>
+              <p className="text-sm text-[#8A857F] max-w-xl font-medium">
+                Flexible monthly, daily, or hourly rental plans with verified security deposit management and store pickup options.
+              </p>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight">
-              Rent Furniture, Electronics & Tech on Your Terms
-            </h1>
-            <p className="text-sm text-[#6E6A78] max-w-xl">
-              Choose from flexible monthly, daily, or hourly plans with zero upfront commitment and free delivery.
-            </p>
-          </div>
 
-          <div className="flex items-center gap-3 z-10 shrink-0">
-            <div className="bg-gradient-to-br from-[#E2D5F7] to-[#FAF7F2] px-4 py-3 rounded-2xl border border-[#C4B2E2] shadow-xs text-center">
-              <span className="block text-xl font-extrabold text-[#18181B]">100%</span>
-              <span className="text-[11px] font-semibold text-[#6E6A78] uppercase">Inspected</span>
-            </div>
-            <div className="bg-gradient-to-br from-[#E2D5F7] to-[#FAF7F2] px-4 py-3 rounded-2xl border border-[#C4B2E2] shadow-xs text-center">
-              <span className="block text-xl font-extrabold text-[#7E3AF2]">Free</span>
-              <span className="text-[11px] font-semibold text-[#6E6A78] uppercase">Delivery</span>
+            <div className="flex items-center gap-3 z-10 shrink-0">
+              <div className="bg-white px-4 py-3 rounded-2xl border border-[#E8E4DE] shadow-warm-xs text-center">
+                <span className="block text-xl font-black text-[#1C1C1C]">100%</span>
+                <span className="text-[10px] font-bold text-[#8A857F] uppercase tracking-wider">Sanitized</span>
+              </div>
+              <div className="bg-white px-4 py-3 rounded-2xl border border-[#E8E4DE] shadow-warm-xs text-center">
+                <span className="block text-xl font-black text-[#0A0A0A]">Store</span>
+                <span className="text-[10px] font-bold text-[#8A857F] uppercase tracking-wider">Pickup</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Main 2-Column Section (Sidebar + Product Grid) */}
-      <div className="flex flex-col lg:flex-row gap-8 items-start">
-        {/* Left Sidebar Filter */}
-        <Sidebar
-          filters={filters}
-          onFilterChange={handleFilterChange}
-          onResetFilters={handleResetFilters}
-        />
-
-        {/* Right Main Product Area */}
-        <main className="flex-1 w-full space-y-6">
-          {/* Header Controls Bar */}
-          <div className="bg-[#EFE9F6] rounded-2xl p-4 border border-[#D4C4ED] shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-[#6E6A78]">
-              <SlidersHorizontal className="w-4 h-4 text-[#7E3AF2]" />
-              <span>
-                Showing <strong className="text-[#18181B] font-bold">{filteredProducts.length}</strong> available products
-              </span>
-            </div>
-
-            {/* Sort Selector */}
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <ArrowUpDown className="w-4 h-4 text-[#8A8694]" />
-              <span className="text-xs font-semibold text-[#8A8694] uppercase shrink-0">Sort by:</span>
-              <CustomSelect
-                value={sortBy}
-                onChange={(val) => setSortBy(val as any)}
-                options={[
-                  { label: 'Featured Items', value: 'featured' },
-                  { label: 'Price: Low to High', value: 'price-low' },
-                  { label: 'Price: High to Low', value: 'price-high' },
-                  { label: 'Highest Rated ★', value: 'rating' },
-                ]}
-                className="w-44"
-              />
-            </div>
-          </div>
-
-          {/* Product Grid */}
-          {paginatedProducts.length === 0 ? (
-            <div className="bg-white rounded-3xl p-12 border border-[#EAE4DB] text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-[#EFE9F6] text-[#7E3AF2] flex items-center justify-center mx-auto">
-                <PackageX className="w-8 h-8" />
-              </div>
-              <h3 className="text-lg font-bold text-[#18181B]">No Products Found</h3>
-              <p className="text-sm text-[#8A8694] max-w-md mx-auto">
-                No items match your selected brand, color, or price filters. Try resetting filters to see all available inventory.
-              </p>
-              <button
-                onClick={handleResetFilters}
-                className="px-5 py-2.5 bg-[#18181B] hover:bg-[#7E3AF2] text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
-              >
-                Reset All Filters
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {paginatedProducts.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  isWishlisted={wishlistIds.includes(product.id)}
-                  onToggleWishlist={onToggleWishlist}
-                  onAddToCart={onAddToCart}
-                  onSelectProduct={onSelectProduct}
-                  isSignedIn={isSignedIn}
-                  userRole={userRole}
-                  onRequireAuth={onRequireAuth}
-                />
-              ))}
-            </div>
-          )}
-
-          {/* Pagination Controls */}
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={(page) => {
-              setCurrentPage(page);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+        {/* Main 2-Column Section (Sidebar + Product Grid) */}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+          {/* Left Sidebar Filter */}
+          <Sidebar
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onResetFilters={handleResetFilters}
           />
-        </main>
+
+          {/* Right Main Product Area */}
+          <main className="flex-1 w-full space-y-6">
+            {/* Header Controls Bar */}
+            <div className="bg-[#FAF8F5] rounded-2xl p-4 border border-[#E8E4DE] shadow-warm-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2 text-sm text-[#8A857F]">
+                <SlidersHorizontal className="w-4 h-4 text-[#1C1C1C]" />
+                <span>
+                  Showing <strong className="text-[#1C1C1C] font-black">{filteredProducts.length}</strong> available items
+                </span>
+              </div>
+
+              {/* Sort Selector */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <ArrowUpDown className="w-4 h-4 text-[#8A857F]" />
+                <span className="text-xs font-bold text-[#8A857F] uppercase tracking-wider shrink-0">Sort by:</span>
+                <CustomSelect
+                  value={sortBy}
+                  onChange={(val) => setSortBy(val as any)}
+                  options={[
+                    { label: 'Featured Items', value: 'featured' },
+                    { label: 'Price: Low to High', value: 'price-low' },
+                    { label: 'Price: High to Low', value: 'price-high' },
+                    { label: 'Highest Rated ★', value: 'rating' },
+                  ]}
+                  className="w-44"
+                />
+              </div>
+            </div>
+
+            {/* Product Grid */}
+            {paginatedProducts.length === 0 ? (
+              <div className="bg-[#FAF8F5] rounded-3xl p-12 border border-[#E8E4DE] text-center space-y-4 shadow-warm-xs">
+                <div className="w-16 h-16 rounded-full bg-[#F3EFE8] text-[#1C1C1C] flex items-center justify-center mx-auto">
+                  <PackageX className="w-8 h-8" />
+                </div>
+                <h3 className="text-lg font-black text-[#1C1C1C]">No Products Found</h3>
+                <p className="text-sm font-bold text-[#8A857F] max-w-md mx-auto">
+                  No items match your selected brand, color, or price filters. Try resetting filters to see all available inventory.
+                </p>
+                <button
+                  onClick={handleResetFilters}
+                  className="px-6 py-3 bg-[#0A0A0A] hover:bg-[#2A2A2A] text-white text-xs font-bold rounded-full transition-colors shadow-warm-xs"
+                >
+                  Reset All Filters
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {paginatedProducts.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    isWishlisted={wishlistIds.includes(product.id)}
+                    onToggleWishlist={onToggleWishlist}
+                    onAddToCart={onAddToCart}
+                    onSelectProduct={onSelectProduct}
+                    isSignedIn={isSignedIn}
+                    userRole={userRole}
+                    onRequireAuth={onRequireAuth}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination Controls */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => {
+                setCurrentPage(page);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+          </main>
+        </div>
       </div>
     </div>
   );
 };
-//home
