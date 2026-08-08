@@ -66,12 +66,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               cartItems.map((item) => (
                 <div
                   key={item.product.id}
-                  className="flex gap-4 p-3 rounded-2xl bg-[#FAF7F2] border border-[#EAE4DB] relative"
+                  className="flex gap-4 p-4 rounded-2xl bg-[#EFE9F6]/80 hover:bg-[#EFE9F6] border border-[#D4C4ED] shadow-xs relative transition-all group"
                 >
                   <img
                     src={item.product.image}
                     alt={item.product.name}
-                    className="w-20 h-20 object-cover rounded-xl shrink-0"
+                    className="w-20 h-20 object-cover rounded-xl shrink-0 border border-[#D4C4ED]/60"
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-bold text-[#18181B] truncate">

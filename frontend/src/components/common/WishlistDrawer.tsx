@@ -61,32 +61,32 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
               wishlistItems.map((product) => (
                 <div
                   key={product.id}
-                  className="flex gap-4 p-3 rounded-2xl bg-[#FAF7F2] border border-[#EAE4DB] relative"
+                  className="flex gap-4 p-4 rounded-2xl bg-[#EFE9F6]/80 hover:bg-[#EFE9F6] border border-[#D4C4ED] shadow-xs relative transition-all group"
                 >
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-20 h-20 object-cover rounded-xl shrink-0"
+                    className="w-20 h-20 object-cover rounded-xl shrink-0 border border-[#D4C4ED]/60"
                   />
                   <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-bold text-[#18181B] truncate">
                       {product.name}
                     </h4>
                     <p className="text-[11px] text-[#8A8694] mt-0.5">{product.brand}</p>
-                    <p className="text-xs font-extrabold text-[#18181B] mt-1">
+                    <p className="text-xs font-extrabold text-[#7E3AF2] mt-1">
                       Rs. {product.pricing.amount.toLocaleString()} / {product.pricing.unit}
                     </p>
 
-                    <div className="flex items-center justify-between mt-2">
+                    <div className="flex items-center justify-between mt-2.5">
                       <button
                         onClick={() => {
                           onAddToCart(product);
                         }}
                         disabled={!product.inStock}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs ${
                           product.inStock
-                            ? 'bg-[#18181B] hover:bg-[#7E3AF2] text-white'
-                            : 'bg-[#E4DFD6] text-[#8A8694] cursor-not-allowed'
+                            ? 'bg-[#18181B] hover:bg-[#7E3AF2] text-white active:scale-95'
+                            : 'bg-[#D4C4ED]/50 text-[#8A8694] cursor-not-allowed'
                         }`}
                       >
                         <ShoppingBag className="w-3.5 h-3.5" />
@@ -95,8 +95,8 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
 
                       <button
                         onClick={() => onRemoveFromWishlist(product)}
-                        className="text-[#8A8694] hover:text-red-500 p-1 text-xs font-semibold"
-                        title="Remove"
+                        className="text-[#8A8694] hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-xl transition-colors"
+                        title="Remove from Wishlist"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
