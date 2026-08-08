@@ -43,8 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
               className="flex items-center gap-2 group focus:outline-none"
             >
               <div className="flex items-center justify-center px-3.5 py-1.5 rounded-xl bg-[#18181B] text-white font-bold tracking-tight shadow-md group-hover:bg-[#7E3AF2] transition-colors">
-                <span className="text-xs uppercase tracking-widest text-[#D4C4ED] group-hover:text-white mr-1.5 font-semibold">BR.F</span>
-                <span className="font-extrabold text-sm tracking-wide">Your Logo</span>
+                <span className="font-extrabold text-sm tracking-wide">EZ</span>
               </div>
             </Link>
 
