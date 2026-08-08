@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Search, Heart, ShoppingBag, Menu, X, PlusCircle, Store, UserCheck } from 'lucide-react';
 import { ProfileDropdown } from './ProfileDropdown';
 import { Show, SignInButton, UserButton, useUser } from '@clerk/react';
+import logoImg from '../../assets/logo.png';
 
 interface HeaderProps {
   searchQuery: string;
@@ -42,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="sticky top-0 z-30 bg-[#EFE9F6]/90 backdrop-blur-md border-b border-[#D4C4ED] transition-all">
+    <header className="sticky top-0 z-30 bg-[#EFE9F6]/65 backdrop-blur-xl backdrop-saturate-150 border-b border-[#D4C4ED]/60 shadow-[0_4px_20px_rgba(126,58,242,0.05)] transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 gap-4">
           
@@ -52,8 +53,12 @@ export const Header: React.FC<HeaderProps> = ({
               to="/" 
               className="flex items-center gap-2 group focus:outline-none"
             >
-              <div className="flex items-center justify-center px-3.5 py-1.5 rounded-xl bg-[#18181B] text-white font-bold tracking-tight shadow-md group-hover:bg-[#7E3AF2] transition-colors">
-                <span className="font-extrabold text-sm tracking-wide">EZ</span>
+              <div className="inline-flex rounded-3xl border border-[#C4B2E2] shadow-xs overflow-hidden group-hover:scale-105 transition-transform">
+                <img
+                  src={logoImg}
+                  alt="Logo"
+                  className="h-14 sm:h-16 w-auto object-contain"
+                />
               </div>
             </Link>
 

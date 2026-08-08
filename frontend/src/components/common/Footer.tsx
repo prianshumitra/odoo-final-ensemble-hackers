@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowRight, ShieldCheck, Truck, RefreshCw, Heart } from 'lucide-react';
+import logoImg from '../../assets/logo.png';
 
 export const Footer: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -56,9 +57,8 @@ export const Footer: React.FC = () => {
           {/* Brand Info */}
           <div className="md:col-span-4 space-y-4">
             <Link to="/" className="inline-flex items-center gap-2">
-              <div className="flex items-center justify-center px-3.5 py-1.5 rounded-xl bg-[#18181B] text-white font-bold tracking-tight shadow-md">
-                <span className="text-xs uppercase tracking-widest text-[#D4C4ED] mr-1.5 font-semibold">BR.F</span>
-                <span className="font-extrabold text-sm tracking-wide">EZ Rent</span>
+              <div className="inline-flex rounded-3xl border border-[#C4B2E2] shadow-xs overflow-hidden">
+                <img src={logoImg} alt="Logo" className="h-14 w-auto object-contain" />
               </div>
             </Link>
             <p className="text-xs text-[#6E6A78] leading-relaxed max-w-sm">
