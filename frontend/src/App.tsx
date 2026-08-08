@@ -62,9 +62,12 @@ function AppContent() {
   const handleSelectRole = (role: 'customer' | 'vendor') => {
     setUserRole(role);
     setIsAuthPromptOpen(false);
+    if (user) {
+      user.update({ unsafeMetadata: { ...user.unsafeMetadata, role } }).catch(() => {});
+    }
   };
 
-  // 1. Sync Clerk Auth Context with API service
+  // 1. Sync Clerk Auth Context & Metadata with API service
   useEffect(() => {
     const syncAuth = async () => {
       let token: string | null = null;
@@ -75,12 +78,20 @@ function AppContent() {
       } catch (err) {}
 
       if (user) {
+        // Read stored role from Clerk metadata if available
+        const clerkRole = (user.unsafeMetadata?.role || user.publicMetadata?.role) as 'customer' | 'vendor' | undefined;
+        const effectiveRole = clerkRole || userRole;
+
+        if (clerkRole && clerkRole !== userRole) {
+          setUserRole(clerkRole);
+        }
+
         const userEmail = user.primaryEmailAddress?.emailAddress || '';
         const userContext = {
           id: user.id,
           email: userEmail,
           name: user.fullName || user.firstName || userEmail.split('@')[0],
-          role: userRole,
+          role: effectiveRole,
         };
         setAuthHeaders(userContext, token);
         joinUserRoom(user.id);
@@ -272,6 +283,9 @@ function AppContent() {
   const handleToggleRole = () => {
     const nextRole = userRole === 'customer' ? 'vendor' : 'customer';
     setUserRole(nextRole);
+    if (user) {
+      user.update({ unsafeMetadata: { ...user.unsafeMetadata, role: nextRole } }).catch(() => {});
+    }
     if (nextRole === 'vendor') {
       navigate('/vendor');
     } else {
