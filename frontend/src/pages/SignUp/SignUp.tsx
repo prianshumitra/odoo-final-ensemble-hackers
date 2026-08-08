@@ -75,7 +75,7 @@ export const SignUp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-12 bg-[#FAF7F2]">
+    <div className="min-h-[85vh] flex flex-col items-center justify-center px-4 py-12 bg-transparent">
       <div className="w-full max-w-xl bg-white rounded-3xl border border-[#D4C4ED] shadow-2xl p-8 space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-black text-[#7E3AF2] tracking-tight font-serif">EZRent</h1>
