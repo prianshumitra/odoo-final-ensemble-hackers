@@ -1,6 +1,5 @@
 import axios from 'axios';
 import type { Product, CartItem } from '../types';
-import { INITIAL_PRODUCTS } from '../data/products';
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
@@ -21,73 +20,90 @@ export const setAuthHeaders = (user: { id?: string; email?: string; name?: strin
   }
 
   if (user) {
-    api.defaults.headers.common['x-user-id'] = user.id || user.email || '';
-    api.defaults.headers.common['x-user-email'] = user.email || '';
-    api.defaults.headers.common['x-user-name'] = user.name || '';
-    api.defaults.headers.common['x-user-role'] = user.role || 'customer';
+    if (user.id) api.defaults.headers.common['x-user-id'] = user.id;
+    if (user.email) api.defaults.headers.common['x-user-email'] = user.email;
+    if (user.role) api.defaults.headers.common['x-user-role'] = user.role;
+    if (user.name) api.defaults.headers.common['x-user-name'] = user.name;
   } else {
     delete api.defaults.headers.common['x-user-id'];
     delete api.defaults.headers.common['x-user-email'];
-    delete api.defaults.headers.common['x-user-name'];
     delete api.defaults.headers.common['x-user-role'];
+    delete api.defaults.headers.common['x-user-name'];
   }
 };
 
-// API Methods
+// Auth Services
+export const authService = {
+  async register(data: any) {
+    const res = await api.post('/auth/register', data);
+    return res.data;
+  },
+  async registerVendor(data: any) {
+    const res = await api.post('/auth/register-vendor', data);
+    return res.data;
+  },
+  async login(data: any) {
+    const res = await api.post('/auth/login', data);
+    return res.data;
+  },
+  async adminLogin(data: any) {
+    const res = await api.post('/auth/admin-login', data);
+    return res.data;
+  },
+  async getAdminStats() {
+    const res = await api.get('/auth/admin-stats');
+    return res.data;
+  },
+  async checkEmail(email: string) {
+    const res = await api.post('/auth/check-email', { email });
+    return res.data;
+  },
+  async forgotPassword(email: string) {
+    const res = await api.post('/auth/forgot-password', { email });
+    return res.data;
+  },
+  async resetPassword(token: string, data: any) {
+    const res = await api.post(`/auth/reset-password/${token}`, data);
+    return res.data;
+  },
+  async getMe() {
+    const res = await api.get('/auth/me');
+    return res.data;
+  },
+  async getUsers() {
+    const res = await api.get('/auth/users');
+    return res.data;
+  },
+  async updateUserStatus(id: string, data: any) {
+    const res = await api.put(`/auth/users/${id}/status`, data);
+    return res.data;
+  },
+};
+
+// Products API Methods
 export const productService = {
   async getProducts(params?: Record<string, any>): Promise<Product[]> {
     try {
       const response = await api.get('/products', { params });
-      return response.data;
+      return response.data.map((p: any) => ({ ...p, id: p._id || p.id }));
     } catch (error) {
-      console.warn('Backend API unreachable, returning fallback products:', error);
-      return INITIAL_PRODUCTS;
+      console.warn('Backend API error:', error);
+      return [];
     }
   },
 
   async getProductById(id: string): Promise<Product | null> {
     try {
       const response = await api.get(`/products/${id}`);
-      return response.data;
+      return { ...response.data, id: response.data._id || response.data.id };
     } catch (error) {
-      return INITIAL_PRODUCTS.find((p) => p.id === id) || null;
+      return null;
     }
   },
 
   async createProduct(productData: Partial<Product>): Promise<Product> {
-    try {
-      const response = await api.post('/products', {
-        name: productData.name,
-        brand: productData.brand,
-        category: productData.category,
-        amount: productData.pricing?.amount || 999,
-        unit: productData.pricing?.unit || 'Month',
-        duration: productData.duration || '6 Month',
-        description: productData.description,
-        image: productData.image,
-        colorVariants: productData.colorVariants,
-        sizeVariants: productData.sizeVariants,
-        inStock: productData.inStock,
-      });
-      return response.data.product;
-    } catch (error) {
-      const newProd: Product = {
-        id: `local-${Date.now()}`,
-        name: productData.name || 'New Rental Item',
-        brand: productData.brand || 'Vendor Store',
-        category: productData.category || 'General',
-        inStock: productData.inStock !== undefined ? productData.inStock : true,
-        rating: 5.0,
-        reviewsCount: 1,
-        image: productData.image || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
-        colorVariants: productData.colorVariants || [{ name: 'Standard', hex: '#18181B' }],
-        sizeVariants: productData.sizeVariants,
-        pricing: productData.pricing || { amount: 999, unit: 'Month' },
-        duration: productData.duration || '6 Month',
-        description: productData.description || 'Newly listed rental item.',
-      };
-      return newProd;
-    }
+    const response = await api.post('/products', productData);
+    return { ...response.data.product, id: response.data.product._id || response.data.product.id };
   },
 
   async getVendorProducts(): Promise<Product[]> {
@@ -95,31 +111,22 @@ export const productService = {
       const response = await api.get('/products/vendor/my-products');
       return response.data.map((p: any) => ({ ...p, id: p._id || p.id }));
     } catch (error) {
-      console.warn('Backend API unreachable for vendor products, returning initial products');
-      return INITIAL_PRODUCTS;
+      return [];
     }
   },
 
   async updateProduct(id: string, productData: Partial<Product>): Promise<Product | null> {
     try {
-      const response = await api.put(`/products/${id}`, {
-        name: productData.name,
-        brand: productData.brand,
-        category: productData.category,
-        amount: productData.pricing?.amount,
-        unit: productData.pricing?.unit,
-        duration: productData.duration,
-        description: productData.description,
-        image: productData.image,
-        colorVariants: productData.colorVariants,
-        sizeVariants: productData.sizeVariants,
-        inStock: productData.inStock,
-      });
+      const response = await api.put(`/products/${id}`, productData);
       return { ...response.data.product, id: response.data.product._id || response.data.product.id };
     } catch (error) {
-      console.warn('Failed to update product via API:', error);
       return null;
     }
+  },
+
+  async togglePublish(id: string): Promise<any> {
+    const res = await api.patch(`/products/${id}/publish`);
+    return res.data;
   },
 
   async deleteProduct(id: string): Promise<boolean> {
@@ -132,6 +139,7 @@ export const productService = {
   },
 };
 
+// Cart Service
 export const cartService = {
   async getCart(): Promise<any[]> {
     try {
@@ -170,6 +178,164 @@ export const cartService = {
   },
 };
 
+// Orders / Quotations API
+export const orderService = {
+  async getOrders(params?: Record<string, any>) {
+    const res = await api.get('/orders', { params });
+    return res.data;
+  },
+  async getOrderById(id: string) {
+    const res = await api.get(`/orders/${id}`);
+    return res.data;
+  },
+  async createOrder(orderData: any) {
+    const res = await api.post('/orders', orderData);
+    return res.data;
+  },
+  async sendQuotation(id: string) {
+    const res = await api.patch(`/orders/${id}/send`);
+    return res.data;
+  },
+  async confirmOrder(id: string) {
+    const res = await api.patch(`/orders/${id}/confirm`);
+    return res.data;
+  },
+  async cancelOrder(id: string) {
+    const res = await api.patch(`/orders/${id}/cancel`);
+    return res.data;
+  },
+  async processPickup(id: string) {
+    const res = await api.post(`/orders/${id}/pickup`);
+    return res.data;
+  },
+  async processReturn(id: string) {
+    const res = await api.post(`/orders/${id}/return`);
+    return res.data;
+  },
+  getQuotationPDFUrl(id: string) {
+    return `${API_BASE_URL}/orders/${id}/print`;
+  },
+};
+
+// Invoices API
+export const invoiceService = {
+  async getInvoices() {
+    const res = await api.get('/invoices');
+    return res.data;
+  },
+  async getInvoiceById(id: string) {
+    const res = await api.get(`/invoices/${id}`);
+    return res.data;
+  },
+  async createInvoiceFromOrder(orderId: string) {
+    const res = await api.post('/invoices', { orderId });
+    return res.data;
+  },
+  async payInvoice(id: string, paymentData: any) {
+    const res = await api.patch(`/invoices/${id}/pay`, paymentData);
+    return res.data;
+  },
+  getInvoicePDFUrl(id: string) {
+    return `${API_BASE_URL}/invoices/${id}/print`;
+  },
+};
+
+// Attributes API
+export const attributeService = {
+  async getAttributes() {
+    const res = await api.get('/attributes');
+    return res.data;
+  },
+  async createAttribute(data: any) {
+    const res = await api.post('/attributes', data);
+    return res.data;
+  },
+  async updateAttribute(id: string, data: any) {
+    const res = await api.put(`/attributes/${id}`, data);
+    return res.data;
+  },
+  async deleteAttribute(id: string) {
+    const res = await api.delete(`/attributes/${id}`);
+    return res.data;
+  },
+};
+
+// Pricelists API
+export const pricelistService = {
+  async getPricelists() {
+    const res = await api.get('/pricelists');
+    return res.data;
+  },
+  async createPricelist(data: any) {
+    const res = await api.post('/pricelists', data);
+    return res.data;
+  },
+  async updatePricelist(id: string, data: any) {
+    const res = await api.put(`/pricelists/${id}`, data);
+    return res.data;
+  },
+  async deletePricelist(id: string) {
+    const res = await api.delete(`/pricelists/${id}`);
+    return res.data;
+  },
+};
+
+// Dashboard API
+export const dashboardService = {
+  async getKPIs() {
+    const res = await api.get('/dashboard/kpis');
+    return res.data;
+  },
+  async getScheduler(month?: number, year?: number) {
+    const res = await api.get('/dashboard/scheduler', { params: { month, year } });
+    return res.data;
+  },
+};
+
+// Settings API
+export const settingsService = {
+  async getSettings() {
+    const res = await api.get('/settings');
+    return res.data;
+  },
+  async updateSettings(data: any) {
+    const res = await api.put('/settings', data);
+    return res.data;
+  },
+};
+
+// Quotation Templates API
+export const quotationTemplateService = {
+  async getTemplates() {
+    const res = await api.get('/quotation-templates');
+    return res.data;
+  },
+  async createTemplate(data: any) {
+    const res = await api.post('/quotation-templates', data);
+    return res.data;
+  },
+  async updateTemplate(id: string, data: any) {
+    const res = await api.put(`/quotation-templates/${id}`, data);
+    return res.data;
+  },
+  async deleteTemplate(id: string) {
+    const res = await api.delete(`/quotation-templates/${id}`);
+    return res.data;
+  },
+};
+
+// Reports API
+export const reportService = {
+  async getReportData(format?: string) {
+    const res = await api.get('/reports', { params: { format } });
+    return res.data;
+  },
+  getReportCSVUrl() {
+    return `${API_BASE_URL}/reports?format=csv`;
+  },
+};
+
+// Legacy rentalService wrapper
 export const rentalService = {
   async createRental(cartItem: CartItem) {
     try {

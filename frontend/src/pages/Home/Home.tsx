@@ -14,7 +14,7 @@ interface HomeProps {
   onAddToCart: (product: Product, selectedColor?: string, selectedSize?: string) => void;
   onSelectProduct: (product: Product) => void;
   isSignedIn: boolean;
-  userRole: 'customer' | 'vendor';
+  userRole: 'customer' | 'vendor' | 'admin';
   onRequireAuth: (message: string) => void;
 }
 

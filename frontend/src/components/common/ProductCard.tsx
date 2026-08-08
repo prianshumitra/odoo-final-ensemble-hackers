@@ -9,7 +9,7 @@ interface ProductCardProps {
   onAddToCart: (product: Product, selectedColor?: string, selectedSize?: string) => void;
   onSelectProduct?: (product: Product) => void;
   isSignedIn: boolean;
-  userRole: 'customer' | 'vendor';
+  userRole: 'customer' | 'vendor' | 'admin';
   onRequireAuth: (message: string) => void;
 }
 
@@ -37,7 +37,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       onRequireAuth('Please sign in as a Customer to rent items.');
       return;
     }
-    if (userRole === 'vendor') {
+    if (userRole !== 'customer') {
       alert('Vendor accounts are for listing products. Please switch to Customer mode to place rental orders.');
       return;
     }
@@ -194,7 +194,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               ? 'bg-[#E4DFD6] text-[#8A8694] cursor-not-allowed'
               : isAdded
               ? 'bg-emerald-600 text-white'
-              : userRole === 'vendor'
+            : userRole !== 'customer'
               ? 'bg-amber-100 text-amber-800 border border-amber-300'
               : 'bg-[#18181B] text-white hover:bg-[#7E3AF2] hover:shadow-md active:scale-95'
           }`}
@@ -204,7 +204,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <Check className="w-3.5 h-3.5" />
               <span>Added</span>
             </>
-          ) : userRole === 'vendor' ? (
+          ) : userRole !== 'customer' ? (
             <span>Vendor View</span>
           ) : (
             <>

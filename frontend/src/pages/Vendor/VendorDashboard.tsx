@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/react';
 import { Package, ShoppingBag, DollarSign, Clock, Plus, ArrowRight, BarChart3, ShieldCheck, Calendar, Truck, RotateCcw, AlertTriangle } from 'lucide-react';
 import { VendorKPICard } from '../../components/vendor/VendorKPICard';
 import { VendorActivityFeed } from '../../components/vendor/VendorActivityFeed';
@@ -8,13 +7,14 @@ import { VendorRentalTable } from '../../components/vendor/VendorRentalTable';
 import { RentalDetailModal } from '../../components/vendor/RentalDetailModal';
 import { vendorService } from '../../services/vendorService';
 import type { Product, RentalOrder, VendorStats } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 interface VendorDashboardProps {
   onOpenAddProduct: () => void;
 }
 
 export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProduct }) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -54,7 +54,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
     );
   };
 
-  const vendorName = user?.fullName || user?.firstName || 'Vendor Partner';
+  const vendorName = user?.name || user?.firstName || 'Vendor Partner';
 
   return (
     <div className="space-y-8">

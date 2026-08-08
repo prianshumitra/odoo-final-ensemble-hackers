@@ -1,11 +1,33 @@
 import { Router } from 'express';
-import { registerUser, loginUser, getMe } from '../controllers/authController.js';
-import { authenticate } from '../middleware/auth.js';
+import {
+  registerUser,
+  registerVendor,
+  loginUser,
+  adminLogin,
+  getAdminStats,
+  checkEmail,
+  forgotPassword,
+  resetPassword,
+  getMe,
+  listUsers,
+  updateUserStatus,
+} from '../controllers/authController.js';
+import { authenticate, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
 router.post('/register', registerUser);
+router.post('/register-vendor', registerVendor);
 router.post('/login', loginUser);
+router.post('/admin-login', adminLogin);
+router.post('/check-email', checkEmail);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password/:token', resetPassword);
 router.get('/me', authenticate, getMe);
+
+// Admin user management
+router.get('/admin-stats', authenticate, requireAdmin, getAdminStats);
+router.get('/users', authenticate, requireAdmin, listUsers);
+router.put('/users/:id/status', authenticate, requireAdmin, updateUserStatus);
 
 export default router;

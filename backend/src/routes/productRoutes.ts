@@ -5,17 +5,19 @@ import {
   createProduct,
   updateProduct,
   getVendorProducts,
+  togglePublishProduct,
   deleteProduct,
 } from '../controllers/productController.js';
-import { authenticate, requireVendor } from '../middleware/auth.js';
+import { authenticate, requireVendorOrAdmin, requireAdmin } from '../middleware/auth.js';
 
 const router = Router();
 
 router.get('/', getProducts);
-router.get('/vendor/my-products', authenticate, requireVendor, getVendorProducts);
+router.get('/vendor/my-products', authenticate, requireVendorOrAdmin, getVendorProducts);
 router.get('/:id', getProductById);
-router.post('/', authenticate, requireVendor, createProduct);
-router.put('/:id', authenticate, requireVendor, updateProduct);
-router.delete('/:id', authenticate, requireVendor, deleteProduct);
+router.post('/', authenticate, requireVendorOrAdmin, createProduct);
+router.put('/:id', authenticate, requireVendorOrAdmin, updateProduct);
+router.patch('/:id/publish', authenticate, requireAdmin, togglePublishProduct);
+router.delete('/:id', authenticate, requireVendorOrAdmin, deleteProduct);
 
 export default router;

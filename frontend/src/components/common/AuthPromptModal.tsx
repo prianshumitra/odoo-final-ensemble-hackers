@@ -1,6 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { X, ShoppingBag, Store, Lock } from 'lucide-react';
-import { SignInButton, SignUpButton } from '@clerk/react';
 
 interface AuthPromptModalProps {
   isOpen: boolean;
@@ -50,51 +50,57 @@ export const AuthPromptModal: React.FC<AuthPromptModalProps> = ({
         {/* Dual Login Options: Customer vs Vendor */}
         <div className="space-y-3">
           {/* Customer Login Option */}
-          <SignInButton mode="modal">
-            <button
-              onClick={() => onSelectRole?.('customer')}
-              className="w-full flex items-center justify-between p-4 rounded-2xl border-2 border-[#EFE9F6] hover:border-[#7E3AF2] bg-[#FAF7F2] hover:bg-[#EFE9F6]/40 transition-all text-left group shadow-xs"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#18181B] text-white flex items-center justify-center font-bold group-hover:bg-[#7E3AF2] transition-colors">
-                  <ShoppingBag className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-[#18181B]">Customer Sign In</h4>
-                  <p className="text-xs text-[#8A8694]">Rent items, save cart & track orders</p>
-                </div>
+          <Link
+            to="/login"
+            onClick={() => {
+              onSelectRole?.('customer');
+              onClose();
+            }}
+            className="w-full flex items-center justify-between p-4 rounded-2xl border-2 border-[#EFE9F6] hover:border-[#7E3AF2] bg-[#FAF7F2] hover:bg-[#EFE9F6]/40 transition-all text-left group shadow-xs"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#18181B] text-white flex items-center justify-center font-bold group-hover:bg-[#7E3AF2] transition-colors">
+                <ShoppingBag className="w-5 h-5" />
               </div>
-            </button>
-          </SignInButton>
+              <div>
+                <h4 className="text-sm font-bold text-[#18181B]">Customer Sign In</h4>
+                <p className="text-xs text-[#8A8694]">Rent items, save cart & track orders</p>
+              </div>
+            </div>
+          </Link>
 
           {/* Vendor Login Option */}
-          <SignInButton mode="modal">
-            <button
-              onClick={() => onSelectRole?.('vendor')}
-              className="w-full flex items-center justify-between p-4 rounded-2xl border-2 border-amber-200 hover:border-amber-500 bg-amber-50/50 hover:bg-amber-100/50 transition-all text-left group shadow-xs"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold group-hover:bg-amber-700 transition-colors">
-                  <Store className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-[#18181B]">Vendor Sign In</h4>
-                  <p className="text-xs text-[#8A8694]">List rental products & manage listings</p>
-                </div>
+          <Link
+            to="/login"
+            onClick={() => {
+              onSelectRole?.('vendor');
+              onClose();
+            }}
+            className="w-full flex items-center justify-between p-4 rounded-2xl border-2 border-amber-200 hover:border-amber-500 bg-amber-50/50 hover:bg-amber-100/50 transition-all text-left group shadow-xs"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold group-hover:bg-amber-700 transition-colors">
+                <Store className="w-5 h-5" />
               </div>
-            </button>
-          </SignInButton>
+              <div>
+                <h4 className="text-sm font-bold text-[#18181B]">Vendor Sign In</h4>
+                <p className="text-xs text-[#8A8694]">List rental products & manage listings</p>
+              </div>
+            </div>
+          </Link>
         </div>
 
         {/* Footer info */}
         <div className="mt-6 pt-4 border-t border-[#F4EFEA] text-center">
           <p className="text-[11px] text-[#8A8694]">
             Don't have an account?{' '}
-            <SignUpButton mode="modal">
-              <span className="text-[#7E3AF2] font-bold hover:underline cursor-pointer">
-                Create an account
-              </span>
-            </SignUpButton>
+            <Link
+              to="/signup"
+              onClick={onClose}
+              className="text-[#7E3AF2] font-bold hover:underline cursor-pointer"
+            >
+              Create an account
+            </Link>
           </p>
         </div>
       </div>

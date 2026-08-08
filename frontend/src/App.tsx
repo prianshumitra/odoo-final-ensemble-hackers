@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { ShieldAlert } from 'lucide-react';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
 import { CartDrawer } from './components/common/CartDrawer';
@@ -16,370 +17,320 @@ import { Orders } from './pages/Orders/Orders';
 import { Settings } from './pages/Settings/Settings';
 import { Login } from './pages/Login/Login';
 import { SignUp } from './pages/SignUp/SignUp';
-
-// Vendor Pages Imports
+import { VendorSignUp } from './pages/VendorSignUp/VendorSignUp';
+import { ForgotPassword } from './pages/ForgotPassword/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword/ResetPassword';
+import { Checkout } from './pages/Checkout/Checkout';
+import { AdminLogin } from './pages/AdminLogin/AdminLogin';
+import { AdminDashboard } from './pages/AdminDashboard/AdminDashboard';
 import { VendorLayout } from './pages/Vendor/VendorLayout';
 import { VendorDashboard } from './pages/Vendor/VendorDashboard';
+import { VendorOrders } from './pages/Vendor/VendorOrders';
 import { VendorProducts } from './pages/Vendor/VendorProducts';
-import { VendorRentals } from './pages/Vendor/VendorRentals';
+import { VendorInvoices } from './pages/Vendor/VendorInvoices';
+import { VendorAttributes } from './pages/Vendor/VendorAttributes';
+import { VendorPricelists } from './pages/Vendor/VendorPricelists';
+import { VendorCalendar } from './pages/Vendor/VendorCalendar';
+import { VendorPickupsReturns } from './pages/Vendor/VendorPickupsReturns';
+import { VendorQuotationTemplates } from './pages/Vendor/VendorQuotationTemplates';
 import { VendorCustomers } from './pages/Vendor/VendorCustomers';
-import { VendorAnalytics } from './pages/Vendor/VendorAnalytics';
+import { VendorReports } from './pages/Vendor/VendorReports';
 import { VendorNotifications } from './pages/Vendor/VendorNotifications';
 import { VendorSettings } from './pages/Vendor/VendorSettings';
+import type { CartItem, Product } from './types';
+import { productService } from './services/api';
+import { getSocket } from './services/socket';
+import { useAuth } from './context/AuthContext';
 
-import type { Product, CartItem } from './types';
-import { INITIAL_PRODUCTS } from './data/products';
-import { productService, rentalService, cartService, setAuthHeaders } from './services/api';
-import { getSocket, joinUserRoom } from './services/socket';
-import { useUser, useAuth } from '@clerk/react';
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  }
+
+  return <>{children}</>;
+}
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/admin-login" replace />;
+  }
+
+  if (user?.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+function VendorRouteGuard({ children }: { children: React.ReactNode }) {
+  const { user, isAuthenticated, isVendorApproved } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: '/vendor' }} />;
+  }
+
+  if (!isVendorApproved) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#FAF7F2] text-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shadow-md">
+          <ShieldAlert className="w-8 h-8" />
+        </div>
+        <h1 className="text-2xl font-black text-[#18181B]">Vendor Access Restricted</h1>
+        <p className="text-xs text-[#6E6A78] max-w-md">
+          {user?.role === 'vendor' && user.status === 'pending'
+            ? 'Your vendor account is pending admin approval. You can sign in, but the vendor console stays locked until approval.'
+            : 'Customer accounts cannot access the Vendor Operations Console.'}
+        </p>
+        <a
+          href="/"
+          className="px-6 py-2.5 bg-[#7E3AF2] hover:bg-[#6C2BD9] text-white font-bold text-xs rounded-xl transition-all shadow-md"
+        >
+          Return to Customer Storefront
+        </a>
+      </div>
+    );
+  }
+
+  return <>{children}</>;
+}
 
 function AppContent() {
-  const { user } = useUser();
-  const { getToken } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [userRole, setUserRole] = useState<'customer' | 'vendor'>('customer');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
-  
-  // Modals & Drawers state
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isVendorModalOpen, setIsVendorModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  // Auth Prompt Modal state
   const [isAuthPromptOpen, setIsAuthPromptOpen] = useState(false);
   const [authPromptMsg, setAuthPromptMsg] = useState('Please sign in to continue.');
+
+  const userRole = user?.role || 'customer';
 
   const handleRequireAuth = (message: string) => {
     setAuthPromptMsg(message);
     setIsAuthPromptOpen(true);
   };
 
-  // Select role for sign-in
-  const handleSelectRole = (role: 'customer' | 'vendor') => {
-    setUserRole(role);
-    setIsAuthPromptOpen(false);
-    if (user) {
-      user.update({ unsafeMetadata: { ...user.unsafeMetadata, role } }).catch(() => {});
-    }
-  };
-
-  // 1. Sync Clerk Auth Context & Metadata with API service
-  useEffect(() => {
-    const syncAuth = async () => {
-      let token: string | null = null;
-      try {
-        if (getToken) {
-          token = await getToken();
-        }
-      } catch (err) {}
-
-      if (user) {
-        // Read stored role from Clerk metadata if available
-        const clerkRole = (user.unsafeMetadata?.role || user.publicMetadata?.role) as 'customer' | 'vendor' | undefined;
-        const effectiveRole = clerkRole || userRole;
-
-        if (clerkRole && clerkRole !== userRole) {
-          setUserRole(clerkRole);
-        }
-
-        const userEmail = user.primaryEmailAddress?.emailAddress || '';
-        const userContext = {
-          id: user.id,
-          email: userEmail,
-          name: user.fullName || user.firstName || userEmail.split('@')[0],
-          role: effectiveRole,
-        };
-        setAuthHeaders(userContext, token);
-        joinUserRoom(user.id);
-      } else {
-        setAuthHeaders(null, null);
-      }
-    };
-
-    syncAuth();
-  }, [user, userRole, getToken]);
-
-  // 2. Fetch products from MongoDB Backend
-  const loadProducts = useCallback(async () => {
-    const fetched = await productService.getProducts();
-    if (fetched && fetched.length > 0) {
-      const formatted = fetched.map((p: any) => ({
-        ...p,
-        id: p._id || p.id,
-      }));
-      setProducts(formatted);
+  const fetchProducts = useCallback(async () => {
+    try {
+      const data = await productService.getProducts();
+      setProducts(data);
+    } catch {
+      setProducts([]);
     }
   }, []);
 
   useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
+    fetchProducts();
+  }, [fetchProducts]);
 
-  // 3. Sync User Cart from/to MongoDB Backend
-  useEffect(() => {
-    const fetchUserCart = async () => {
-      if (user) {
-        const serverCart = await cartService.getCart();
-        if (serverCart && serverCart.length > 0) {
-          const formattedCart: CartItem[] = serverCart.map((item: any) => ({
-            product: {
-              id: item.productId,
-              name: item.productName,
-              brand: 'Rental Store',
-              category: 'Furniture',
-              inStock: true,
-              rating: 4.8,
-              reviewsCount: 12,
-              image: item.productImage || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80',
-              colorVariants: [{ name: item.selectedColor || 'Standard', hex: '#18181B' }],
-              pricing: { amount: item.amount || 999, unit: item.unit || 'Month' },
-              duration: item.rentDuration || '6 Month',
-              description: 'Rental item from marketplace catalog.',
-            },
-            quantity: item.quantity,
-            selectedColor: item.selectedColor,
-            selectedSize: item.selectedSize,
-            rentDuration: item.rentDuration,
-          }));
-          setCartItems(formattedCart);
-        }
-      } else {
-        setCartItems([]);
-      }
-    };
-    fetchUserCart();
-  }, [user]);
-
-  // 4. Socket.io Real-time Listeners for Products and Cart
   useEffect(() => {
     const socket = getSocket();
 
-    const handleRealtimeProductCreated = (newProduct: any) => {
-      console.log('⚡ Realtime Event Received: product:created', newProduct);
-      const formatted: Product = {
-        ...newProduct,
-        id: newProduct._id || newProduct.id,
-      };
-      setProducts((prev) => {
-        if (prev.some((p) => p.id === formatted.id)) return prev;
-        return [formatted, ...prev];
-      });
+    const onProductCreated = (newProduct: Product) => {
+      setProducts((prev) => [newProduct, ...prev]);
     };
 
-    const handleRealtimeProductDeleted = (deletedId: string) => {
-      console.log('⚡ Realtime Event Received: product:deleted', deletedId);
-      setProducts((prev) => prev.filter((p) => p.id !== deletedId));
+    const onProductUpdated = (updatedProd: Product) => {
+      setProducts((prev) =>
+        prev.map((p) => (p.id === updatedProd.id || p._id === updatedProd._id ? updatedProd : p))
+      );
     };
 
-    socket.on('product:created', handleRealtimeProductCreated);
-    socket.on('product:deleted', handleRealtimeProductDeleted);
+    const onProductDeleted = (deletedId: string) => {
+      setProducts((prev) => prev.filter((p) => p.id !== deletedId && p._id !== deletedId));
+    };
+
+    socket.on('product:created', onProductCreated);
+    socket.on('product:updated', onProductUpdated);
+    socket.on('product:deleted', onProductDeleted);
 
     return () => {
-      socket.off('product:created', handleRealtimeProductCreated);
-      socket.off('product:deleted', handleRealtimeProductDeleted);
+      socket.off('product:created', onProductCreated);
+      socket.off('product:updated', onProductUpdated);
+      socket.off('product:deleted', onProductDeleted);
     };
   }, []);
 
-  // 5. Vendor adds product (Optimistic + socket confirmation)
-  const handleProductAdded = (newProduct: Product) => {
-    const formatted = {
-      ...newProduct,
-      id: (newProduct as any)._id || newProduct.id,
-    };
-    setProducts((prev) => {
-      if (prev.some((p) => p.id === formatted.id)) return prev;
-      return [formatted, ...prev];
-    });
-  };
-
-  // 6. Cart Operations
   const handleAddToCart = (
     product: Product,
     selectedColor?: string,
-    selectedSize?: string
+    selectedSize?: string,
+    startDate?: string,
+    endDate?: string
   ) => {
-    if (!user) {
-      handleRequireAuth('Please sign in as a Customer to rent items or add to cart.');
-      return;
-    }
-
-    if (userRole === 'vendor') {
-      alert('Vendor accounts are for listing products. Please switch to Customer mode to place rental orders.');
-      return;
-    }
-
     setCartItems((prev) => {
-      let updatedCart: CartItem[];
       const existingIndex = prev.findIndex((item) => item.product.id === product.id);
       if (existingIndex > -1) {
-        updatedCart = [...prev];
-        updatedCart[existingIndex].quantity += 1;
-      } else {
-        const newItem: CartItem = {
+        const updated = [...prev];
+        updated[existingIndex].quantity += 1;
+        if (selectedColor) updated[existingIndex].selectedColor = selectedColor;
+        if (selectedSize) updated[existingIndex].selectedSize = selectedSize;
+        if (startDate) updated[existingIndex].startDate = startDate;
+        if (endDate) updated[existingIndex].endDate = endDate;
+        return updated;
+      }
+      return [
+        ...prev,
+        {
           product,
           quantity: 1,
-          selectedColor,
-          selectedSize,
-          rentDuration: product.duration,
-        };
-        rentalService.createRental(newItem);
-        updatedCart = [...prev, newItem];
-      }
-      cartService.syncCart(updatedCart);
-      return updatedCart;
+          selectedColor: selectedColor || product.colorVariants?.[0]?.name || 'Standard',
+          selectedSize: selectedSize || product.sizeVariants?.[0] || 'Standard',
+          rentDuration: product.duration || '6 Month',
+          startDate,
+          endDate,
+        },
+      ];
     });
+    setIsCartOpen(true);
   };
 
-  const handleUpdateCartQuantity = (productId: string, quantity: number) => {
-    if (!user) {
-      handleRequireAuth('Please sign in to update your cart.');
-      return;
-    }
-
+  const handleUpdateQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
-      handleRemoveCartItem(productId);
+      setCartItems((prev) => prev.filter((item) => item.product.id !== productId));
       return;
     }
-    setCartItems((prev) => {
-      const updated = prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
-      );
-      cartService.syncCart(updated);
-      return updated;
-    });
-  };
 
-  const handleRemoveCartItem = (productId: string) => {
-    if (!user) return;
-    setCartItems((prev) => {
-      const updated = prev.filter((item) => item.product.id !== productId);
-      cartService.syncCart(updated);
-      return updated;
-    });
-  };
-
-  // Wishlist operations
-  const handleToggleWishlist = (product: Product) => {
-    if (!user) {
-      handleRequireAuth('Please sign in to add items to your wishlist.');
-      return;
-    }
-    setWishlistIds((prev) =>
-      prev.includes(product.id)
-        ? prev.filter((id) => id !== product.id)
-        : [...prev, product.id]
+    setCartItems((prev) =>
+      prev.map((item) => (item.product.id === productId ? { ...item, quantity } : item))
     );
   };
 
-  const wishlistProducts = products.filter((p) =>
-    wishlistIds.includes(p.id)
-  );
-  const navigate = useNavigate();
-
-  const handleToggleRole = () => {
-    const nextRole = userRole === 'customer' ? 'vendor' : 'customer';
-    setUserRole(nextRole);
-    if (user) {
-      user.update({ unsafeMetadata: { ...user.unsafeMetadata, role: nextRole } }).catch(() => {});
-    }
-    if (nextRole === 'vendor') {
-      navigate('/vendor');
-    } else {
-      navigate('/');
-    }
+  const handleToggleWishlist = (product: Product) => {
+    setWishlistIds((prev) =>
+      prev.includes(product.id) ? prev.filter((id) => id !== product.id) : [...prev, product.id]
+    );
   };
 
+  const wishlistedProducts = products.filter((p) => wishlistIds.includes(p.id));
+
   return (
-    <>
+    <div className="min-h-screen flex flex-col bg-[#FAF7F2] font-sans antialiased text-[#1E1B26]">
       <Routes>
-        {/* Vendor Dashboard Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/vendor-signup" element={<VendorSignUp />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
         <Route
-          path="/vendor"
+          path="/admin"
           element={
-            <VendorLayout
-              userRole={userRole}
-              onToggleRole={handleToggleRole}
-              onOpenAddProduct={() => setIsVendorModalOpen(true)}
-            />
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/vendor/*"
+          element={
+            <VendorRouteGuard>
+              <VendorLayout
+                userRole={userRole}
+                onOpenAddProduct={() => setIsVendorModalOpen(true)}
+              />
+            </VendorRouteGuard>
           }
         >
           <Route index element={<VendorDashboard onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
+          <Route path="orders" element={<VendorOrders />} />
           <Route path="products" element={<VendorProducts onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
-          <Route path="rentals" element={<VendorRentals />} />
+          <Route path="invoices" element={<VendorInvoices />} />
+          <Route path="attributes" element={<VendorAttributes />} />
+          <Route path="pricelists" element={<VendorPricelists />} />
+          <Route path="calendar" element={<VendorCalendar />} />
+          <Route path="pickups-returns" element={<VendorPickupsReturns />} />
+          <Route path="quotation-templates" element={<VendorQuotationTemplates />} />
           <Route path="customers" element={<VendorCustomers />} />
-          <Route path="analytics" element={<VendorAnalytics />} />
+          <Route path="reports" element={<VendorReports />} />
           <Route path="notifications" element={<VendorNotifications />} />
           <Route path="settings" element={<VendorSettings />} />
         </Route>
-
-        {/* Customer Marketplace Routes */}
         <Route
-          path="/*"
+          path="*"
           element={
             <div className="min-h-screen flex flex-col bg-transparent text-[#1E1B26] selection:bg-[#EFE9F6] selection:text-[#7E3AF2]">
               <Header
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
-                cartCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
+                cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
                 wishlistCount={wishlistIds.length}
-                onOpenCart={() => {
-                  if (!user) {
-                    handleRequireAuth('Please sign in to view your cart.');
-                  } else {
-                    setIsCartOpen(true);
-                  }
-                }}
-                onOpenWishlist={() => {
-                  if (!user) {
-                    handleRequireAuth('Please sign in to view your wishlist.');
-                  } else {
-                    setIsWishlistOpen(true);
-                  }
-                }}
-                onOpenVendorModal={() => {
-                  if (!user) {
-                    handleRequireAuth('Please sign in as a Vendor to list products.');
-                  } else if (userRole !== 'vendor') {
-                    handleToggleRole();
-                  } else {
-                    setIsVendorModalOpen(true);
-                  }
-                }}
+                onOpenCart={() => setIsCartOpen(true)}
+                onOpenWishlist={() => setIsWishlistOpen(true)}
+                onOpenVendorModal={() => setIsVendorModalOpen(true)}
                 userRole={userRole}
-                onToggleRole={handleToggleRole}
-                onSelectRole={handleSelectRole}
+                onRequireAuth={handleRequireAuth}
               />
 
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <Home
-                      products={products}
-                      searchQuery={searchQuery}
-                      wishlistIds={wishlistIds}
-                      onToggleWishlist={handleToggleWishlist}
-                      onAddToCart={handleAddToCart}
-                      onSelectProduct={(product) => setSelectedProduct(product)}
-                      isSignedIn={!!user}
-                      userRole={userRole}
-                      onRequireAuth={handleRequireAuth}
-                    />
-                  }
-                />
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/login" element={<Login onSelectRole={handleSelectRole} />} />
-                <Route path="/signup" element={<SignUp onSelectRole={handleSelectRole} />} />
-              </Routes>
+              <main className="flex-1 flex flex-col">
+                <Routes>
+                  <Route
+                    path="/"
+                    element={
+                      <Home
+                        products={products}
+                        searchQuery={searchQuery}
+                        wishlistIds={wishlistIds}
+                        onToggleWishlist={handleToggleWishlist}
+                        onAddToCart={handleAddToCart}
+                        onSelectProduct={setSelectedProduct}
+                        isSignedIn={isAuthenticated}
+                        userRole={userRole}
+                        onRequireAuth={handleRequireAuth}
+                      />
+                    }
+                  />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route
+                    path="/account"
+                    element={
+                      <ProtectedRoute>
+                        <Account />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/orders"
+                    element={
+                      <ProtectedRoute>
+                        <Orders />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/settings"
+                    element={
+                      <ProtectedRoute>
+                        <Settings />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/checkout"
+                    element={
+                      <ProtectedRoute>
+                        <Checkout
+                          cartItems={cartItems}
+                          user={user}
+                          onOrderCompleted={() => setCartItems([])}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </main>
 
               <Footer />
 
@@ -387,20 +338,18 @@ function AppContent() {
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
                 cartItems={cartItems}
-                onUpdateQuantity={handleUpdateCartQuantity}
-                onRemoveItem={handleRemoveCartItem}
+                onUpdateQuantity={handleUpdateQuantity}
+                onRemoveItem={(productId) =>
+                  setCartItems((prev) => prev.filter((item) => item.product.id !== productId))
+                }
               />
 
               <WishlistDrawer
                 isOpen={isWishlistOpen}
                 onClose={() => setIsWishlistOpen(false)}
-                wishlistItems={wishlistProducts}
+                wishlistItems={wishlistedProducts}
                 onRemoveFromWishlist={handleToggleWishlist}
-                onAddToCart={(product) => {
-                  handleAddToCart(product);
-                  setIsWishlistOpen(false);
-                  setIsCartOpen(true);
-                }}
+                onAddToCart={handleAddToCart}
               />
 
               <ProductDetailModal
@@ -410,37 +359,39 @@ function AppContent() {
                 isWishlisted={selectedProduct ? wishlistIds.includes(selectedProduct.id) : false}
                 onToggleWishlist={handleToggleWishlist}
                 onAddToCart={handleAddToCart}
-                isSignedIn={!!user}
+                isSignedIn={isAuthenticated}
                 userRole={userRole}
                 onRequireAuth={handleRequireAuth}
+              />
+
+              <AddProductModal
+                isOpen={isVendorModalOpen}
+                onClose={() => setIsVendorModalOpen(false)}
+                onProductAdded={(newProd) => {
+                  setProducts((prev) => [newProd, ...prev]);
+                }}
+                userRole={userRole}
+              />
+
+              <AuthPromptModal
+                isOpen={isAuthPromptOpen}
+                onClose={() => setIsAuthPromptOpen(false)}
+                actionMessage={authPromptMsg}
               />
             </div>
           }
         />
       </Routes>
-
-      {/* Global Vendor List New Rental Product Modal */}
-      <AddProductModal
-        isOpen={isVendorModalOpen}
-        onClose={() => setIsVendorModalOpen(false)}
-        onProductAdded={handleProductAdded}
-      />
-
-      {/* Global Sign In Required Prompt Modal */}
-      <AuthPromptModal
-        isOpen={isAuthPromptOpen}
-        onClose={() => setIsAuthPromptOpen(false)}
-        actionMessage={authPromptMsg}
-        onSelectRole={handleSelectRole}
-      />
-    </>
+    </div>
   );
 }
 
-export default function App() {
+export function App() {
   return (
     <BrowserRouter>
       <AppContent />
     </BrowserRouter>
   );
 }
+
+export default App;

@@ -2,42 +2,34 @@ import React, { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { VendorSidebar } from '../../components/vendor/VendorSidebar';
 import { Menu, Bell, Store } from 'lucide-react';
-import { useUser } from '@clerk/react';
 import { ProfileDropdown } from '../../components/common/ProfileDropdown';
+import { useAuth } from '../../context/AuthContext';
 
 interface VendorLayoutProps {
-  userRole: 'customer' | 'vendor';
-  onToggleRole: () => void;
+  userRole: 'customer' | 'vendor' | 'admin';
   onOpenAddProduct: () => void;
 }
 
 export const VendorLayout: React.FC<VendorLayoutProps> = ({
   userRole,
-  onToggleRole,
   onOpenAddProduct,
 }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { user } = useUser();
+  const { user } = useAuth();
   const navigate = useNavigate();
-
-  const handleRoleToggle = () => {
-    onToggleRole();
-    navigate('/');
-  };
 
   return (
     <div className="min-h-screen text-[#1E1B26] flex">
       {/* Sidebar Navigation */}
       <VendorSidebar
-        onToggleRole={handleRoleToggle}
         isOpen={isMobileSidebarOpen}
         onClose={() => setIsMobileSidebarOpen(false)}
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 lg:pl-64">
-        {/* Top Header Bar — Glassmorphic Light Purple / Off-white */}
+        {/* Top Header Bar */}
         <header className="sticky top-0 z-30 bg-[#EFE9F6]/75 backdrop-blur-xl backdrop-saturate-150 border-b border-[#D4C4ED]/60 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-xs">
           <div className="flex items-center gap-3">
             <button
@@ -50,7 +42,7 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse hidden sm:inline-block" />
               <span className="text-xs font-bold uppercase tracking-wider text-[#7E3AF2]">
-                Vendor Dashboard
+                Vendor Operations Console
               </span>
             </div>
           </div>
@@ -80,19 +72,19 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 p-1.5 rounded-2xl bg-[#EFE9F6] border border-[#D4C4ED] hover:border-[#7E3AF2] transition-all"
               >
-                {user?.imageUrl ? (
+                {user?.profileImageUrl ? (
                   <img
-                    src={user.imageUrl}
+                    src={user.profileImageUrl}
                     alt="Vendor Avatar"
                     className="w-7 h-7 rounded-xl object-cover"
                   />
                 ) : (
                   <div className="w-7 h-7 rounded-xl bg-[#7E3AF2] text-white flex items-center justify-center font-extrabold text-xs">
-                    {(user?.firstName?.[0] || 'V').toUpperCase()}
+                    {(user?.firstName?.[0] || user?.name?.[0] || 'V').toUpperCase()}
                   </div>
                 )}
                 <span className="text-xs font-bold text-[#18181B] hidden md:inline-block pr-1">
-                  {user?.firstName || 'Vendor'}
+                  {user?.firstName || user?.name || 'Vendor'}
                 </span>
               </button>
 
@@ -100,7 +92,6 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
                 isOpen={isProfileOpen}
                 onClose={() => setIsProfileOpen(false)}
                 userRole={userRole}
-                onToggleRole={handleRoleToggle}
                 onOpenVendorModal={onOpenAddProduct}
               />
             </div>

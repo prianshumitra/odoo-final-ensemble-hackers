@@ -5,8 +5,9 @@ export interface AuthRequest extends Request {
   user?: {
     id: string;
     email: string;
-    role: 'customer' | 'vendor';
+    role: 'admin' | 'vendor' | 'customer';
     name: string;
+    status?: 'active' | 'pending' | 'suspended';
   };
 }
 
@@ -14,53 +15,77 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
   const authHeader = req.headers.authorization;
   const headerUserId = req.headers['x-user-id'] as string;
   const headerUserEmail = req.headers['x-user-email'] as string;
+  const headerUserRole = req.headers['x-user-role'] as 'admin' | 'vendor' | 'customer';
   const headerUserName = req.headers['x-user-name'] as string;
-  const headerUserRole = (req.headers['x-user-role'] as 'customer' | 'vendor') || 'customer';
 
-  // 1. Check custom user headers from frontend
+  // 1. Support Clerk / Custom Header Identity
   if (headerUserId || headerUserEmail) {
     req.user = {
-      id: headerUserId || headerUserEmail,
+      id: headerUserId || 'clerk_user',
       email: headerUserEmail || 'user@example.com',
-      name: headerUserName || headerUserEmail?.split('@')[0] || 'Marketplace User',
-      role: headerUserRole,
+      name: headerUserName || (headerUserEmail ? headerUserEmail.split('@')[0] : 'User'),
+      role: headerUserRole || 'customer',
+      status: 'active',
     };
     return next();
   }
 
-  // 2. Check Bearer Token (Clerk JWT or Custom JWT)
+  // 2. Support JWT Bearer Tokens
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1];
     try {
-      // Decode JWT without strict signature check to allow Clerk tokens & local tokens seamlessly
-      const decoded = jwt.decode(token) as any;
-      if (decoded) {
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || 'ezrent_super_secret_jwt_key_2026'
+      ) as any;
+
+      req.user = {
+        id: decoded.id || decoded.sub,
+        email: decoded.email,
+        name: decoded.name || (decoded.email ? decoded.email.split('@')[0] : 'User'),
+        role: decoded.role || 'customer',
+        status: decoded.status || 'active',
+      };
+
+      return next();
+    } catch (err) {
+      // Decode fallback if JWT verification fails
+      const decodedNoVerify = jwt.decode(token) as any;
+      if (decodedNoVerify?.email || decodedNoVerify?.sub) {
         req.user = {
-          id: decoded.sub || decoded.id || decoded.userId || 'guest-user',
-          email: decoded.email || decoded.primary_email_address || decoded.email_address || 'user@example.com',
-          name: decoded.name || decoded.full_name || decoded.email?.split('@')[0] || 'Marketplace User',
-          role: decoded.role || headerUserRole || 'customer',
+          id: decodedNoVerify.sub || decodedNoVerify.id || 'clerk_user',
+          email: decodedNoVerify.email || 'user@example.com',
+          name: decodedNoVerify.name || (decodedNoVerify.email ? decodedNoVerify.email.split('@')[0] : 'User'),
+          role: decodedNoVerify.role || 'customer',
+          status: 'active',
         };
         return next();
       }
-    } catch (err) {
-      console.warn('JWT Decode warning:', (err as Error).message);
     }
   }
 
-  // Fallback for demo guest
-  req.user = {
-    id: 'guest_user_demo',
-    email: 'guest@diligentwombat.com',
-    name: 'Guest User',
-    role: headerUserRole || 'customer',
-  };
+  res.status(401).json({ message: 'Authentication required. Please sign in.' });
+};
+
+export const requireAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user || req.user.role !== 'admin') {
+    res.status(403).json({ message: 'Access denied: Admin role required' });
+    return;
+  }
   next();
 };
 
 export const requireVendor = (req: AuthRequest, res: Response, next: NextFunction) => {
-  if (!req.user || req.user.role !== 'vendor') {
-    res.status(403).json({ message: 'Access denied: Vendor role required' });
+  if (!req.user || (req.user.role !== 'vendor' && req.user.role !== 'admin')) {
+    res.status(403).json({ message: 'Access denied: Vendor/Admin role required' });
+    return;
+  }
+  next();
+};
+
+export const requireVendorOrAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user || (req.user.role !== 'vendor' && req.user.role !== 'admin')) {
+    res.status(403).json({ message: 'Access denied: Admin or Vendor role required' });
     return;
   }
   next();

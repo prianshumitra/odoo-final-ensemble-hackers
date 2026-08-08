@@ -154,7 +154,22 @@ export const seedDatabase = async () => {
 
     console.log('🌱 Connected to MongoDB for seeding...');
 
-    // 1. Create Demo Vendor User if not exists
+    // 1. Create Default Admin Account
+    const adminEmail = 'admin@ezrent.com';
+    let admin = await User.findOne({ email: adminEmail });
+    if (!admin) {
+      const hashedPassword = await bcrypt.hash('admin123', 10);
+      admin = await User.create({
+        name: 'System Admin',
+        email: adminEmail,
+        password: hashedPassword,
+        role: 'admin',
+        status: 'active',
+      });
+      console.log('🛡️ Seeded Admin Account: admin@ezrent.com / admin123');
+    }
+
+    // 2. Create Default Vendor Account
     const vendorEmail = 'vendor@diligentwombat.com';
     let vendor = await User.findOne({ email: vendorEmail });
     if (!vendor) {
@@ -164,11 +179,29 @@ export const seedDatabase = async () => {
         email: vendorEmail,
         password: hashedPassword,
         role: 'vendor',
+        status: 'active',
+        companyName: 'Wombat Electronics & Furniture Co.',
+        gstNo: '27AAAAA0000A1Z5',
       });
-      console.log('👤 Created Demo Vendor Account: vendor@diligentwombat.com / vendor123');
+      console.log('🏪 Seeded Vendor Account: vendor@diligentwombat.com / vendor123');
     }
 
-    // 2. Populate products if empty
+    // 3. Create Default Customer Account
+    const customerEmail = 'customer@ezrent.com';
+    let customer = await User.findOne({ email: customerEmail });
+    if (!customer) {
+      const hashedPassword = await bcrypt.hash('customer123', 10);
+      customer = await User.create({
+        name: 'John Customer',
+        email: customerEmail,
+        password: hashedPassword,
+        role: 'customer',
+        status: 'active',
+      });
+      console.log('🛒 Seeded Customer Account: customer@ezrent.com / customer123');
+    }
+
+    // 4. Populate products if empty
     const productCount = await Product.countDocuments();
     if (productCount === 0) {
       const productsToInsert = INITIAL_PRODUCTS.map((p) => ({
@@ -177,8 +210,6 @@ export const seedDatabase = async () => {
       }));
       await Product.insertMany(productsToInsert);
       console.log(`📦 Seeded ${productsToInsert.length} initial products into MongoDB.`);
-    } else {
-      console.log(`ℹ️ MongoDB already contains ${productCount} products.`);
     }
 
     console.log('✅ Database Seeding Complete!');
