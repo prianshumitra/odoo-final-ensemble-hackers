@@ -8,7 +8,7 @@ export const About: React.FC = () => {
       <div className="bg-gradient-to-r from-[#EFE9F6] via-white to-[#FAF7F2] rounded-3xl p-8 sm:p-12 border border-[#EAE4DB] shadow-sm text-center space-y-4">
         <span className="inline-flex items-center gap-1.5 bg-white text-[#7E3AF2] text-xs font-bold px-3 py-1 rounded-full border border-[#D4C4ED]">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>About Diligent Wombat</span>
+          <span>About EZRent</span>
         </span>
         <h1 className="text-3xl font-extrabold text-[#18181B] my-0">
           Redefining How You Experience Modern Living

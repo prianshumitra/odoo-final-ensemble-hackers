@@ -5,7 +5,7 @@ import { useUser } from '@clerk/react';
 export const VendorSettings: React.FC = () => {
   const { user } = useUser();
   const [businessName, setBusinessName] = useState(
-    user?.fullName ? `${user.fullName}'s Rental Store` : 'Diligent Wombat Partner Store'
+    user?.fullName ? `${user.fullName}'s Rental Store` : 'EZRent Partner Store'
   );
   const [email, setEmail] = useState(user?.primaryEmailAddress?.emailAddress || 'vendor@example.com');
   const [phone, setPhone] = useState('+91 98765 43210');

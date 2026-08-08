@@ -22,7 +22,7 @@ export const Terms: React.FC = () => {
               1. Rental Agreement & Subscriptions
             </h2>
             <p>
-              By placing an order through Diligent Wombat, you agree to rent the selected furniture, appliances, or electronic equipment for the chosen rental duration (1 Month, 6 Months, 1 Year, etc.). All rentals are subject to identity verification and stock availability.
+              By placing an order through EZRent, you agree to rent the selected furniture, appliances, or electronic equipment for the chosen rental duration (1 Month, 6 Months, 1 Year, etc.). All rentals are subject to identity verification and stock availability.
             </p>
           </section>
 
@@ -32,7 +32,7 @@ export const Terms: React.FC = () => {
               2. Delivery & Maintenance
             </h2>
             <p>
-              Free express delivery and assembly are provided for eligible orders. You are responsible for ensuring clear access to the installation area. Normal wear and tear is fully covered under our Diligent Care Policy.
+              Free express delivery and assembly are provided for eligible orders. You are responsible for ensuring clear access to the installation area. Normal wear and tear is fully covered under our EZ Care Policy.
             </p>
           </section>
 

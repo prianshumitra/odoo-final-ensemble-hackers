@@ -60,7 +60,7 @@ export const Footer: React.FC = () => {
               <img src={logoImg} alt="Logo" className="h-20 sm:h-24 w-auto object-contain" />
             </Link>
             <p className="text-xs text-[#6E6A78] leading-relaxed max-w-sm">
-              Diligent Wombat is your premier subscription platform for high-end furniture, home electronics, gaming consoles, and smart appliances.
+              EZRent is your premier subscription platform for high-end furniture, home electronics, gaming consoles, and smart appliances.
             </p>
           </div>
 

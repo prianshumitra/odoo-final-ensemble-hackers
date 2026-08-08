@@ -28,7 +28,7 @@ export const Contact: React.FC = () => {
               </div>
               <div>
                 <span className="block text-[11px] font-bold text-[#8A8694] uppercase">Email</span>
-                <span className="text-sm font-semibold text-[#18181B]">support@diligentwombat.com</span>
+                <span className="text-sm font-semibold text-[#18181B]">support@ezrent.com</span>
               </div>
             </div>
 

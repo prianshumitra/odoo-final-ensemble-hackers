@@ -1,6 +1,6 @@
-# 🚀 Diligent Wombat — Modern Rental Marketplace Platform
+# 🚀 EZRent — Modern Rental Marketplace Platform
 
-Welcome to **Diligent Wombat**, a full-stack, real-time flexible rental marketplace for furniture, electronics, and tech devices. Built for the **Odoo Hackathon Final**, this platform enables users to rent premium inventory on daily, monthly, or hourly terms with flexible pricing, dynamic color & size variants, real-time stock sync, and a vendor management portal.
+Welcome to **EZRent**, a full-stack, real-time flexible rental marketplace for furniture, electronics, and tech devices. Built for the **Odoo Hackathon Final**, this platform enables users to rent premium inventory on daily, monthly, or hourly terms with flexible pricing, dynamic color & size variants, real-time stock sync, and a vendor management portal.
 
 ---
 
@@ -124,7 +124,7 @@ odoo-final-ensemble-hackers/
 Create a `.env` file in the `backend/` directory:
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/diligent_wombat
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/ezrent_db
 JWT_SECRET=your_jwt_secret_key_here
 CLERK_SECRET_KEY=sk_test_your_clerk_secret_key
 ```
