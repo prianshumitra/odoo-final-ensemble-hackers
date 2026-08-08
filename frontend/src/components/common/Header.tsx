@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Search, Heart, ShoppingBag, Menu, X } from 'lucide-react';
+import { Search, Heart, ShoppingBag, Menu, X, PlusCircle, Store, UserCheck } from 'lucide-react';
 import { ProfileDropdown } from './ProfileDropdown';
+import { Show, SignInButton, UserButton, useUser } from '@clerk/react';
 
 interface HeaderProps {
   searchQuery: string;
@@ -10,6 +11,10 @@ interface HeaderProps {
   wishlistCount: number;
   onOpenCart: () => void;
   onOpenWishlist: () => void;
+  onOpenVendorModal: () => void;
+  userRole: 'customer' | 'vendor';
+  onToggleRole: () => void;
+  onSelectRole: (role: 'customer' | 'vendor') => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -19,8 +24,13 @@ export const Header: React.FC<HeaderProps> = ({
   wishlistCount,
   onOpenCart,
   onOpenWishlist,
+  onOpenVendorModal,
+  userRole,
+  onToggleRole,
+  onSelectRole,
 }) => {
   const location = useLocation();
+  const { user } = useUser();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -93,23 +103,36 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Right Actions: Wishlist, Cart & Profile */}
-          <div className="flex items-center gap-3 shrink-0">
-            {/* Login/Signup Links for Guest */}
-            <div className="hidden sm:flex items-center gap-4 mr-2">
-              <Link 
-                to="/login" 
-                className="text-sm font-bold text-[#6E6A78] hover:text-[#7E3AF2] transition-colors"
+          {/* Right Actions: Vendor Portal, Wishlist, Cart & Auth Profile */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            
+            {/* Vendor Only Action: List Item to Rent */}
+            {userRole === 'vendor' && (
+              <button
+                onClick={onOpenVendorModal}
+                className="hidden sm:flex items-center gap-1.5 bg-[#7E3AF2] hover:bg-[#6C2BD9] text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm group animate-in fade-in"
+                title="List a new product for rent"
               >
-                Log in
-              </Link>
-              <Link 
-                to="/signup" 
-                className="px-4 py-2 bg-[#18181B] text-white text-sm font-bold rounded-xl hover:bg-[#7E3AF2] transition-all shadow-sm"
+                <PlusCircle className="w-4 h-4 text-white" />
+                <span>List Item to Rent</span>
+              </button>
+            )}
+
+            {/* Role Badge (When Signed In) */}
+            <Show when="signed-in">
+              <button
+                onClick={onToggleRole}
+                className={`hidden md:flex items-center gap-1.5 text-[11px] font-bold px-3 py-1.5 rounded-full border transition-all ${
+                  userRole === 'vendor'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300 shadow-xs'
+                    : 'bg-[#EFE9F6] text-[#7E3AF2] border-[#D4C4ED]'
+                }`}
+                title="Toggle Customer / Vendor Mode"
               >
-                Sign Up
-              </Link>
-            </div>
+                <Store className="w-3.5 h-3.5" />
+                <span>{userRole === 'vendor' ? 'Vendor Mode' : 'Customer Mode'}</span>
+              </button>
+            </Show>
 
             {/* Wishlist Icon */}
             <button
@@ -137,21 +160,57 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </button>
 
-            {/* User Profile Avatar with Dropdown */}
-            <div className="relative ml-1">
-              <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 p-1.5 rounded-full hover:bg-white/80 transition-all focus:outline-none ring-2 ring-transparent focus:ring-[#7E3AF2]"
-                title="User Profile"
-              >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3E3A47] to-[#18181B] flex items-center justify-center text-white text-xs font-bold shadow-md border-2 border-white">
-                  AW
+            {/* Auth Section with Clerk */}
+            <div className="relative ml-1 flex items-center gap-2">
+              <Show when="signed-in">
+                <div className="flex items-center gap-2">
+                  <UserButton userProfileMode="modal" />
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center gap-1 text-xs font-semibold text-[#3E3A47] hover:text-[#7E3AF2] p-1 rounded-lg"
+                  >
+                    <span className="hidden sm:inline font-bold truncate max-w-[100px]">
+                      {user?.firstName || user?.primaryEmailAddress?.emailAddress?.split('@')[0]}
+                    </span>
+                  </button>
                 </div>
-              </button>
+              </Show>
 
+              <Show when="signed-out">
+                <div className="flex items-center gap-2">
+                  {/* Separate Customer Login */}
+                  <SignInButton mode="modal">
+                    <button
+                      onClick={() => onSelectRole('customer')}
+                      className="flex items-center gap-1.5 bg-[#18181B] hover:bg-[#7E3AF2] text-white text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm"
+                      title="Sign in to rent items"
+                    >
+                      <UserCheck className="w-3.5 h-3.5" />
+                      <span>Customer Sign In</span>
+                    </button>
+                  </SignInButton>
+
+                  {/* Separate Vendor Login */}
+                  <SignInButton mode="modal">
+                    <button
+                      onClick={() => onSelectRole('vendor')}
+                      className="hidden sm:flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-sm"
+                      title="Sign in to list products"
+                    >
+                      <Store className="w-3.5 h-3.5" />
+                      <span>Vendor Login</span>
+                    </button>
+                  </SignInButton>
+                </div>
+              </Show>
+
+              {/* Profile Dropdown Menu */}
               <ProfileDropdown 
                 isOpen={isProfileOpen} 
                 onClose={() => setIsProfileOpen(false)} 
+                userRole={userRole}
+                onToggleRole={onToggleRole}
+                onOpenVendorModal={onOpenVendorModal}
               />
             </div>
 

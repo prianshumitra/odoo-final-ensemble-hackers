@@ -2,22 +2,31 @@ import React, { useState, useMemo } from 'react';
 import { Sidebar } from '../../components/common/Sidebar';
 import { ProductCard } from '../../components/common/ProductCard';
 import { Pagination } from '../../components/common/Pagination';
-import { INITIAL_PRODUCTS } from '../../data/products';
 import type { Product, FilterState } from '../../types';
 import { SlidersHorizontal, ArrowUpDown, PackageX, Sparkles } from 'lucide-react';
 
 interface HomeProps {
+  products: Product[];
   searchQuery: string;
   wishlistIds: string[];
   onToggleWishlist: (product: Product) => void;
   onAddToCart: (product: Product, selectedColor?: string, selectedSize?: string) => void;
+  onSelectProduct: (product: Product) => void;
+  isSignedIn: boolean;
+  userRole: 'customer' | 'vendor';
+  onRequireAuth: (message: string) => void;
 }
 
 export const Home: React.FC<HomeProps> = ({
+  products,
   searchQuery,
   wishlistIds,
   onToggleWishlist,
   onAddToCart,
+  onSelectProduct,
+  isSignedIn,
+  userRole,
+  onRequireAuth,
 }) => {
   // Filter state
   const [filters, setFilters] = useState<FilterState>({
@@ -51,7 +60,7 @@ export const Home: React.FC<HomeProps> = ({
 
   // Filter & sort logic
   const filteredProducts = useMemo(() => {
-    return INITIAL_PRODUCTS.filter((prod) => {
+    return products.filter((prod) => {
       // 1. Search Query (Global or header)
       const q = (searchQuery || filters.searchQuery).toLowerCase();
       if (q && !prod.name.toLowerCase().includes(q) && !prod.brand.toLowerCase().includes(q) && !prod.category.toLowerCase().includes(q)) {
@@ -84,7 +93,7 @@ export const Home: React.FC<HomeProps> = ({
       if (sortBy === 'rating') return b.rating - a.rating;
       return 0;
     });
-  }, [searchQuery, filters, sortBy]);
+  }, [searchQuery, filters, sortBy, products]);
 
   // Paginated slices
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -188,6 +197,10 @@ export const Home: React.FC<HomeProps> = ({
                   isWishlisted={wishlistIds.includes(product.id)}
                   onToggleWishlist={onToggleWishlist}
                   onAddToCart={onAddToCart}
+                  onSelectProduct={onSelectProduct}
+                  isSignedIn={isSignedIn}
+                  userRole={userRole}
+                  onRequireAuth={onRequireAuth}
                 />
               ))}
             </div>

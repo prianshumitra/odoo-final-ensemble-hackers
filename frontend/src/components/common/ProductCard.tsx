@@ -7,6 +7,10 @@ interface ProductCardProps {
   isWishlisted: boolean;
   onToggleWishlist: (product: Product) => void;
   onAddToCart: (product: Product, selectedColor?: string, selectedSize?: string) => void;
+  onSelectProduct?: (product: Product) => void;
+  isSignedIn: boolean;
+  userRole: 'customer' | 'vendor';
+  onRequireAuth: (message: string) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -14,6 +18,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isWishlisted,
   onToggleWishlist,
   onAddToCart,
+  onSelectProduct,
+  isSignedIn,
+  userRole,
+  onRequireAuth,
 }) => {
   const [selectedColor, setSelectedColor] = useState<string>(
     product.colorVariants[0]?.name || ''
@@ -23,15 +31,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   );
   const [isAdded, setIsAdded] = useState(false);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isSignedIn) {
+      onRequireAuth('Please sign in as a Customer to rent items.');
+      return;
+    }
+    if (userRole === 'vendor') {
+      alert('Vendor accounts are for listing products. Please switch to Customer mode to place rental orders.');
+      return;
+    }
     if (!product.inStock) return;
     onAddToCart(product, selectedColor, selectedSize);
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 1500);
   };
 
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isSignedIn) {
+      onRequireAuth('Please sign in to save items to your wishlist.');
+      return;
+    }
+    onToggleWishlist(product);
+  };
+
   return (
-    <div className="group bg-[#EFE9F6] rounded-3xl p-4 border border-[#D4C4ED] hover:border-[#7E3AF2] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+    <div 
+      onClick={() => onSelectProduct?.(product)}
+      className="group bg-[#EFE9F6] rounded-3xl p-4 border border-[#D4C4ED] hover:border-[#7E3AF2] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between relative overflow-hidden cursor-pointer"
+    >
       {/* Top Image Container */}
       <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-[#FAF7F2] mb-3 group-hover:shadow-inner">
         <img
@@ -43,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           loading="lazy"
         />
 
-        {/* Out of Stock Overlay / Badge */}
+        {/* Out of Stock Overlay */}
         {!product.inStock && (
           <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center">
             <span className="bg-[#18181B] text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg border border-white/20 tracking-wider uppercase">
@@ -54,7 +83,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Wishlist Floating Button */}
         <button
-          onClick={() => onToggleWishlist(product)}
+          onClick={handleWishlistClick}
           className={`absolute top-3 right-3 p-2.5 rounded-full shadow-md backdrop-blur-md transition-all duration-200 focus:outline-none ${
             isWishlisted
               ? 'bg-rose-500 text-white scale-110'
@@ -65,7 +94,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
         </button>
 
-        {/* Size variants tag overlay if TV or multi-size product */}
+        {/* Size variants tag */}
         {product.sizeVariants && (
           <div className="absolute bottom-2 left-2 right-2 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-xl border border-white/50 text-[11px] font-semibold text-[#18181B] flex items-center justify-between shadow-sm">
             <span className="text-[#8A8694] text-[10px] uppercase font-bold">Sizes:</span>
@@ -73,7 +102,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               {product.sizeVariants.map((sz) => (
                 <button
                   key={sz}
-                  onClick={() => setSelectedSize(sz)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedSize(sz);
+                  }}
                   className={`px-1.5 py-0.5 rounded ${
                     selectedSize === sz
                       ? 'bg-[#18181B] text-white font-bold'
@@ -88,13 +120,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
 
-      {/* Color Variant Swatches below image (Annotated in Wireframe) */}
+      {/* Color Variant Swatches */}
       <div className="flex items-center justify-between px-1 mb-2">
         <div className="flex items-center gap-1.5">
           {product.colorVariants.map((variant) => (
             <button
               key={variant.name}
-              onClick={() => setSelectedColor(variant.name)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedColor(variant.name);
+              }}
               title={variant.name}
               className={`w-3.5 h-3.5 rounded-full transition-transform border border-black/10 ${
                 selectedColor === variant.name
@@ -115,7 +150,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {product.name}
       </h3>
 
-      {/* Rating & Review Count (Image 1 Aesthetics) */}
+      {/* Rating & Review Count */}
       <div className="flex items-center gap-1 mb-3">
         <div className="flex text-[#F59E0B]">
           {[...Array(5)].map((_, i) => (
@@ -159,6 +194,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               ? 'bg-[#E4DFD6] text-[#8A8694] cursor-not-allowed'
               : isAdded
               ? 'bg-emerald-600 text-white'
+              : userRole === 'vendor'
+              ? 'bg-amber-100 text-amber-800 border border-amber-300'
               : 'bg-[#18181B] text-white hover:bg-[#7E3AF2] hover:shadow-md active:scale-95'
           }`}
         >
@@ -167,6 +204,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <Check className="w-3.5 h-3.5" />
               <span>Added</span>
             </>
+          ) : userRole === 'vendor' ? (
+            <span>Vendor View</span>
           ) : (
             <>
               <ShoppingBag className="w-3.5 h-3.5" />
