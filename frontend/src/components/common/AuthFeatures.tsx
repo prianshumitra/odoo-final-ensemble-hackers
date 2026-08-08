@@ -45,7 +45,7 @@ export const AuthFeatures: React.FC<AuthFeaturesProps> = ({ type = 'customer' })
   const features = type === 'vendor' ? vendorFeatures : customerFeatures;
 
   return (
-    <div className="hidden md:flex flex-col justify-between w-1/2 bg-gradient-to-b from-[#D4C4ED] via-[#EFE9F6] to-[#FAF7F2] p-10">
+    <div className="hidden md:flex flex-col justify-between w-1/2 bg-transparent p-10">
       <div className="space-y-8">
         <div>
           <h2 className="text-2xl font-black text-[#18181B] tracking-tight">

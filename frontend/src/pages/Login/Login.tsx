@@ -63,10 +63,10 @@ export const Login: React.FC = () => {
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 bg-transparent">
-      <div className="w-full max-w-4xl bg-white rounded-3xl border border-[#D4C4ED] shadow-2xl overflow-hidden flex flex-col md:flex-row">
+      <div className="w-full max-w-4xl bg-gradient-to-b from-[#D4C4ED] via-[#EFE9F6] to-[#FAF7F2] rounded-3xl border border-[#C4B2E2] shadow-2xl overflow-hidden flex flex-col md:flex-row">
         <AuthFeatures type="customer" />
         
-        <div className="w-full md:w-1/2 p-8 sm:p-10 space-y-6 flex flex-col justify-center">
+        <div className="w-full md:w-1/2 p-8 sm:p-10 space-y-6 flex flex-col justify-center bg-transparent">
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-black text-[#7E3AF2] tracking-tight font-serif">EZRent</h1>
             <h2 className="text-2xl font-extrabold text-[#18181B]">Sign In</h2>
