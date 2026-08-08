@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
 import { CartDrawer } from './components/common/CartDrawer';
@@ -267,17 +267,7 @@ function AppContent() {
   const wishlistProducts = products.filter((p) =>
     wishlistIds.includes(p.id)
   );
-
-  const location = useLocation();
   const navigate = useNavigate();
-  const isVendorPath = location.pathname.startsWith('/vendor');
-
-  // Sync role if user directly navigates to a /vendor path
-  useEffect(() => {
-    if (isVendorPath && userRole !== 'vendor') {
-      setUserRole('vendor');
-    }
-  }, [isVendorPath, userRole]);
 
   const handleToggleRole = () => {
     const nextRole = userRole === 'customer' ? 'vendor' : 'customer';
@@ -289,165 +279,147 @@ function AppContent() {
     }
   };
 
-  // If on a vendor path, render full Vendor Dashboard application
-  if (isVendorPath) {
-    return (
-      <>
-        <Routes>
-          <Route
-            element={
-              <VendorLayout
-                userRole={userRole}
-                onToggleRole={handleToggleRole}
-                onOpenAddProduct={() => setIsVendorModalOpen(true)}
-              />
-            }
-          >
-            <Route index element={<VendorDashboard onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
-            <Route path="products" element={<VendorProducts onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
-            <Route path="rentals" element={<VendorRentals />} />
-            <Route path="customers" element={<VendorCustomers />} />
-            <Route path="analytics" element={<VendorAnalytics />} />
-            <Route path="notifications" element={<VendorNotifications />} />
-            <Route path="settings" element={<VendorSettings />} />
-          </Route>
-        </Routes>
-
-        {/* Vendor List New Rental Product Modal */}
-        <AddProductModal
-          isOpen={isVendorModalOpen}
-          onClose={() => setIsVendorModalOpen(false)}
-          onProductAdded={handleProductAdded}
-        />
-
-        {/* Sign In Required Prompt Modal */}
-        <AuthPromptModal
-          isOpen={isAuthPromptOpen}
-          onClose={() => setIsAuthPromptOpen(false)}
-          actionMessage={authPromptMsg}
-          onSelectRole={handleSelectRole}
-        />
-      </>
-    );
-  }
-
-  // Otherwise, render Customer Marketplace application
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#1E1B26] selection:bg-[#EFE9F6] selection:text-[#7E3AF2]">
-      {/* Reusable Header Navbar */}
-      <Header
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        cartCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
-        wishlistCount={wishlistIds.length}
-        onOpenCart={() => {
-          if (!user) {
-            handleRequireAuth('Please sign in to view your cart.');
-          } else {
-            setIsCartOpen(true);
-          }
-        }}
-        onOpenWishlist={() => {
-          if (!user) {
-            handleRequireAuth('Please sign in to view your wishlist.');
-          } else {
-            setIsWishlistOpen(true);
-          }
-        }}
-        onOpenVendorModal={() => {
-          if (!user) {
-            handleRequireAuth('Please sign in as a Vendor to list products.');
-          } else if (userRole !== 'vendor') {
-            handleToggleRole();
-          } else {
-            setIsVendorModalOpen(true);
-          }
-        }}
-        userRole={userRole}
-        onToggleRole={handleToggleRole}
-        onSelectRole={handleSelectRole}
-      />
-
-      {/* Main Route Pages */}
+    <>
       <Routes>
+        {/* Vendor Dashboard Routes */}
         <Route
-          path="/"
+          path="/vendor"
           element={
-            <Home
-              products={products}
-              searchQuery={searchQuery}
-              wishlistIds={wishlistIds}
-              onToggleWishlist={handleToggleWishlist}
-              onAddToCart={handleAddToCart}
-              onSelectProduct={(product) => setSelectedProduct(product)}
-              isSignedIn={!!user}
+            <VendorLayout
               userRole={userRole}
-              onRequireAuth={handleRequireAuth}
+              onToggleRole={handleToggleRole}
+              onOpenAddProduct={() => setIsVendorModalOpen(true)}
             />
           }
+        >
+          <Route index element={<VendorDashboard onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
+          <Route path="products" element={<VendorProducts onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
+          <Route path="rentals" element={<VendorRentals />} />
+          <Route path="customers" element={<VendorCustomers />} />
+          <Route path="analytics" element={<VendorAnalytics />} />
+          <Route path="notifications" element={<VendorNotifications />} />
+          <Route path="settings" element={<VendorSettings />} />
+        </Route>
+
+        {/* Customer Marketplace Routes */}
+        <Route
+          path="/*"
+          element={
+            <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#1E1B26] selection:bg-[#EFE9F6] selection:text-[#7E3AF2]">
+              <Header
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                cartCount={cartItems.reduce((acc, i) => acc + i.quantity, 0)}
+                wishlistCount={wishlistIds.length}
+                onOpenCart={() => {
+                  if (!user) {
+                    handleRequireAuth('Please sign in to view your cart.');
+                  } else {
+                    setIsCartOpen(true);
+                  }
+                }}
+                onOpenWishlist={() => {
+                  if (!user) {
+                    handleRequireAuth('Please sign in to view your wishlist.');
+                  } else {
+                    setIsWishlistOpen(true);
+                  }
+                }}
+                onOpenVendorModal={() => {
+                  if (!user) {
+                    handleRequireAuth('Please sign in as a Vendor to list products.');
+                  } else if (userRole !== 'vendor') {
+                    handleToggleRole();
+                  } else {
+                    setIsVendorModalOpen(true);
+                  }
+                }}
+                userRole={userRole}
+                onToggleRole={handleToggleRole}
+                onSelectRole={handleSelectRole}
+              />
+
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <Home
+                      products={products}
+                      searchQuery={searchQuery}
+                      wishlistIds={wishlistIds}
+                      onToggleWishlist={handleToggleWishlist}
+                      onAddToCart={handleAddToCart}
+                      onSelectProduct={(product) => setSelectedProduct(product)}
+                      isSignedIn={!!user}
+                      userRole={userRole}
+                      onRequireAuth={handleRequireAuth}
+                    />
+                  }
+                />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
+              </Routes>
+
+              <Footer />
+
+              <CartDrawer
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
+                cartItems={cartItems}
+                onUpdateQuantity={handleUpdateCartQuantity}
+                onRemoveItem={handleRemoveCartItem}
+              />
+
+              <WishlistDrawer
+                isOpen={isWishlistOpen}
+                onClose={() => setIsWishlistOpen(false)}
+                wishlistItems={wishlistProducts}
+                onRemoveFromWishlist={handleToggleWishlist}
+                onAddToCart={(product) => {
+                  handleAddToCart(product);
+                  setIsWishlistOpen(false);
+                  setIsCartOpen(true);
+                }}
+              />
+
+              <ProductDetailModal
+                product={selectedProduct}
+                isOpen={!!selectedProduct}
+                onClose={() => setSelectedProduct(null)}
+                isWishlisted={selectedProduct ? wishlistIds.includes(selectedProduct.id) : false}
+                onToggleWishlist={handleToggleWishlist}
+                onAddToCart={handleAddToCart}
+                isSignedIn={!!user}
+                userRole={userRole}
+                onRequireAuth={handleRequireAuth}
+              />
+            </div>
+          }
         />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
       </Routes>
 
-      {/* Reusable Footer */}
-      <Footer />
-
-      {/* Interactive Cart & Wishlist Sliding Drawers */}
-      <CartDrawer
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        cartItems={cartItems}
-        onUpdateQuantity={handleUpdateCartQuantity}
-        onRemoveItem={handleRemoveCartItem}
-      />
-
-      <WishlistDrawer
-        isOpen={isWishlistOpen}
-        onClose={() => setIsWishlistOpen(false)}
-        wishlistItems={wishlistProducts}
-        onRemoveFromWishlist={handleToggleWishlist}
-        onAddToCart={(product) => {
-          handleAddToCart(product);
-          setIsWishlistOpen(false);
-          setIsCartOpen(true);
-        }}
-      />
-
-      {/* Individual Product Details Modal */}
-      <ProductDetailModal
-        product={selectedProduct}
-        isOpen={!!selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-        isWishlisted={selectedProduct ? wishlistIds.includes(selectedProduct.id) : false}
-        onToggleWishlist={handleToggleWishlist}
-        onAddToCart={handleAddToCart}
-        isSignedIn={!!user}
-        userRole={userRole}
-        onRequireAuth={handleRequireAuth}
-      />
-
-      {/* Vendor List New Rental Product Modal */}
+      {/* Global Vendor List New Rental Product Modal */}
       <AddProductModal
         isOpen={isVendorModalOpen}
         onClose={() => setIsVendorModalOpen(false)}
         onProductAdded={handleProductAdded}
       />
 
-      {/* Sign In Required Prompt Modal */}
+      {/* Global Sign In Required Prompt Modal */}
       <AuthPromptModal
         isOpen={isAuthPromptOpen}
         onClose={() => setIsAuthPromptOpen(false)}
         actionMessage={authPromptMsg}
         onSelectRole={handleSelectRole}
       />
-    </div>
+    </>
   );
 }
 
