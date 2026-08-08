@@ -65,7 +65,7 @@ export const Login: React.FC = () => {
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 bg-transparent">
       {/* Gradient border wrapper */}
       <div className="w-full max-w-4xl p-[2px] rounded-3xl bg-gradient-to-br from-[#7E3AF2] via-[#C4B2E2] to-[#F5F0FF] shadow-2xl">
-      <div className="w-full bg-gradient-to-br from-[#C4B2E2] via-[#EFE9F6] to-[#FDFBFF] rounded-[22px] overflow-hidden flex flex-col md:flex-row">
+      <div className="w-full bg-gradient-to-br from-[#C4B2E2] via-[#EFE9F6] to-white rounded-[22px] overflow-hidden flex flex-col md:flex-row">
         <AuthFeatures type="customer" />
         
         <div className="w-full md:w-1/2 p-8 sm:p-10 space-y-6 flex flex-col justify-center bg-transparent">
