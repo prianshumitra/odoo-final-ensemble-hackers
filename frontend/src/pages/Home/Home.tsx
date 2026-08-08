@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Sidebar } from '../../components/common/Sidebar';
 import { ProductCard } from '../../components/common/ProductCard';
 import { Pagination } from '../../components/common/Pagination';
+import { CustomSelect } from '../../components/common/CustomSelect';
 import type { Product, FilterState } from '../../types';
 import { SlidersHorizontal, ArrowUpDown, PackageX, Sparkles } from 'lucide-react';
 
@@ -157,17 +158,17 @@ export const Home: React.FC<HomeProps> = ({
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <ArrowUpDown className="w-4 h-4 text-[#8A8694]" />
               <span className="text-xs font-semibold text-[#8A8694] uppercase shrink-0">Sort by:</span>
-              <select
+              <CustomSelect
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                aria-label="Sort products by"
-                className="bg-white/90 text-[#1E1B26] text-xs font-semibold rounded-xl px-3 py-2 border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] cursor-pointer shadow-xs"
-              >
-                <option value="featured">Featured Items</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Highest Rated ★</option>
-              </select>
+                onChange={(val) => setSortBy(val as any)}
+                options={[
+                  { label: 'Featured Items', value: 'featured' },
+                  { label: 'Price: Low to High', value: 'price-low' },
+                  { label: 'Price: High to Low', value: 'price-high' },
+                  { label: 'Highest Rated ★', value: 'rating' },
+                ]}
+                className="w-44"
+              />
             </div>
           </div>
 
