@@ -121,13 +121,13 @@ export const Home: React.FC<HomeProps> = ({
           </div>
 
           <div className="flex items-center gap-3 z-10 shrink-0">
-            <div className="bg-white px-4 py-3 rounded-2xl border border-[#EAE4DB] shadow-xs text-center">
+            <div className="bg-gradient-to-br from-[#E2D5F7] to-[#FAF7F2] px-4 py-3 rounded-2xl border border-[#C4B2E2] shadow-xs text-center">
               <span className="block text-xl font-extrabold text-[#18181B]">100%</span>
-              <span className="text-[11px] font-semibold text-[#8A8694] uppercase">Inspected</span>
+              <span className="text-[11px] font-semibold text-[#6E6A78] uppercase">Inspected</span>
             </div>
-            <div className="bg-white px-4 py-3 rounded-2xl border border-[#EAE4DB] shadow-xs text-center">
+            <div className="bg-gradient-to-br from-[#E2D5F7] to-[#FAF7F2] px-4 py-3 rounded-2xl border border-[#C4B2E2] shadow-xs text-center">
               <span className="block text-xl font-extrabold text-[#7E3AF2]">Free</span>
-              <span className="text-[11px] font-semibold text-[#8A8694] uppercase">Delivery</span>
+              <span className="text-[11px] font-semibold text-[#6E6A78] uppercase">Delivery</span>
             </div>
           </div>
         </div>
