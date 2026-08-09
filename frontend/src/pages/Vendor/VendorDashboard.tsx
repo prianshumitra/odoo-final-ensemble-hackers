@@ -32,28 +32,36 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
     lateFeeCollection: 0,
     pendingRequests: 0,
   });
+  const [loading, setLoading] = useState(true);
   const [selectedRental, setSelectedRental] = useState<RentalOrder | null>(null);
 
   const fetchData = async () => {
-    const prods = await vendorService.getProducts();
-    const rents = await vendorService.getRentals();
-    setProducts(prods);
-    setRentals(rents);
-
-    const computedStats = await vendorService.getStats(prods, rents);
-    setStats(computedStats);
+    try {
+      const [prods, rents] = await Promise.all([
+        vendorService.getProducts(),
+        vendorService.getRentals(),
+      ]);
+      setProducts(prods);
+      setRentals(rents);
+      const computedStats = await vendorService.getStats(prods, rents);
+      setStats(computedStats);
+    } catch (err) {
+      console.error('Dashboard fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     fetchData();
 
     const socket = getSocket();
-    const handleRealtimeChange = () => {
-      fetchData();
-    };
+    const handleRealtimeChange = () => fetchData();
 
     socket.on('order:created', handleRealtimeChange);
     socket.on('order:updated', handleRealtimeChange);
+    socket.on('payment:captured', handleRealtimeChange);
+    socket.on('payment:refunded', handleRealtimeChange);
     socket.on('product:created', handleRealtimeChange);
     socket.on('product:updated', handleRealtimeChange);
     socket.on('product:deleted', handleRealtimeChange);
@@ -61,6 +69,8 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
     return () => {
       socket.off('order:created', handleRealtimeChange);
       socket.off('order:updated', handleRealtimeChange);
+      socket.off('payment:captured', handleRealtimeChange);
+      socket.off('payment:refunded', handleRealtimeChange);
       socket.off('product:created', handleRealtimeChange);
       socket.off('product:updated', handleRealtimeChange);
       socket.off('product:deleted', handleRealtimeChange);
@@ -69,15 +79,21 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
 
   const handleUpdateStatus = async (id: string, status: RentalOrder['status']) => {
     await vendorService.updateRentalStatus(id, status);
-    setRentals((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, status } : r))
-    );
+    fetchData(); // Full re-fetch from DB to keep all KPIs in sync
   };
 
   const vendorName = user?.name || user?.firstName || 'Vendor Partner';
 
   return (
     <div className="space-y-8">
+      {loading && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 animate-pulse">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-28 bg-[#E8E4DE] rounded-3xl" />
+          ))}
+        </div>
+      )}
+
       {/* Top Welcome Header */}
       <div className="p-px rounded-3xl bg-linear-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
         <div className="bg-[#FAF8F5] p-6 sm:p-8 rounded-[23px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-[#E8E4DE]">

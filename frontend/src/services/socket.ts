@@ -1,6 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL = 'http://localhost:5000';
+// Use current origin so Vite proxy routes /socket.io → backend (Docker & local dev)
+const SOCKET_URL = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:5173';
 
 let socket: Socket | null = null;
 

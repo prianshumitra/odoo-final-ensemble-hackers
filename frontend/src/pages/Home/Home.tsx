@@ -94,7 +94,7 @@ export const Home: React.FC<HomeProps> = ({
         if (!matchesColor) return false;
       }
       // 4. Duration
-      if (filters.selectedDuration !== 'All Duration' && prod.duration !== filters.selectedDuration) {
+      if (filters.selectedDuration !== 'All Duration' && prod.duration && prod.duration !== filters.selectedDuration) {
         return false;
       }
       // 5. Price

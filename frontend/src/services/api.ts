@@ -2,7 +2,8 @@
 import axios from 'axios';
 import type { Product, CartItem } from '../types';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+// Use relative URL so Vite proxy handles routing to backend (works in Docker & local dev)
+const API_BASE_URL = '/api';
 
 // Create Axios Instance
 export const api = axios.create({
