@@ -120,3 +120,37 @@ input[type="range"]::-moz-range-thumb {
   scrollbar-width: none;
 }
 
+/* Splash Screen Animations */
+.animate-float-slow {
+  animation: floatSlow 3s ease-in-out infinite;
+}
+
+.animate-pulse-aura {
+  animation: pulseAura 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg) scale(1.05);
+  }
+}
+
+@keyframes pulseAura {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+

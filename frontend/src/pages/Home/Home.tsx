@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Sidebar } from '../../components/common/Sidebar';
 import { ProductCard } from '../../components/common/ProductCard';
 import { Pagination } from '../../components/common/Pagination';
@@ -29,14 +30,28 @@ export const Home: React.FC<HomeProps> = ({
   userRole,
   onRequireAuth,
 }) => {
+  const [searchParams] = useSearchParams();
+
   // Filter state
   const [filters, setFilters] = useState<FilterState>({
-    searchQuery: '',
-    selectedBrand: 'All Brands',
-    selectedColor: '',
+    searchQuery: searchParams.get('search') || '',
+    selectedBrand: searchParams.get('brand') || searchParams.get('category') || 'All Brands',
+    selectedColor: searchParams.get('color') || '',
     selectedDuration: 'All Duration',
     priceRange: [0, 10000],
   });
+
+  useEffect(() => {
+    const brandParam = searchParams.get('brand') || searchParams.get('category');
+    const searchParam = searchParams.get('search');
+    if (brandParam || searchParam) {
+      setFilters((prev) => ({
+        ...prev,
+        selectedBrand: brandParam || prev.selectedBrand,
+        searchQuery: searchParam || prev.searchQuery,
+      }));
+    }
+  }, [searchParams]);
 
   const [sortBy, setSortBy] = useState<'featured' | 'price-low' | 'price-high' | 'rating'>('featured');
   const [currentPage, setCurrentPage] = useState(1);
