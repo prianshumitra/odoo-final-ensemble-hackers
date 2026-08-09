@@ -3,6 +3,7 @@ import { Package, Clock, AlertTriangle, CheckCircle, XCircle } from 'lucide-reac
 import type { FullRentalOrder } from '../../types';
 import { orderService } from '../../services/api';
 import { getSocket } from '../../services/socket';
+import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
 
 export const Orders: React.FC = () => {
   const [orders, setOrders] = useState<FullRentalOrder[]>([]);
@@ -143,7 +144,8 @@ export const Orders: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1">
+    <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1 relative overflow-hidden">
+      <AuthBackgroundDoodle />
       <div className="p-px rounded-3xl bg-linear-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
         <div className="bg-[#FAF8F5] p-8 sm:p-12 rounded-[23px] space-y-6 border border-[#E8E4DE]">
           <div className="flex items-center gap-3">

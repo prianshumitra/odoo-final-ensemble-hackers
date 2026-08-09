@@ -1,6 +1,7 @@
 import React from 'react';
 import { Mail, MapPin, Phone, ShieldCheck, UserCheck } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
 
 export const Account: React.FC = () => {
   const { user } = useAuth();
@@ -21,7 +22,8 @@ export const Account: React.FC = () => {
     : '';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1">
+    <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1 relative overflow-hidden">
+      <AuthBackgroundDoodle />
       <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-md">
         <div className="bg-gradient-to-br from-[#EFE9F6] via-[#FAF7F2] to-[#F5EBE0] p-8 sm:p-12 rounded-[23px] space-y-6">
           <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-[#D4C4ED]/60">

@@ -1,9 +1,11 @@
 import React from 'react';
 import { FileText, CheckCircle2 } from 'lucide-react';
+import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
 
 export const Terms: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1">
+    <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1 relative overflow-hidden">
+      <AuthBackgroundDoodle />
       <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
         <div className="bg-[#FAF8F5] p-8 sm:p-12 rounded-[23px] space-y-6 border border-[#E8E4DE]">
           <div className="flex items-center gap-3">

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Truck, Store, CreditCard, ShieldCheck, MapPin, CheckCircle2, ChevronRight, ArrowLeft } from 'lucide-react';
 import type { CartItem } from '../../types';
 import { orderService } from '../../services/api';
+import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
 
 interface CheckoutProps {
   cartItems: CartItem[];
@@ -90,7 +91,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-8 relative overflow-hidden">
+      <AuthBackgroundDoodle />
       {/* Breadcrumb Header */}
       <div className="flex items-center gap-2 text-xs font-bold text-[#8A857F] mb-8">
         <Link to="/" className="hover:text-[#1C1C1C]">Order</Link>

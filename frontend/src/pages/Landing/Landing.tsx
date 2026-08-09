@@ -14,6 +14,8 @@ import {
   Zap,
 } from 'lucide-react';
 
+import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
+
 export const Landing: React.FC = () => {
   const categories = [
     {
@@ -77,7 +79,8 @@ export const Landing: React.FC = () => {
   ];
 
   return (
-    <div className="bg-[#F7F4EF] text-[#1C1C1C] min-h-screen flex flex-col flex-1 space-y-16 py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+    <div className="bg-[#F7F4EF] text-[#1C1C1C] min-h-screen flex flex-col flex-1 space-y-16 py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full relative overflow-hidden">
+      <AuthBackgroundDoodle />
       {/* Hero Section */}
       <section className="relative p-[1px] rounded-3xl bg-gradient-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-md overflow-hidden">
         <div className="bg-[#FAF8F5] rounded-[23px] p-8 sm:p-12 lg:p-16 border border-[#E8E4DE] relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-12">

@@ -6,6 +6,7 @@ import { Pagination } from '../../components/common/Pagination';
 import { CustomSelect } from '../../components/common/CustomSelect';
 import type { Product, FilterState } from '../../types';
 import { SlidersHorizontal, ArrowUpDown, PackageX, Sparkles } from 'lucide-react';
+import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
 
 interface HomeProps {
   products: Product[];
@@ -124,8 +125,9 @@ export const Home: React.FC<HomeProps> = ({
   }, [filteredProducts, currentPage]);
 
   return (
-    <div className="bg-[#F7F4EF] min-h-screen text-[#1C1C1C] flex flex-col flex-1">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full">
+    <div className="bg-[#F7F4EF] min-h-screen text-[#1C1C1C] flex flex-col flex-1 relative overflow-hidden">
+      <AuthBackgroundDoodle />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full relative z-10">
         {/* Top Banner Tagline */}
         <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
           <div className="bg-[#FAF8F5] p-6 sm:p-8 rounded-[23px] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-[#E8E4DE]">

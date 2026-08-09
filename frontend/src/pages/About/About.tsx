@@ -1,9 +1,11 @@
 import React from 'react';
 import { Sparkles, Users, Award, Heart } from 'lucide-react';
+import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
 
 export const About: React.FC = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 py-12 space-y-10 flex-1">
+    <div className="max-w-5xl mx-auto px-4 py-12 space-y-10 flex-1 relative overflow-hidden">
+      <AuthBackgroundDoodle />
       {/* Hero Header */}
       <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
         <div className="bg-[#FAF8F5] rounded-[23px] p-8 sm:p-12 text-center space-y-4 border border-[#E8E4DE]">

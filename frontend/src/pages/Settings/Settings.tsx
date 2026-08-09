@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Settings as SettingsIcon, Bell, Globe, Save } from 'lucide-react';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
 
 export const Settings: React.FC = () => {
   const [emailAlerts, setEmailAlerts] = useState(true);
@@ -8,7 +9,8 @@ export const Settings: React.FC = () => {
   const [currency, setCurrency] = useState('INR');
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1">
+    <div className="max-w-4xl mx-auto px-4 py-12 space-y-8 flex-1 relative overflow-hidden">
+      <AuthBackgroundDoodle />
       <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#C4B2E2] via-[#D4C4ED] to-[#EAE4DB] shadow-md">
         <div className="bg-gradient-to-br from-[#EFE9F6] via-[#FAF7F2] to-[#F5EBE0] p-8 sm:p-12 rounded-[23px] space-y-6">
           <div className="flex items-center gap-3">
