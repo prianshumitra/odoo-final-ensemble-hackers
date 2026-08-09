@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   Package,
   ShoppingBag,
+  CreditCard,
   X,
 } from 'lucide-react';
 import logoImg from '../../assets/logo.png';
@@ -22,6 +23,7 @@ export const VendorSidebar: React.FC<VendorSidebarProps> = ({
     { name: 'Dashboard', path: '/vendor', icon: LayoutDashboard, exact: true },
     { name: 'Orders / Rental Requests', path: '/vendor/orders', icon: ShoppingBag },
     { name: 'Products', path: '/vendor/products', icon: Package },
+    { name: 'Payments & Revenue', path: '/vendor/payments', icon: CreditCard },
   ];
 
   return (

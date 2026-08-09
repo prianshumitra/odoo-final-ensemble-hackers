@@ -10,6 +10,7 @@ import { RentalOrder } from './models/RentalOrder.js';
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 dotenv.config();
 
@@ -20,14 +21,21 @@ const PORT = process.env.PORT || 5000;
 // Initialize Socket.io
 initSocket(httpServer);
 
-// Middleware
+// Middleware with raw body verification for webhook signature checks
 app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+app.use(
+  express.json({
+    verify: (req, _res, buf) => {
+      (req as any).rawBody = buf;
+    },
+  })
+);
 
-// REST API Endpoints — 3 core route groups
+// REST API Endpoints
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

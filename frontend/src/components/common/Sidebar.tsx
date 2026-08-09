@@ -21,7 +21,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const dynamicBrands = useMemo(() => {
     const brandsSet = new Set<string>();
     products.forEach((p) => {
-      if (p.brand && p.brand.trim()) brandsSet.add(p.brand.trim());
+      if (p.brand && p.brand.trim() && p.brand !== 'Generic') brandsSet.add(p.brand.trim());
+      if (p.category && p.category.trim()) brandsSet.add(p.category.trim());
     });
     return ['All Brands', ...Array.from(brandsSet)];
   }, [products]);

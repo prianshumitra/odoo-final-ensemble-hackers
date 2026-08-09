@@ -25,6 +25,7 @@ import { VendorLayout } from './pages/Vendor/VendorLayout';
 import { VendorDashboard } from './pages/Vendor/VendorDashboard';
 import { VendorOrders } from './pages/Vendor/VendorOrders';
 import { VendorProducts } from './pages/Vendor/VendorProducts';
+import { VendorPayments } from './pages/Vendor/VendorPayments';
 import type { CartItem, Product } from './types';
 import { productService } from './services/api';
 import { getSocket } from './services/socket';
@@ -247,6 +248,7 @@ function AppContent() {
           <Route index element={<VendorDashboard onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
           <Route path="orders" element={<VendorOrders />} />
           <Route path="products" element={<VendorProducts onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
+          <Route path="payments" element={<VendorPayments />} />
         </Route>
         <Route
           path="*"

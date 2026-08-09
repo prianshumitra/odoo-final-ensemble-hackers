@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Truck, Store, CreditCard, ShieldCheck, MapPin, CheckCircle2, ChevronRight, ArrowLeft } from 'lucide-react';
+import {
+  Truck,
+  Store,
+  ShieldCheck,
+  MapPin,
+  CheckCircle2,
+  ChevronRight,
+  ArrowLeft,
+  AlertCircle,
+  XCircle,
+  Lock,
+} from 'lucide-react';
 import type { CartItem } from '../../types';
-import { orderService } from '../../services/api';
-import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
+import { paymentService, loadRazorpaySdk } from '../../services/paymentService';
 
 interface CheckoutProps {
   cartItems: CartItem[];
@@ -11,7 +21,7 @@ interface CheckoutProps {
   onOrderCompleted: () => void;
 }
 
-export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOrderCompleted }) => {
+export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderCompleted }) => {
   const [step, setStep] = useState<'address' | 'payment' | 'confirmation'>('address');
 
   const todayStr = new Date().toISOString().split('T')[0];
@@ -28,20 +38,17 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
   const [zip, setZip] = useState('400001');
   const [country, setCountry] = useState('India');
   const [sameBillingAddress, setSameBillingAddress] = useState(true);
-
-  // Billing Address (if different)
   const [billingStreet, setBillingStreet] = useState('');
 
-  // Payment State
-  const [payMethod, setPayMethod] = useState<'card' | 'saved_card'>('card');
-  const [cardNumber, setCardNumber] = useState('4242 •••• •••• 4242');
-  const [cardExp, setCardExp] = useState('12/28');
-  const [cardCvv, setCardCvv] = useState('***');
-  const [savePaymentDetails, setSavePaymentDetails] = useState(true);
-
-  // Completed Order info
-  const [completedOrderRef, setCompletedOrderRef] = useState('');
+  // Payment Status State
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [cancelledMessage, setCancelledMessage] = useState('');
+
+  // Completed Order & Receipt Info
+  const [completedOrderRef, setCompletedOrderRef] = useState('');
+  const [completedPaymentId, setCompletedPaymentId] = useState('');
+  const [paidAmount, setPaidAmount] = useState(0);
 
   // Summary Calculations
   const subtotal = cartItems.reduce(
@@ -51,48 +58,115 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
   const deliveryCharge = deliveryMethod === 'Standard Delivery' ? 150 : 0;
   const securityDeposit = 500 * (cartItems.length || 1);
   const taxRate = 10;
-  const taxAmount = (subtotal * taxRate) / 100;
+  const taxAmount = Math.round((subtotal * taxRate) / 100);
   const grandTotal = subtotal + taxAmount + deliveryCharge + securityDeposit;
 
   const handleProceedToPayment = (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage('');
+    setCancelledMessage('');
+    if (cartItems.length === 0) {
+      setErrorMessage('Your rental cart is empty. Please add items before checking out.');
+      return;
+    }
     setStep('payment');
   };
 
-  const handlePayNow = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleRazorpayPayment = async () => {
     setLoading(true);
+    setErrorMessage('');
+    setCancelledMessage('');
 
     try {
-      const orderLines = cartItems.map((item) => ({
+      // 1. Ensure Razorpay SDK is loaded
+      const isLoaded = await loadRazorpaySdk();
+      if (!isLoaded) {
+        setErrorMessage('Failed to load Razorpay Checkout SDK. Please check your internet connection.');
+        setLoading(false);
+        return;
+      }
+
+      // 2. Format lines payload
+      const linesPayload = cartItems.map((item) => ({
         productId: item.product.id || (item.product as any)._id,
         quantity: item.quantity,
       }));
 
-      const res = await orderService.createOrder({
+      // 3. Create Razorpay Order on server side
+      const orderData = await paymentService.createOrder({
+        lines: linesPayload,
         rentalStart: startDate,
         rentalEnd: endDate,
-        lines: orderLines,
+        deliveryMethod,
       });
 
-      if (res.order?._id || res.order?.orderRef) {
-        setCompletedOrderRef(res.order?.orderRef || 'RO0001');
-      } else {
-        setCompletedOrderRef(res.orderRef || 'RO0001');
-      }
+      const { keyId, razorpayOrderId, amount, currency, orderRef } = orderData;
+      setCompletedOrderRef(orderRef || 'RO0001');
+      setPaidAmount(orderData.amountINR || grandTotal);
 
-      onOrderCompleted();
-      setStep('confirmation');
+      // 4. Initialize Razorpay Standard Checkout pop-up
+      const options = {
+        key: keyId || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TNVPRdnlqpPFPL',
+        amount: amount,
+        currency: currency || 'INR',
+        name: 'EZRent Equipment Rentals',
+        description: `Rental Order ${orderRef}`,
+        order_id: razorpayOrderId,
+        prefill: {
+          name: user?.name || user?.email?.split('@')[0] || 'Customer',
+          email: user?.email || 'customer@ezrent.com',
+          contact: user?.phone || '9876543210',
+        },
+        theme: {
+          color: '#0A0A0A',
+        },
+        handler: async (response: {
+          razorpay_payment_id: string;
+          razorpay_order_id: string;
+          razorpay_signature: string;
+        }) => {
+          try {
+            setLoading(true);
+            // 5. Server-side HMAC-SHA256 signature verification
+            const verifyRes = await paymentService.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verifyRes.success) {
+              setCompletedPaymentId(response.razorpay_payment_id);
+              onOrderCompleted();
+              setStep('confirmation');
+            } else {
+              setErrorMessage(verifyRes.message || 'Payment verification failed server-side.');
+            }
+          } catch (err: any) {
+            console.error('Verification error:', err);
+            setErrorMessage(err.response?.data?.message || 'Server verification failed.');
+          } finally {
+            setLoading(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setLoading(false);
+            setCancelledMessage('Payment modal closed. Your payment was not completed and the rental is unconfirmed.');
+          },
+        },
+      };
+
+      const razorpayInstance = new (window as any).Razorpay(options);
+      razorpayInstance.open();
     } catch (err: any) {
-      alert('Error creating rental request: ' + (err.response?.data?.message || err.message));
-    } finally {
+      console.error('Payment order creation error:', err);
+      setErrorMessage(err.response?.data?.message || err.message || 'Failed to initiate Razorpay order.');
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 relative overflow-hidden">
-      <AuthBackgroundDoodle />
+    <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Breadcrumb Header */}
       <div className="flex items-center gap-2 text-xs font-bold text-[#8A857F] mb-8">
         <Link to="/" className="hover:text-[#1C1C1C]">Order</Link>
@@ -106,38 +180,46 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
 
       {step === 'confirmation' ? (
         <div className="max-w-xl mx-auto bg-[#FAF8F5] p-10 rounded-3xl border border-[#E8E4DE] shadow-warm-lg text-center space-y-6">
-          <div className="w-20 h-20 bg-[#E8B923]/20 text-[#1C1C1C] border border-[#E8B923]/40 rounded-full flex items-center justify-center mx-auto shadow-warm-xs">
-            <CheckCircle2 className="w-12 h-12 text-[#E8B923]" />
+          <div className="w-20 h-20 bg-emerald-100 text-emerald-700 border border-emerald-300 rounded-full flex items-center justify-center mx-auto shadow-warm-xs">
+            <CheckCircle2 className="w-12 h-12 text-emerald-600" />
           </div>
 
           <div>
-            <h2 className="text-3xl font-black text-[#1C1C1C]">Order Submitted to Vendor!</h2>
+            <h2 className="text-3xl font-black text-[#1C1C1C]">Payment Verified & Rental Confirmed!</h2>
             <p className="text-sm font-bold text-[#8A857F] mt-1">
-              Your rental order has been placed and sent to the vendor for fulfillment confirmation.
+              Your payment has been captured via Razorpay and your rental reservation is active.
             </p>
           </div>
 
-          <div className="bg-white p-3.5 rounded-2xl border border-[#E8E4DE] text-xs text-[#1C1C1C] font-bold flex items-center justify-center gap-2 shadow-warm-xs">
-            <span className="w-2 h-2 rounded-full bg-[#E8B923] animate-ping" />
-            <span>Status: Submitted (Awaiting Vendor Confirmation & Shipping)</span>
+          <div className="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl text-xs text-emerald-900 font-bold flex items-center justify-center gap-2 shadow-warm-xs">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping" />
+            <span>Razorpay Payment Captured • Server Signature Validated</span>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-[#E8E4DE] space-y-2 text-xs text-left shadow-warm-xs">
+          <div className="bg-white p-5 rounded-2xl border border-[#E8E4DE] space-y-2 text-xs text-left shadow-warm-xs font-semibold">
             <div className="flex justify-between border-b border-[#E8E4DE] pb-2">
-              <span className="text-[#8A857F] font-bold">Order Reference:</span>
+              <span className="text-[#8A857F]">Order Reference:</span>
               <span className="font-black text-[#1C1C1C]">{completedOrderRef}</span>
             </div>
             <div className="flex justify-between border-b border-[#E8E4DE] pb-2">
-              <span className="text-[#8A857F] font-bold">Fulfillment Method:</span>
+              <span className="text-[#8A857F]">Razorpay Payment ID:</span>
+              <span className="font-mono text-[#0A0A0A] font-bold">{completedPaymentId || 'pay_verified'}</span>
+            </div>
+            <div className="flex justify-between border-b border-[#E8E4DE] pb-2">
+              <span className="text-[#8A857F]">Payment Status:</span>
+              <span className="font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">CAPTURED</span>
+            </div>
+            <div className="flex justify-between border-b border-[#E8E4DE] pb-2">
+              <span className="text-[#8A857F]">Fulfillment Method:</span>
               <span className="font-bold text-[#1C1C1C]">{deliveryMethod}</span>
             </div>
             <div className="flex justify-between border-b border-[#E8E4DE] pb-2">
-              <span className="text-[#8A857F] font-bold">Security Deposit Held:</span>
+              <span className="text-[#8A857F]">Refundable Security Deposit:</span>
               <span className="font-black text-amber-800">Rs. {securityDeposit.toLocaleString()}</span>
             </div>
             <div className="flex justify-between pt-1 font-black text-base text-[#1C1C1C]">
-              <span>Total Amount:</span>
-              <span>Rs. {grandTotal.toLocaleString()}</span>
+              <span>Total Paid:</span>
+              <span className="text-emerald-700">Rs. {paidAmount.toLocaleString()}</span>
             </div>
           </div>
 
@@ -146,7 +228,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
               to="/orders"
               className="px-6 py-3.5 bg-[#0A0A0A] hover:bg-[#2A2A2A] text-white text-xs font-black rounded-full transition-all shadow-warm-xs"
             >
-              View My Orders & Download Invoice
+              View Rental Orders
             </Link>
             <Link
               to="/"
@@ -199,10 +281,11 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
                     <button
                       type="button"
                       onClick={() => setDeliveryMethod('Standard Delivery')}
-                      className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${deliveryMethod === 'Standard Delivery'
+                      className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${
+                        deliveryMethod === 'Standard Delivery'
                           ? 'border-[#0A0A0A] bg-white text-[#1C1C1C] shadow-warm-xs ring-2 ring-[#0A0A0A]'
                           : 'border-[#E8E4DE] bg-white text-[#8A857F]'
-                        }`}
+                      }`}
                     >
                       <Truck className="w-5 h-5 mt-0.5 text-[#0A0A0A]" />
                       <div>
@@ -214,10 +297,11 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
                     <button
                       type="button"
                       onClick={() => setDeliveryMethod('Pick up from Store')}
-                      className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${deliveryMethod === 'Pick up from Store'
+                      className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${
+                        deliveryMethod === 'Pick up from Store'
                           ? 'border-[#0A0A0A] bg-white text-[#1C1C1C] shadow-warm-xs ring-2 ring-[#0A0A0A]'
                           : 'border-[#E8E4DE] bg-white text-[#8A857F]'
-                        }`}
+                      }`}
                     >
                       <Store className="w-5 h-5 mt-0.5 text-[#0A0A0A]" />
                       <div>
@@ -325,12 +409,12 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
                   type="submit"
                   className="w-full py-4 bg-[#0A0A0A] hover:bg-[#2A2A2A] text-white text-xs font-black rounded-full transition-all shadow-warm-md flex items-center justify-center gap-2"
                 >
-                  <span>Proceed to Payment Details</span>
+                  <span>Proceed to Payment Review</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </form>
             ) : (
-              <form onSubmit={handlePayNow} className="bg-[#FAF8F5] p-8 rounded-3xl border border-[#E8E4DE] shadow-warm-md space-y-6">
+              <div className="bg-[#FAF8F5] p-8 rounded-3xl border border-[#E8E4DE] shadow-warm-md space-y-6">
                 <button
                   type="button"
                   onClick={() => setStep('address')}
@@ -342,87 +426,53 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
 
                 <div>
                   <h2 className="text-xl font-black text-[#1C1C1C] flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-[#0A0A0A]" />
-                    <span>Payment Options</span>
+                    <ShieldCheck className="w-5 h-5 text-[#E8B923]" />
+                    <span>Razorpay Secure Standard Checkout</span>
                   </h2>
-
-                  <div className="flex gap-4 mt-3">
-                    <button
-                      type="button"
-                      onClick={() => setPayMethod('card')}
-                      className={`flex-1 py-3 px-4 rounded-full text-xs font-bold border transition-all ${payMethod === 'card' ? 'bg-[#0A0A0A] text-white border-[#0A0A0A] shadow-warm-xs' : 'bg-white text-[#8A857F] border-[#E8E4DE]'
-                        }`}
-                    >
-                      Credit / Debit Card
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setPayMethod('saved_card')}
-                      className={`flex-1 py-3 px-4 rounded-full text-xs font-bold border transition-all ${payMethod === 'saved_card' ? 'bg-[#0A0A0A] text-white border-[#0A0A0A] shadow-warm-xs' : 'bg-white text-[#8A857F] border-[#E8E4DE]'
-                        }`}
-                    >
-                      Pay with Saved Card
-                    </button>
-                  </div>
+                  <p className="text-xs text-[#8A857F] mt-1 font-medium">
+                    Order details & final totals are validated server-side. Click below to launch Razorpay's secure checkout (UPI, Cards, Netbanking, Wallets).
+                  </p>
                 </div>
 
-                <div className="space-y-3 bg-white p-6 rounded-2xl border border-[#E8E4DE] shadow-warm-xs">
-                  <div>
-                    <label className="block text-xs font-bold text-[#1C1C1C] mb-1">Card Number</label>
-                    <input
-                      type="text"
-                      required
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      className="w-full bg-[#FAF8F5] px-4 py-3 border border-[#E8E4DE] text-xs font-mono font-bold rounded-2xl focus:outline-none focus:border-[#0A0A0A]"
-                      placeholder="XXXX XXXX XXXX XXXX"
-                    />
+                {errorMessage && (
+                  <div className="flex items-center gap-2 text-xs font-bold text-rose-700 bg-rose-50 border border-rose-200 rounded-2xl p-4">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{errorMessage}</span>
                   </div>
+                )}
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-[#1C1C1C] mb-1">Expiry Date (MM/YY)</label>
-                      <input
-                        type="text"
-                        required
-                        value={cardExp}
-                        onChange={(e) => setCardExp(e.target.value)}
-                        className="w-full bg-[#FAF8F5] px-4 py-3 border border-[#E8E4DE] text-xs font-mono rounded-2xl focus:outline-none focus:border-[#0A0A0A]"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-[#1C1C1C] mb-1">CVV / CVC</label>
-                      <input
-                        type="password"
-                        required
-                        maxLength={4}
-                        value={cardCvv}
-                        onChange={(e) => setCardCvv(e.target.value)}
-                        className="w-full bg-[#FAF8F5] px-4 py-3 border border-[#E8E4DE] text-xs font-mono rounded-2xl focus:outline-none focus:border-[#0A0A0A]"
-                      />
-                    </div>
+                {cancelledMessage && (
+                  <div className="flex items-center gap-2 text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200 rounded-2xl p-4">
+                    <XCircle className="w-4 h-4 shrink-0 text-amber-600" />
+                    <span>{cancelledMessage}</span>
                   </div>
+                )}
 
-                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-[#1C1C1C] pt-2">
-                    <input
-                      type="checkbox"
-                      checked={savePaymentDetails}
-                      onChange={(e) => setSavePaymentDetails(e.target.checked)}
-                      className="accent-[#0A0A0A] w-4 h-4 rounded"
-                    />
-                    <span>Save my payment details for express checkout</span>
-                  </label>
+                <div className="bg-white p-5 rounded-2xl border border-[#E8E4DE] space-y-3">
+                  <div className="flex items-center justify-between text-xs border-b border-[#E8E4DE] pb-2 font-bold">
+                    <span className="text-[#8A857F]">Merchant:</span>
+                    <span className="text-[#1C1C1C]">EZRent Equipment Rentals</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs border-b border-[#E8E4DE] pb-2 font-bold">
+                    <span className="text-[#8A857F]">Payment Gate:</span>
+                    <span className="text-[#1C1C1C]">Razorpay Standard (HMAC-SHA256 Verified)</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs font-bold">
+                    <span className="text-[#8A857F]">Total Amount to Pay:</span>
+                    <span className="text-base font-black text-[#1C1C1C]">Rs. {grandTotal.toLocaleString()}</span>
+                  </div>
                 </div>
 
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleRazorpayPayment}
                   disabled={loading}
-                  className="w-full py-4 bg-[#0A0A0A] hover:bg-[#2A2A2A] text-white text-xs font-black rounded-full transition-all shadow-warm-md flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-[#0A0A0A] hover:bg-[#2A2A2A] disabled:opacity-60 text-white text-xs font-black rounded-full transition-all shadow-warm-md flex items-center justify-center gap-2"
                 >
-                  <ShieldCheck className="w-5 h-5 text-[#E8B923]" />
-                  <span>{loading ? 'Processing Payment & Creating Order...' : `Pay Now (Rs. ${grandTotal.toLocaleString()})`}</span>
+                  <Lock className="w-4 h-4 text-[#E8B923]" />
+                  <span>{loading ? 'Securing Razorpay Order...' : `Pay Rs. ${grandTotal.toLocaleString()} via Razorpay`}</span>
                 </button>
-              </form>
+              </div>
             )}
           </div>
 
@@ -436,7 +486,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOr
                   <div className="flex-1">
                     <h4 className="font-bold text-[#1C1C1C] line-clamp-1">{item.product.name}</h4>
                     <p className="text-[11px] text-[#8A857F]">
-                      Qty: {item.quantity} x Rs. {(item.product.pricing?.amount || 0).toLocaleString()}
+                      Qty: {item.quantity} x Rs. {(item.product.pricePerUnit || item.product.pricing?.amount || 0).toLocaleString()}
                     </p>
                     <p className="text-[10px] text-[#1C1C1C] font-bold">{item.rentDuration}</p>
                   </div>
