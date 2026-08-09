@@ -26,7 +26,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onRequireAuth,
 }) => {
   const [selectedColor, setSelectedColor] = useState<string>(
-    product?.colorVariants[0]?.name || ''
+    product?.colorVariants?.[0]?.name || ''
   );
   const [selectedSize, setSelectedSize] = useState<string>(
     product?.sizeVariants?.[0] || 'Standard'
@@ -42,7 +42,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
       return;
     }
 
-    setSelectedColor(product.colorVariants[0]?.name || '');
+    setSelectedColor(product.colorVariants?.[0]?.name || '');
     setSelectedSize(product.sizeVariants?.[0] || 'Standard');
     setStartDate(new Date().toISOString().split('T')[0]);
     setEndDate(new Date(Date.now() + 30 * 86400000).toISOString().split('T')[0]);
@@ -213,7 +213,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     Select Color: <span className="font-normal text-[#8A857F]">{selectedColor}</span>
                   </label>
                   <div className="flex items-center gap-2">
-                    {product.colorVariants.map((variant) => (
+                    {product.colorVariants?.map((variant) => (
                       <button
                         key={variant.name}
                         onClick={() => setSelectedColor(variant.name)}

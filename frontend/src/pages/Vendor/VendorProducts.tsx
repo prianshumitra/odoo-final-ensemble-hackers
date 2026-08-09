@@ -55,7 +55,7 @@ export const VendorProducts: React.FC<VendorProductsProps> = ({ onOpenAddProduct
       if (
         searchQuery &&
         !p.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !p.brand.toLowerCase().includes(searchQuery.toLowerCase())
+        !(p.brand && p.brand.toLowerCase().includes(searchQuery.toLowerCase()))
       ) {
         return false;
       }

@@ -10,18 +10,13 @@ export interface AuthUser {
   email: string;
   role: AuthRole;
   status: AuthStatus;
+  companyName?: string;
+  phone?: string;
+  // Legacy compat fields
   firstName?: string;
   lastName?: string;
-  companyName?: string;
   gstNo?: string;
-  phone?: string;
-  address?: {
-    street?: string;
-    city?: string;
-    state?: string;
-    zip?: string;
-    country?: string;
-  };
+  address?: any;
   profileImageUrl?: string;
   companyLogoUrl?: string;
 }
@@ -47,39 +42,30 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 const normalizeUser = (user: any): AuthUser => ({
   id: String(user.id || user._id || ''),
-  name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email,
+  name: user.name || user.email,
   email: user.email,
   role: (user.role || 'customer') as AuthRole,
   status: (user.status || 'active') as AuthStatus,
+  companyName: user.companyName || '',
+  phone: user.phone || '',
   firstName: user.firstName || '',
   lastName: user.lastName || '',
-  companyName: user.companyName || '',
   gstNo: user.gstNo || '',
-  phone: user.phone || '',
   address: user.address || {},
   profileImageUrl: user.profileImageUrl || '',
   companyLogoUrl: user.companyLogoUrl || '',
 });
 
 const readStoredSession = (): StoredSession | null => {
-  if (typeof window === 'undefined') {
-    return null;
-  }
+  if (typeof window === 'undefined') return null;
 
   const raw = window.localStorage.getItem(STORAGE_KEY);
-  if (!raw) {
-    return null;
-  }
+  if (!raw) return null;
 
   try {
     const parsed = JSON.parse(raw) as StoredSession;
-    if (!parsed?.token || !parsed?.user) {
-      return null;
-    }
-    return {
-      token: parsed.token,
-      user: normalizeUser(parsed.user),
-    };
+    if (!parsed?.token || !parsed?.user) return null;
+    return { token: parsed.token, user: normalizeUser(parsed.user) };
   } catch {
     return null;
   }
@@ -99,10 +85,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [session]);
 
   const signIn = (token: string, user: AuthUser) => {
-    setSession({
-      token,
-      user: normalizeUser(user),
-    });
+    setSession({ token, user: normalizeUser(user) });
   };
 
   const signOut = () => {
@@ -110,21 +93,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const refreshUser = async () => {
-    if (!session?.token) {
-      return null;
-    }
+    if (!session?.token) return null;
 
     try {
       const me = await authService.getMe();
       const nextUser = normalizeUser(me);
-      setSession((current) =>
-        current
-          ? {
-              ...current,
-              user: nextUser,
-            }
-          : current
-      );
+      setSession((current) => current ? { ...current, user: nextUser } : current);
       return nextUser;
     } catch {
       signOut();

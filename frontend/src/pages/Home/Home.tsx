@@ -64,7 +64,7 @@ export const Home: React.FC<HomeProps> = ({
     return products.filter((prod) => {
       // 1. Search Query (Global or header)
       const q = (searchQuery || filters.searchQuery).toLowerCase();
-      if (q && !prod.name.toLowerCase().includes(q) && !prod.brand.toLowerCase().includes(q) && !prod.category.toLowerCase().includes(q)) {
+      if (q && !prod.name.toLowerCase().includes(q) && !(prod.brand && prod.brand.toLowerCase().includes(q)) && !(prod.category && prod.category.toLowerCase().includes(q))) {
         return false;
       }
       // 2. Brand
@@ -73,7 +73,7 @@ export const Home: React.FC<HomeProps> = ({
       }
       // 3. Color
       if (filters.selectedColor) {
-        const matchesColor = prod.colorVariants.some(
+        const matchesColor = prod.colorVariants?.some(
           (c) => c.name.toLowerCase().includes(filters.selectedColor.toLowerCase())
         );
         if (!matchesColor) return false;
@@ -83,15 +83,20 @@ export const Home: React.FC<HomeProps> = ({
         return false;
       }
       // 5. Price
-      if (prod.pricing.amount > filters.priceRange[1]) {
+      const price = prod.pricePerUnit || prod.pricing?.amount || 0;
+      if (price > filters.priceRange[1]) {
         return false;
       }
 
       return true;
     }).sort((a, b) => {
-      if (sortBy === 'price-low') return a.pricing.amount - b.pricing.amount;
-      if (sortBy === 'price-high') return b.pricing.amount - a.pricing.amount;
-      if (sortBy === 'rating') return b.rating - a.rating;
+      const priceA = a.pricePerUnit || a.pricing?.amount || 0;
+      const priceB = b.pricePerUnit || b.pricing?.amount || 0;
+      const ratingA = a.rating || 0;
+      const ratingB = b.rating || 0;
+      if (sortBy === 'price-low') return priceA - priceB;
+      if (sortBy === 'price-high') return priceB - priceA;
+      if (sortBy === 'rating') return ratingB - ratingA;
       return 0;
     });
   }, [searchQuery, filters, sortBy, products]);

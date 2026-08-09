@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Express MongoDB API for Diligent Wombat Rental Marketplace",
+  "description": "EZRent MVP API - Express + MongoDB",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {
@@ -11,17 +11,12 @@
     "seed": "tsx src/scripts/seed.ts"
   },
   "dependencies": {
-    "@clerk/express": "^2.1.52",
-    "@clerk/react": "^6.13.1",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^7.5.0",
     "mongoose": "^8.12.0",
-    "node-cron": "^4.6.0",
-    "pdfkit": "^0.19.1",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
@@ -30,8 +25,6 @@
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.9",
-    "@types/node-cron": "^3.0.11",
-    "@types/pdfkit": "^0.17.6",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   }

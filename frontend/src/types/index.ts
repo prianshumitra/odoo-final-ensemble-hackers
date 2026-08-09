@@ -2,42 +2,32 @@ export interface Product {
   id: string;
   _id?: string;
   name: string;
-  brand: string;
   category: string;
-  type?: 'goods' | 'service';
-  inStock: boolean;
-  isPublished?: boolean;
-  isSystemProduct?: boolean;
-  rating: number;
-  reviewsCount: number;
+  description: string;
   image: string;
+  pricePerUnit?: number;
+  pricingUnit?: 'hour' | 'day' | 'week' | 'month';
+  quantityOnHand?: number;
+  isPublished?: boolean;
+  vendorId?: string;
+  vendorName?: string;
+
+  // Legacy compatibility fields (used by existing frontend components)
+  brand?: string;
+  type?: string;
+  inStock?: boolean;
+  rating?: number;
+  reviewsCount?: number;
   images?: string[];
   salesPrice?: number;
   costPrice?: number;
-  quantityOnHand?: number;
-  colorVariants: { name: string; hex: string }[];
+  colorVariants?: { name: string; hex: string }[];
   sizeVariants?: string[];
-  attributes?: Array<{
-    attribute: string;
-    values: string[];
-  }>;
-  pricing: {
-    amount: number;
-    unit: 'hour' | 'day' | 'Month' | 'year';
-  };
-  duration: '1 Month' | '6 Month' | '1 Year' | '2 Years' | '3 Years';
-  rental?: {
-    periodicity: 'hours' | 'day' | 'night' | 'week';
-    windowStart: string;
-    windowEnd: string;
-    paddingTimeMinutes: number;
-    lateFeeRatePerUnit: number;
-    depositType: 'fixed' | 'percent';
-    depositValue: number;
-  };
-  description: string;
-  vendorId?: string;
-  vendorName?: string;
+  attributes?: Array<{ attribute: string; values: string[] }>;
+  pricing?: { amount: number; unit: string };
+  duration?: string;
+  rental?: any;
+  isSystemProduct?: boolean;
 }
 
 export interface FilterState {
@@ -54,10 +44,56 @@ export interface CartItem {
   quantity: number;
   selectedColor?: string;
   selectedSize?: string;
-  rentDuration: string;
+  rentDuration?: string;
   startDate?: string;
   endDate?: string;
 }
+
+export interface OrderLine {
+  product?: any;
+  productName: string;
+  productImage?: string;
+  quantity: number;
+  unitPrice: number;
+  amount: number;
+  unit?: string;
+  variant?: string;
+  selectedColor?: string;
+  selectedSize?: string;
+  note?: string;
+}
+
+export interface FullRentalOrder {
+  _id: string;
+  orderRef: string;
+  customerName: string;
+  customerEmail: string;
+  vendorId?: string;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'quotation_sent' | 'picked_up' | string;
+  lines: OrderLine[];
+  total: number;
+  createdAt: string;
+
+  // Legacy compatibility (used by existing frontend components)
+  invoiceStatus?: string;
+  invoiceAddress?: any;
+  deliveryAddress?: any;
+  deliveryMethod?: string;
+  rentalPeriod?: { start: string; end: string };
+  note?: string;
+  untaxedAmount?: number;
+  taxRate?: number;
+  taxAmount?: number;
+  deliveryCharges?: number;
+  securityDeposit?: any;
+  pickupDate?: string;
+  returnDate?: string;
+  actualReturnDate?: string;
+  lateFeeCalculated?: number;
+}
+
+// Alias for backwards compatibility
+export type RentalOrder = any;
 
 export interface Attribute {
   _id: string;
@@ -84,66 +120,6 @@ export interface Pricelist {
   validTo?: string;
   rules: PricelistRule[];
 }
-
-export interface OrderLine {
-  product?: any;
-  productName: string;
-  productImage?: string;
-  variant?: string;
-  selectedColor?: string;
-  selectedSize?: string;
-  quantity: number;
-  unit: string;
-  unitPrice: number;
-  amount: number;
-  note?: string;
-}
-
-export interface SecurityDeposit {
-  amount: number;
-  status: 'held' | 'refunded' | 'partially_deducted';
-  deductedAmount: number;
-  refundedAmount: number;
-}
-
-export interface FullRentalOrder {
-  _id: string;
-  orderRef: string;
-  customerName: string;
-  customerEmail: string;
-  vendorId?: string;
-  status:
-    | 'quotation'
-    | 'quotation_sent'
-    | 'confirmed'
-    | 'reserved'
-    | 'picked_up'
-    | 'late_pickup'
-    | 'late_return'
-    | 'cancelled'
-    | 'completed';
-  invoiceStatus: 'nothing_to_invoice' | 'invoiced';
-  invoiceAddress: { street?: string; city?: string; state?: string; zip?: string; country?: string };
-  deliveryAddress: { street?: string; city?: string; state?: string; zip?: string; country?: string };
-  deliveryMethod?: 'Standard Delivery' | 'Pick up from Store';
-  rentalPeriod: { start: string; end: string };
-  lines: OrderLine[];
-  note?: string;
-  untaxedAmount: number;
-  taxRate: number;
-  taxAmount: number;
-  deliveryCharges: number;
-  total: number;
-  securityDeposit: SecurityDeposit;
-  pickupDate?: string;
-  returnDate?: string;
-  actualReturnDate?: string;
-  lateFeeCalculated?: number;
-  createdAt: string;
-}
-
-// Alias for backwards compatibility
-export type RentalOrder = any;
 
 export interface InvoiceLine {
   product?: any;
@@ -178,6 +154,13 @@ export interface QuotationTemplate {
   paymentTermsPercent: number;
   headerHtml: string;
   footerHtml: string;
+}
+
+export interface SecurityDeposit {
+  amount: number;
+  status: 'held' | 'refunded' | 'partially_deducted';
+  deductedAmount: number;
+  refundedAmount: number;
 }
 
 export interface Settings {

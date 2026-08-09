@@ -74,7 +74,7 @@ export const WishlistDrawer: React.FC<WishlistDrawerProps> = ({
                     </h4>
                     <p className="text-[11px] text-[#8A8694] mt-0.5">{product.brand}</p>
                     <p className="text-xs font-extrabold text-[#7E3AF2] mt-1">
-                      Rs. {product.pricing.amount.toLocaleString()} / {product.pricing.unit}
+                      Rs. {(product.pricePerUnit || product.pricing?.amount || 0).toLocaleString()} / {product.pricingUnit || product.pricing?.unit || 'Month'}
                     </p>
 
                     <div className="flex items-center justify-between mt-2.5">

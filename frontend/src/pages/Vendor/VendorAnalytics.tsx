@@ -157,7 +157,7 @@ export const VendorAnalytics: React.FC = () => {
 
                 <div className="text-right">
                   <span className="block font-extrabold text-[#7E3AF2]">
-                    Rs. {p.pricing.amount.toLocaleString()}/{p.pricing.unit}
+                    Rs. {(p.pricePerUnit || p.pricing?.amount || 0).toLocaleString()}/{p.pricingUnit || p.pricing?.unit || 'Month'}
                   </span>
                   <span className="text-[10px] text-emerald-600 font-bold">★ {p.rating} rating</span>
                 </div>

@@ -24,7 +24,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onRequireAuth,
 }) => {
   const [selectedColor, setSelectedColor] = useState<string>(
-    product.colorVariants[0]?.name || ''
+    product.colorVariants?.[0]?.name || ''
   );
   const [selectedSize, setSelectedSize] = useState<string>(
     product.sizeVariants?.[0] || ''
@@ -123,7 +123,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       {/* Color Variant Swatches & Brand */}
       <div className="flex items-center justify-between px-1 mb-2">
         <div className="flex items-center gap-1.5">
-          {product.colorVariants.map((variant) => (
+          {product.colorVariants?.map((variant) => (
             <button
               key={variant.name}
               onClick={(e) => {
@@ -179,9 +179,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             Rental Rate
           </span>
           <span className="text-base font-black text-[#1C1C1C]">
-            Rs. {product.pricing.amount.toLocaleString()}
+            Rs. {product.pricing?.amount?.toLocaleString() || product.pricePerUnit?.toLocaleString() || 999}
             <span className="text-xs font-medium text-[#8A857F]">
-              {' '}/ per {product.pricing.unit}
+              {' '}/ per {product.pricing?.unit || product.pricingUnit || 'Month'}
             </span>
           </span>
         </div>

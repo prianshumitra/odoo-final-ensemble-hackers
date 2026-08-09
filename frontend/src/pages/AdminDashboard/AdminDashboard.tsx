@@ -20,7 +20,7 @@ export const AdminDashboard: React.FC = () => {
     setLoading(true);
     try {
       const statsRes = await authService.getAdminStats();
-      setStats(statsRes);
+      setStats(statsRes as any);
       const usersRes = await authService.getUsers();
       setUsers(usersRes || []);
     } catch (err) {}

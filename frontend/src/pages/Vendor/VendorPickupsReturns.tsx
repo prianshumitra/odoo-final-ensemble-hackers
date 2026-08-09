@@ -116,7 +116,7 @@ export const VendorPickupsReturns: React.FC = () => {
                     <td className="p-4 font-black text-[#1C1C1C]">{o.orderRef}</td>
                     <td className="p-4 font-bold text-[#1C1C1C]">{o.customerName}</td>
                     <td className="p-4 text-xs font-semibold text-[#8A857F]">
-                      {new Date(o.rentalPeriod?.start).toLocaleString()}
+                      {o.rentalPeriod?.start ? new Date(o.rentalPeriod.start).toLocaleString() : 'N/A'}
                     </td>
                     <td className="p-4 font-bold text-[#1C1C1C]">{o.deliveryMethod || 'Standard Delivery'}</td>
                     <td className="p-4">
@@ -165,7 +165,7 @@ export const VendorPickupsReturns: React.FC = () => {
                     <td className="p-4 font-black text-[#1C1C1C]">{o.orderRef}</td>
                     <td className="p-4 font-bold text-[#1C1C1C]">{o.customerName}</td>
                     <td className="p-4 text-xs font-semibold text-[#8A857F]">
-                      {new Date(o.rentalPeriod?.end).toLocaleString()}
+                      {o.rentalPeriod?.end ? new Date(o.rentalPeriod.end).toLocaleString() : 'N/A'}
                     </td>
                     <td className="p-4 font-black text-amber-800">Rs. {o.securityDeposit?.amount || 500}</td>
                     <td className="p-4">

@@ -27,7 +27,7 @@ export const VendorActivityFeed: React.FC<VendorActivityFeedProps> = ({
     ...products.slice(0, 3).map((p) => ({
       id: `act-p-${p.id}`,
       title: 'Product Inventory Updated',
-      desc: `"${p.name}" is listed at Rs. ${p.pricing.amount}/${p.pricing.unit}.`,
+      desc: `"${p.name}" is listed at Rs. ${p.pricing?.amount || p.pricePerUnit}/${p.pricing?.unit || p.pricingUnit}.`,
       timestamp: 'Today',
       icon: p.inStock ? Package : AlertTriangle,
       iconBg: p.inStock ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800',

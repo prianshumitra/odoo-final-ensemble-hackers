@@ -413,8 +413,8 @@ export const VendorOrders: React.FC = () => {
               </div>
               <div className="bg-white p-4 rounded-2xl border border-[#D4C4ED]">
                 <h4 className="font-extrabold text-[#7E3AF2] mb-1">Rental Duration Window</h4>
-                <p>Start: {new Date(selectedOrder.rentalPeriod?.start).toLocaleString()}</p>
-                <p>End: {new Date(selectedOrder.rentalPeriod?.end).toLocaleString()}</p>
+                <p>Start: {selectedOrder.rentalPeriod?.start ? new Date(selectedOrder.rentalPeriod.start).toLocaleString() : 'N/A'}</p>
+                <p>End: {selectedOrder.rentalPeriod?.end ? new Date(selectedOrder.rentalPeriod.end).toLocaleString() : 'N/A'}</p>
               </div>
             </div>
 

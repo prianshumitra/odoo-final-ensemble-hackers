@@ -1,69 +1,30 @@
 import { Request, Response } from 'express';
 import { RentalOrder } from '../models/RentalOrder.js';
-import { Invoice } from '../models/Invoice.js';
 import { Product } from '../models/Product.js';
-import { Settings } from '../models/Settings.js';
 import { AuthRequest } from '../middleware/auth.js';
 import { getIO } from '../socket.js';
-import { generateQuotationPDFBuffer } from '../utils/pdfGenerator.js';
 
-// Helper to generate next sequential order reference (e.g. SO0001)
+// Helper: generate sequential order ref
 const getNextOrderRef = async (): Promise<string> => {
   const count = await RentalOrder.countDocuments();
-  const nextNum = (count + 1).toString().padStart(4, '0');
-  return `SO${nextNum}`;
+  return `RO${(count + 1).toString().padStart(4, '0')}`;
 };
 
-// Helper to ensure system products exist ("Late Fees", "Deposit/Downpayment", "Warranty")
-export const ensureSystemProducts = async () => {
-  try {
-    const systemProducts = [
-      { name: 'Late Fees', category: 'System Services', type: 'service', isSystemProduct: true, salesPrice: 150, image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600' },
-      { name: 'Deposit/Downpayment', category: 'System Services', type: 'service', isSystemProduct: true, salesPrice: 500, image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600' },
-      { name: 'Warranty', category: 'System Services', type: 'service', isSystemProduct: true, salesPrice: 200, image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600' },
-    ];
-
-    for (const sysProd of systemProducts) {
-      const exists = await Product.findOne({ name: sysProd.name, isSystemProduct: true });
-      if (!exists) {
-        await Product.create({
-          name: sysProd.name,
-          brand: 'System',
-          category: sysProd.category,
-          type: sysProd.type,
-          isSystemProduct: true,
-          salesPrice: sysProd.salesPrice,
-          pricing: { amount: sysProd.salesPrice, unit: 'day' },
-          description: `Default system product for ${sysProd.name}`,
-          image: sysProd.image,
-          inStock: true,
-          isPublished: true,
-        });
-      }
-    }
-  } catch (err) {
-    console.warn('System products check warning:', (err as Error).message);
-  }
-};
-
-// GET /api/orders
+// GET /api/orders — list orders for the current user's role
 export const getOrders = async (req: AuthRequest, res: Response) => {
   try {
-    const { status, customer, dateRange } = req.query;
     const filter: any = {};
 
     if (req.user?.role === 'customer') {
-      filter.$or = [{ customer: req.user.id }, { customerEmail: req.user.email }];
+      filter.customer = req.user.id;
     } else if (req.user?.role === 'vendor') {
       filter.vendorId = req.user.id;
     }
+    // admin sees all
 
+    const { status } = req.query;
     if (status && status !== 'all') {
       filter.status = status;
-    }
-
-    if (customer) {
-      filter.customerName = { $regex: customer, $options: 'i' };
     }
 
     const orders = await RentalOrder.find(filter).sort({ createdAt: -1 });
@@ -74,7 +35,7 @@ export const getOrders = async (req: AuthRequest, res: Response) => {
 };
 
 // GET /api/orders/:id
-export const getOrderById = async (req: Request, res: Response) => {
+export const getOrderById = async (req: AuthRequest, res: Response) => {
   try {
     const order = await RentalOrder.findById(req.params.id);
     if (!order) {
@@ -83,136 +44,84 @@ export const getOrderById = async (req: Request, res: Response) => {
     }
     res.json(order);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching order', error: (error as Error).message });
+    res.status(500).json({ message: 'Error fetching order' });
   }
 };
 
-// POST /api/orders (Create Quotation / Order)
+// POST /api/orders — customer creates a rental order (status: pending)
 export const createOrder = async (req: AuthRequest, res: Response) => {
   try {
-    await ensureSystemProducts();
-    const {
-      customerName,
-      customerEmail,
-      invoiceAddress,
-      deliveryAddress,
-      deliveryMethod,
-      pricelist,
-      rentalPeriod,
-      lines,
-      note,
-      taxRate,
-      securityDepositAmount,
-    } = req.body;
+    const { lines } = req.body;
 
     if (!lines || !Array.isArray(lines) || lines.length === 0) {
-      res.status(400).json({ message: 'Cannot create an order with no order lines.' });
+      res.status(400).json({ message: 'Order must have at least one product line.' });
       return;
     }
 
-    const orderRef = await getNextOrderRef();
-    let untaxedAmount = 0;
+    // Validate all products exist and have stock, and determine vendorId
+    let total = 0;
+    const formattedLines = [];
+    let vendorId: string | null = null;
 
-    const formattedLines = lines.map((line: any) => {
-      const lineAmt = Number(line.unitPrice || 0) * Number(line.quantity || 1);
-      untaxedAmount += lineAmt;
-      return {
-        product: line.product || line.productId,
-        productName: line.productName || 'Rental Product',
-        productImage: line.productImage || '',
-        variant: line.variant || '',
-        selectedColor: line.selectedColor || '',
-        selectedSize: line.selectedSize || '',
-        quantity: Number(line.quantity || 1),
-        unit: line.unit || 'Month',
-        unitPrice: Number(line.unitPrice || 0),
-        amount: lineAmt,
-        note: line.note || '',
-      };
-    });
+    for (const line of lines) {
+      const product = await Product.findById(line.productId);
+      if (!product) {
+        res.status(400).json({ message: `Product not found: ${line.productId}` });
+        return;
+      }
 
-    const currentTaxRate = Number(taxRate !== undefined ? taxRate : 10);
-    const taxAmount = (untaxedAmount * currentTaxRate) / 100;
-    const depAmount = Number(securityDepositAmount || 500);
-    const total = untaxedAmount + taxAmount + depAmount;
+      if (product.quantityOnHand < (line.quantity || 1)) {
+        res.status(400).json({ message: `Not enough stock for "${product.name}". Available: ${product.quantityOnHand}` });
+        return;
+      }
 
-    const start = rentalPeriod?.start ? new Date(rentalPeriod.start) : new Date();
-    const end = rentalPeriod?.end ? new Date(rentalPeriod.end) : new Date(Date.now() + 7 * 86400000);
+      // All products in one order must belong to the same vendor
+      if (!vendorId) {
+        vendorId = String(product.vendorId);
+      } else if (String(product.vendorId) !== vendorId) {
+        res.status(400).json({ message: 'All products in an order must be from the same vendor.' });
+        return;
+      }
 
-    // Find vendorId from primary ordered product if not provided
-    let targetVendorId = req.user?.role === 'vendor' ? req.user.id : undefined;
-    if (!targetVendorId && lines[0] && (lines[0].product || lines[0].productId)) {
-      try {
-        const primaryProduct = await Product.findById(lines[0].product || lines[0].productId);
-        if (primaryProduct && primaryProduct.vendorId) {
-          targetVendorId = primaryProduct.vendorId;
-        }
-      } catch (err) {}
+      const qty = Number(line.quantity || 1);
+      const unitPrice = product.pricePerUnit;
+      const amount = unitPrice * qty;
+      total += amount;
+
+      formattedLines.push({
+        product: product._id,
+        productName: product.name,
+        productImage: product.image,
+        quantity: qty,
+        unitPrice,
+        amount,
+      });
     }
+
+    const orderRef = await getNextOrderRef();
 
     const order = await RentalOrder.create({
       orderRef,
-      customer: req.user?.id || 'customer_demo',
-      customerName: customerName || req.user?.name || 'Valued Customer',
-      customerEmail: customerEmail || req.user?.email || 'customer@example.com',
-      vendorId: targetVendorId,
-      status: 'quotation',
-      invoiceStatus: 'nothing_to_invoice',
-      invoiceAddress: invoiceAddress || {},
-      deliveryAddress: deliveryAddress || {},
-      deliveryMethod: deliveryMethod || 'Standard Delivery',
-      pricelist,
-      rentalPeriod: { start, end },
+      customer: req.user!.id,
+      customerName: req.user!.name || req.user!.email,
+      customerEmail: req.user!.email,
+      vendorId,
+      status: 'pending',
       lines: formattedLines,
-      note: note || '',
-      untaxedAmount,
-      taxRate: currentTaxRate,
-      taxAmount,
-      deliveryCharges: 0,
-      securityDeposit: {
-        amount: depAmount,
-        status: 'held',
-        deductedAmount: 0,
-        refundedAmount: 0,
-      },
       total,
-      pickupDate: start,
-      returnDate: end,
     });
 
-    try {
-      getIO().emit('order:created', order);
-    } catch (err) {}
+    try { getIO().emit('order:created', order); } catch (_) {}
 
-    res.status(201).json(order);
+    res.status(201).json({ message: 'Rental order created (pending vendor confirmation)', order });
   } catch (error) {
+    console.error('Create order error:', error);
     res.status(500).json({ message: 'Error creating order', error: (error as Error).message });
   }
 };
 
-// PATCH /api/orders/:id/send (Email / Flip status to quotation_sent)
-export const sendQuotation = async (req: Request, res: Response) => {
-  try {
-    const order = await RentalOrder.findById(req.params.id);
-    if (!order) {
-      res.status(404).json({ message: 'Order not found' });
-      return;
-    }
-    order.status = 'quotation_sent';
-    await order.save();
-
-    try {
-      getIO().emit('order:updated', order);
-    } catch (err) {}
-
-    res.json({ message: 'Quotation sent to customer successfully', order });
-  } catch (error) {
-    res.status(500).json({ message: 'Error sending quotation' });
-  }
-};
-
-// PATCH /api/orders/:id/confirm (Confirm Quotation -> Sale Order)
-export const confirmOrder = async (req: Request, res: Response) => {
+// PATCH /api/orders/:id/confirm — vendor confirms order → stock decrements
+export const confirmOrder = async (req: AuthRequest, res: Response) => {
   try {
     const order = await RentalOrder.findById(req.params.id);
     if (!order) {
@@ -220,265 +129,80 @@ export const confirmOrder = async (req: Request, res: Response) => {
       return;
     }
 
-    if (!order.lines || order.lines.length === 0) {
-      res.status(400).json({ message: 'Cannot confirm a Quotation with no order lines.' });
+    if (order.status !== 'pending') {
+      res.status(400).json({ message: `Cannot confirm order with status "${order.status}".` });
       return;
+    }
+
+    // Verify vendor owns this order
+    if (req.user?.role === 'vendor' && String(order.vendorId) !== String(req.user.id)) {
+      res.status(403).json({ message: 'Not authorized to confirm this order.' });
+      return;
+    }
+
+    // Decrement stock for each line
+    for (const line of order.lines) {
+      const product = await Product.findById(line.product);
+      if (!product) continue;
+
+      if (product.quantityOnHand < line.quantity) {
+        res.status(400).json({ message: `Not enough stock for "${product.name}". Available: ${product.quantityOnHand}, Requested: ${line.quantity}` });
+        return;
+      }
+
+      product.quantityOnHand -= line.quantity;
+      await product.save();
+
+      try { getIO().emit('product:updated', product); } catch (_) {}
     }
 
     order.status = 'confirmed';
     await order.save();
 
-    // Auto create linked Invoice as specified in § 6.1
-    const invoiceCount = await Invoice.countDocuments();
-    const invNumber = `INV/${new Date().getFullYear()}/${(invoiceCount + 1).toString().padStart(4, '0')}`;
+    try { getIO().emit('order:updated', order); } catch (_) {}
 
-    const invoiceLines = order.lines.map((l) => ({
-      product: l.product,
-      productName: l.productName,
-      quantity: l.quantity,
-      unitPrice: l.unitPrice,
-      amount: l.amount,
-    }));
-
-    if (order.securityDeposit?.amount > 0) {
-      invoiceLines.push({
-        product: 'system_deposit',
-        productName: 'Security Deposit (Held)',
-        quantity: 1,
-        unitPrice: order.securityDeposit.amount,
-        amount: order.securityDeposit.amount,
-      });
-    }
-
-    const invoice = await Invoice.create({
-      invoiceNumber: invNumber,
-      order: order._id,
-      orderRef: order.orderRef,
-      customerName: order.customerName,
-      customerEmail: order.customerEmail,
-      invoiceDate: new Date(),
-      dueDate: new Date(Date.now() + 14 * 86400000),
-      status: 'draft',
-      lines: invoiceLines,
-      untaxedAmount: order.untaxedAmount,
-      taxAmount: order.taxAmount,
-      total: order.total,
-    });
-
-    order.invoiceStatus = 'invoiced';
-    await order.save();
-
-    try {
-      getIO().emit('order:updated', order);
-      getIO().emit('invoice:created', invoice);
-    } catch (err) {}
-
-    res.json({ message: 'Order confirmed and Invoice created', order, invoice });
+    res.json({ message: 'Order confirmed and stock decremented', order });
   } catch (error) {
-    res.status(500).json({ message: 'Error confirming order', error: (error as Error).message });
+    console.error('Confirm order error:', error);
+    res.status(500).json({ message: 'Error confirming order' });
   }
 };
 
-// PATCH /api/orders/:id/cancel
-export const cancelOrder = async (req: Request, res: Response) => {
+// PATCH /api/orders/:id/cancel — vendor or customer cancels order
+export const cancelOrder = async (req: AuthRequest, res: Response) => {
   try {
     const order = await RentalOrder.findById(req.params.id);
     if (!order) {
       res.status(404).json({ message: 'Order not found' });
       return;
     }
+
+    if (order.status === 'cancelled') {
+      res.status(400).json({ message: 'Order is already cancelled.' });
+      return;
+    }
+
+    // If cancelling a confirmed order, restore stock
+    if (order.status === 'confirmed') {
+      for (const line of order.lines) {
+        const product = await Product.findById(line.product);
+        if (!product) continue;
+
+        product.quantityOnHand += line.quantity;
+        await product.save();
+
+        try { getIO().emit('product:updated', product); } catch (_) {}
+      }
+    }
+
     order.status = 'cancelled';
-    if (order.securityDeposit) {
-      order.securityDeposit.status = 'refunded';
-      order.securityDeposit.refundedAmount = order.securityDeposit.amount;
-    }
     await order.save();
 
-    try {
-      getIO().emit('order:updated', order);
-    } catch (err) {}
+    try { getIO().emit('order:updated', order); } catch (_) {}
 
-    res.json({ message: 'Order cancelled successfully', order });
+    res.json({ message: 'Order cancelled', order });
   } catch (error) {
+    console.error('Cancel order error:', error);
     res.status(500).json({ message: 'Error cancelling order' });
-  }
-};
-
-// POST /api/orders/:id/pickup
-export const processPickup = async (req: Request, res: Response) => {
-  try {
-    const order = await RentalOrder.findById(req.params.id);
-    if (!order) {
-      res.status(404).json({ message: 'Order not found' });
-      return;
-    }
-    order.status = 'picked_up';
-    order.pickupDate = new Date();
-    await order.save();
-
-    // Automatic stock updates (§ 4 Pickup Management)
-    if (order.lines && order.lines.length > 0) {
-      for (const line of order.lines) {
-        if (line.product && line.product !== 'system_deposit') {
-          try {
-            const product = await Product.findById(line.product);
-            if (product && !product.isSystemProduct) {
-              product.quantityOnHand = Math.max(0, (product.quantityOnHand || 1) - (line.quantity || 1));
-              product.inStock = product.quantityOnHand > 0;
-              await product.save();
-              try {
-                getIO().emit('product:updated', product);
-              } catch (err) {}
-            }
-          } catch (err) {}
-        }
-      }
-    }
-
-    try {
-      getIO().emit('order:updated', order);
-    } catch (err) {}
-
-    res.json({ message: 'Item picked up successfully and stock updated', order });
-  } catch (error) {
-    res.status(500).json({ message: 'Error processing pickup' });
-  }
-};
-
-// POST /api/orders/:id/return (Triggers late fee calculation & deposit settlement)
-export const processReturn = async (req: Request, res: Response) => {
-  try {
-    const order = await RentalOrder.findById(req.params.id);
-    if (!order) {
-      res.status(404).json({ message: 'Order not found' });
-      return;
-    }
-
-    const actualReturnDate = new Date();
-    order.actualReturnDate = actualReturnDate;
-
-    // Fetch settings for late fee rules
-    const settings = await Settings.findOne() || {
-      lateFeeEnabled: true,
-      defaultLateFeeAmount: 150,
-      gracePeriodMinutes: 30,
-      maxLateFeeCap: 5000,
-    };
-
-    let computedLateFee = 0;
-    const scheduledEnd = order.rentalPeriod.end ? new Date(order.rentalPeriod.end) : new Date();
-    const graceMs = (settings.gracePeriodMinutes || 30) * 60 * 1000;
-
-    if (actualReturnDate.getTime() > scheduledEnd.getTime() + graceMs) {
-      const diffMs = actualReturnDate.getTime() - scheduledEnd.getTime() - graceMs;
-      const lateHours = Math.ceil(diffMs / (1000 * 60 * 60));
-      const rate = settings.defaultLateFeeAmount || 150;
-      computedLateFee = lateHours * rate;
-      if (settings.maxLateFeeCap && computedLateFee > settings.maxLateFeeCap) {
-        computedLateFee = settings.maxLateFeeCap;
-      }
-    }
-
-    order.lateFeeCalculated = computedLateFee;
-
-    // Deposit settlement per § 6.2 & § 6.3
-    const depositAmt = order.securityDeposit?.amount || 0;
-    if (computedLateFee > 0) {
-      const deducted = Math.min(depositAmt, computedLateFee);
-      const refunded = Math.max(0, depositAmt - computedLateFee);
-      order.securityDeposit = {
-        amount: depositAmt,
-        status: 'partially_deducted',
-        deductedAmount: deducted,
-        refundedAmount: refunded,
-      };
-
-      // Auto inject system product "Late Fees" into Sales Order Lines
-      let lateFeeProduct = await Product.findOne({ name: 'Late Fees', isSystemProduct: true });
-      if (!lateFeeProduct) {
-        lateFeeProduct = await Product.create({
-          name: 'Late Fees',
-          brand: 'System',
-          category: 'System Services',
-          type: 'service',
-          isSystemProduct: true,
-          salesPrice: 150,
-          description: 'Late Return Fee',
-          image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600',
-        });
-      }
-
-      order.lines.push({
-        product: lateFeeProduct._id,
-        productName: `Late Fees (${computedLateFee > depositAmt ? 'Excess Outstanding' : 'Deducted from Deposit'})`,
-        quantity: 1,
-        unit: 'fixed',
-        unitPrice: computedLateFee,
-        amount: computedLateFee,
-      });
-
-      order.untaxedAmount += computedLateFee;
-      order.total += computedLateFee;
-      order.status = 'late_return';
-    } else {
-      order.securityDeposit = {
-        amount: depositAmt,
-        status: 'refunded',
-        deductedAmount: 0,
-        refundedAmount: depositAmt,
-      };
-      order.status = 'completed';
-    }
-
-    await order.save();
-
-    // Automatic stock restoration (§ 4 Return Management)
-    if (order.lines && order.lines.length > 0) {
-      for (const line of order.lines) {
-        if (line.product && line.product !== 'system_deposit') {
-          try {
-            const product = await Product.findById(line.product);
-            if (product && !product.isSystemProduct) {
-              product.quantityOnHand = (product.quantityOnHand || 0) + (line.quantity || 1);
-              product.inStock = product.quantityOnHand > 0;
-              await product.save();
-              try {
-                getIO().emit('product:updated', product);
-              } catch (err) {}
-            }
-          } catch (err) {}
-        }
-      }
-    }
-
-    try {
-      getIO().emit('order:updated', order);
-    } catch (err) {}
-
-    res.json({
-      message: 'Return processed successfully. Deposit settled and late fees applied.',
-      lateFeeCalculated: computedLateFee,
-      securityDeposit: order.securityDeposit,
-      order,
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Error processing return', error: (error as Error).message });
-  }
-};
-
-// GET /api/orders/:id/print (PDF output)
-export const printQuotationPDF = async (req: Request, res: Response) => {
-  try {
-    const order = await RentalOrder.findById(req.params.id);
-    if (!order) {
-      res.status(404).json({ message: 'Order not found' });
-      return;
-    }
-    const pdfBuffer = await generateQuotationPDFBuffer(order);
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename=Quotation_${order.orderRef}.pdf`);
-    res.send(pdfBuffer);
-  } catch (error) {
-    res.status(500).json({ message: 'Error generating quotation PDF' });
   }
 };

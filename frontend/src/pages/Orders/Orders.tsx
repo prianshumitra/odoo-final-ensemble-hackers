@@ -130,7 +130,7 @@ export const Orders: React.FC = () => {
 
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs pt-3 border-t border-[#E8E4DE]">
                     <div className="text-[11px] text-[#8A857F] font-bold">
-                      <span>Period: {new Date(order.rentalPeriod?.start).toLocaleDateString()} → {new Date(order.rentalPeriod?.end).toLocaleDateString()}</span>
+                      <span>Period: {order.rentalPeriod?.start ? new Date(order.rentalPeriod.start).toLocaleDateString() : 'N/A'} → {order.rentalPeriod?.end ? new Date(order.rentalPeriod.end).toLocaleDateString() : 'N/A'}</span>
                       <br />
                       <span>Security Deposit: <strong className="text-amber-800">Rs. {order.securityDeposit?.amount || 500}</strong> ({order.securityDeposit?.status})</span>
                     </div>

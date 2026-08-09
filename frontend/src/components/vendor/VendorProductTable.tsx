@@ -71,7 +71,7 @@ export const VendorProductTable: React.FC<VendorProductTableProps> = ({
                 <td className="py-3 px-4 text-[#3E3A47]">{prod.category}</td>
 
                 <td className="py-3 px-4 font-extrabold text-[#18181B]">
-                  Rs. {prod.pricing.amount.toLocaleString()} / {prod.pricing.unit}
+                  Rs. {(prod.pricePerUnit || prod.pricing?.amount || 0).toLocaleString()} / {prod.pricingUnit || prod.pricing?.unit || 'Month'}
                 </td>
 
                 <td className="py-3 px-4 text-[#6E6A78]">{prod.duration}</td>
@@ -155,7 +155,7 @@ export const VendorProductTable: React.FC<VendorProductTableProps> = ({
                 <h4 className="text-xs font-bold text-[#18181B] truncate">{prod.name}</h4>
                 <p className="text-[11px] text-[#8A8694]">{prod.brand} • {prod.category}</p>
                 <p className="text-xs font-extrabold text-[#7E3AF2] mt-0.5">
-                  Rs. {prod.pricing.amount.toLocaleString()} / {prod.pricing.unit}
+                  Rs. {(prod.pricePerUnit || prod.pricing?.amount || 0).toLocaleString()} / {prod.pricingUnit || prod.pricing?.unit || 'Month'}
                 </p>
               </div>
             </div>
