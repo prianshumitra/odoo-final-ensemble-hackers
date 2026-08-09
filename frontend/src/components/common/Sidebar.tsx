@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
-import { Filter, RotateCcw, Check } from 'lucide-react';
+import { Filter, RotateCcw } from 'lucide-react';
 import { CustomSelect } from './CustomSelect';
-import { DURATION_OPTIONS, COLOR_SWATCHES } from '../../data/products';
+import { ColorPaletteDropdown } from './ColorPaletteDropdown';
+import { DURATION_OPTIONS } from '../../data/products';
 import type { FilterState, Product } from '../../types';
 
 interface SidebarProps {
@@ -56,53 +57,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         />
       </div>
 
-      {/* 2. Color Swatches Filter */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">
-            Color Palette
-          </label>
-          {filters.selectedColor && (
-            <button
-              onClick={() => onFilterChange({ selectedColor: '' })}
-              className="text-[11px] font-bold text-[#0A0A0A] underline hover:opacity-80"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-        <div className="grid grid-cols-4 gap-2.5 pt-1">
-          {COLOR_SWATCHES.map((swatch) => {
-            const isSelected = filters.selectedColor === swatch.name;
-            return (
-              <button
-                key={swatch.name}
-                onClick={() =>
-                  onFilterChange({
-                    selectedColor: isSelected ? '' : swatch.name,
-                  })
-                }
-                title={swatch.name}
-                className={`relative w-full aspect-square rounded-xl flex items-center justify-center transition-all shadow-2xs ${
-                  isSelected
-                    ? 'ring-2 ring-offset-2 ring-[#0A0A0A] scale-105 border-transparent'
-                    : 'hover:scale-105 border border-[#E8E4DE]'
-                }`}
-                style={{ backgroundColor: swatch.hex }}
-              >
-                {isSelected && (
-                  <Check
-                    className={`w-4 h-4 ${
-                      swatch.hex === '#F8FAFC' || swatch.hex === '#F5EBE0'
-                        ? 'text-[#1C1C1C]'
-                        : 'text-white'
-                    }`}
-                  />
-                )}
-              </button>
-            );
-          })}
-        </div>
+      {/* 2. Color Palette Dropdown Menu Filter */}
+      <div className="space-y-2.5">
+        <label className="block text-xs font-bold text-[#1C1C1C] uppercase tracking-wider">
+          Color Palette
+        </label>
+        <ColorPaletteDropdown
+          value={filters.selectedColor}
+          onChange={(colorName) => onFilterChange({ selectedColor: colorName })}
+          label="COLOR PALETTE"
+        />
       </div>
 
       {/* 3. Duration Filter */}

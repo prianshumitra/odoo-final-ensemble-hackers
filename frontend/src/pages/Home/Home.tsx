@@ -4,8 +4,9 @@ import { Sidebar } from '../../components/common/Sidebar';
 import { ProductCard } from '../../components/common/ProductCard';
 import { Pagination } from '../../components/common/Pagination';
 import { CustomSelect } from '../../components/common/CustomSelect';
+import { ColorPaletteDropdown } from '../../components/common/ColorPaletteDropdown';
 import type { Product, FilterState } from '../../types';
-import { SlidersHorizontal, ArrowUpDown, PackageX, Sparkles } from 'lucide-react';
+import { SlidersHorizontal, ArrowUpDown, PackageX } from 'lucide-react';
 import { AuthBackgroundDoodle } from '../../components/common/AuthBackgroundDoodle';
 
 interface HomeProps {
@@ -130,13 +131,9 @@ export const Home: React.FC<HomeProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 flex-1 w-full relative z-10">
         {/* Top Banner Tagline */}
         <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
-          <div className="bg-[#FAF8F5] p-6 sm:p-8 rounded-[23px] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-[#E8E4DE]">
-            <div className="space-y-2 z-10 text-center md:text-left">
-              <div className="inline-flex items-center gap-1.5 bg-white text-[#1C1C1C] text-xs font-black px-3 py-1 rounded-full border border-[#E8E4DE] shadow-2xs">
-                <Sparkles className="w-3.5 h-3.5 text-[#E8B923]" />
-                <span>EZRent Premium Equipment Rentals</span>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#1C1C1C] tracking-tight">
+          <div className="bg-[#FAF8F5] p-5 sm:p-7 rounded-[23px] relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-[#E8E4DE]">
+            <div className="space-y-1.5 z-10 text-center md:text-left">
+              <h1 className="text-2xl sm:text-3xl font-black text-[#1C1C1C] tracking-tight font-['Times_New_Roman',serif]">
                 Rent Furniture, Electronics & Sportswear on Your Terms
               </h1>
               <p className="text-sm text-[#8A857F] max-w-xl font-medium">
@@ -178,21 +175,33 @@ export const Home: React.FC<HomeProps> = ({
                 </span>
               </div>
 
-              {/* Sort Selector */}
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <ArrowUpDown className="w-4 h-4 text-[#8A857F]" />
-                <span className="text-xs font-bold text-[#8A857F] uppercase tracking-wider shrink-0">Sort by:</span>
-                <CustomSelect
-                  value={sortBy}
-                  onChange={(val) => setSortBy(val as any)}
-                  options={[
-                    { label: 'Featured Items', value: 'featured' },
-                    { label: 'Price: Low to High', value: 'price-low' },
-                    { label: 'Price: High to Low', value: 'price-high' },
-                    { label: 'Highest Rated ★', value: 'rating' },
-                  ]}
-                  className="w-44"
-                />
+              {/* Sort & Color Controls */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                {/* Color Palette Dropdown Menu */}
+                <div className="w-full sm:w-48">
+                  <ColorPaletteDropdown
+                    value={filters.selectedColor}
+                    onChange={(val) => handleFilterChange({ selectedColor: val })}
+                    label="COLOR PALETTE"
+                  />
+                </div>
+
+                {/* Sort Selector */}
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <ArrowUpDown className="w-4 h-4 text-[#8A857F] shrink-0" />
+                  <span className="text-xs font-bold text-[#8A857F] uppercase tracking-wider shrink-0 hidden md:inline">Sort:</span>
+                  <CustomSelect
+                    value={sortBy}
+                    onChange={(val) => setSortBy(val as any)}
+                    options={[
+                      { label: 'Featured Items', value: 'featured' },
+                      { label: 'Price: Low to High', value: 'price-low' },
+                      { label: 'Price: High to Low', value: 'price-high' },
+                      { label: 'Highest Rated ★', value: 'rating' },
+                    ]}
+                    className="w-full sm:w-44"
+                  />
+                </div>
               </div>
             </div>
 

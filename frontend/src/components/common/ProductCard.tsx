@@ -140,13 +140,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             />
           ))}
         </div>
-        <span className="text-[11px] font-bold text-[#8A857F] uppercase tracking-wide">
+        <span className="text-[10px] font-bold text-[#8A857F] uppercase tracking-widest font-mono bg-[#F3EFE8] px-2 py-0.5 rounded-md">
           {product.brand}
         </span>
       </div>
 
-      {/* Product Title */}
-      <h3 className="text-sm font-black text-[#1C1C1C] line-clamp-2 hover:text-[#8A857F] transition-colors mb-1.5">
+      {/* Product Title - Playfair Display Editorial Contrast */}
+      <h3 className="text-base font-bold text-[#1C1C1C] line-clamp-2 hover:text-[#8A857F] transition-colors mb-1.5 font-serif tracking-tight leading-snug">
         {product.name}
       </h3>
 
