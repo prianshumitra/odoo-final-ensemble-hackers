@@ -1,7 +1,6 @@
 // @ts-nocheck
 import axios from 'axios';
 import type { Product, CartItem } from '../types';
-import { INITIAL_PRODUCTS } from '../data/products';
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
@@ -64,13 +63,13 @@ export const productService = {
   async getProducts(params?: Record<string, any>): Promise<Product[]> {
     try {
       const response = await api.get('/products', { params });
-      if (Array.isArray(response.data) && response.data.length > 0) {
+      if (Array.isArray(response.data)) {
         return response.data.map((p: any) => ({ ...p, id: p._id || p.id }));
       }
-      return INITIAL_PRODUCTS;
+      return [];
     } catch (error) {
-      console.warn('Backend API error, fallback to initial products:', error);
-      return INITIAL_PRODUCTS;
+      console.warn('Products API error:', error);
+      return [];
     }
   },
 

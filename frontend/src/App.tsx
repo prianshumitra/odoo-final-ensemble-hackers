@@ -40,7 +40,6 @@ import { VendorReports } from './pages/Vendor/VendorReports';
 import { VendorNotifications } from './pages/Vendor/VendorNotifications';
 import { VendorSettings } from './pages/Vendor/VendorSettings';
 import type { CartItem, Product } from './types';
-import { INITIAL_PRODUCTS } from './data/products';
 import { productService } from './services/api';
 import { getSocket } from './services/socket';
 import { useAuth } from './context/AuthContext';
@@ -114,7 +113,7 @@ function AppContent() {
     setShowSplash(false);
   };
 
-  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
@@ -135,13 +134,9 @@ function AppContent() {
   const fetchProducts = useCallback(async () => {
     try {
       const data = await productService.getProducts();
-      if (data && data.length > 0) {
-        setProducts(data);
-      } else {
-        setProducts(INITIAL_PRODUCTS);
-      }
+      setProducts(data || []);
     } catch {
-      setProducts(INITIAL_PRODUCTS);
+      setProducts([]);
     }
   }, []);
 
