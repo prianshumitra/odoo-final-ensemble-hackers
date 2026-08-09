@@ -210,3 +210,47 @@ export interface RenterCustomer {
   totalSpent: number;
   lastRentalDate: string;
 }
+
+export type PaymentStatus =
+  | 'CREATED'
+  | 'PENDING'
+  | 'AUTHORIZED'
+  | 'CAPTURED'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'REFUND_PENDING'
+  | 'REFUNDED'
+  | 'PARTIALLY_REFUNDED';
+
+export interface Payment {
+  _id: string;
+  id?: string;
+  user: any;
+  rentalOrder: any;
+  vendorId: string;
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  razorpayOrderId: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
+  paymentMethod?: string;
+  refundStatus?: 'none' | 'partial' | 'full';
+  refundedAmount?: number;
+  failureReason?: string;
+  metadata?: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VendorPaymentsResponse {
+  stats: {
+    totalRevenue: number;
+    pendingRevenue: number;
+    refundedAmount: number;
+    completedPaidCount: number;
+    totalTransactions: number;
+  };
+  payments: Payment[];
+}
+
