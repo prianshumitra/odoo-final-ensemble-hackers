@@ -178,11 +178,10 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
                     <button
                       type="button"
                       onClick={() => setDeliveryMethod('Standard Delivery')}
-                      className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${
-                        deliveryMethod === 'Standard Delivery'
+                      className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${deliveryMethod === 'Standard Delivery'
                           ? 'border-[#0A0A0A] bg-white text-[#1C1C1C] shadow-warm-xs ring-2 ring-[#0A0A0A]'
                           : 'border-[#E8E4DE] bg-white text-[#8A857F]'
-                      }`}
+                        }`}
                     >
                       <Truck className="w-5 h-5 mt-0.5 text-[#0A0A0A]" />
                       <div>
@@ -194,11 +193,10 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
                     <button
                       type="button"
                       onClick={() => setDeliveryMethod('Pick up from Store')}
-                      className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${
-                        deliveryMethod === 'Pick up from Store'
+                      className={`p-4 rounded-2xl border text-left flex items-start gap-3 transition-all ${deliveryMethod === 'Pick up from Store'
                           ? 'border-[#0A0A0A] bg-white text-[#1C1C1C] shadow-warm-xs ring-2 ring-[#0A0A0A]'
                           : 'border-[#E8E4DE] bg-white text-[#8A857F]'
-                      }`}
+                        }`}
                     >
                       <Store className="w-5 h-5 mt-0.5 text-[#0A0A0A]" />
                       <div>
@@ -331,18 +329,16 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
                     <button
                       type="button"
                       onClick={() => setPayMethod('card')}
-                      className={`flex-1 py-3 px-4 rounded-full text-xs font-bold border transition-all ${
-                        payMethod === 'card' ? 'bg-[#0A0A0A] text-white border-[#0A0A0A] shadow-warm-xs' : 'bg-white text-[#8A857F] border-[#E8E4DE]'
-                      }`}
+                      className={`flex-1 py-3 px-4 rounded-full text-xs font-bold border transition-all ${payMethod === 'card' ? 'bg-[#0A0A0A] text-white border-[#0A0A0A] shadow-warm-xs' : 'bg-white text-[#8A857F] border-[#E8E4DE]'
+                        }`}
                     >
                       Credit / Debit Card
                     </button>
                     <button
                       type="button"
                       onClick={() => setPayMethod('saved_card')}
-                      className={`flex-1 py-3 px-4 rounded-full text-xs font-bold border transition-all ${
-                        payMethod === 'saved_card' ? 'bg-[#0A0A0A] text-white border-[#0A0A0A] shadow-warm-xs' : 'bg-white text-[#8A857F] border-[#E8E4DE]'
-                      }`}
+                      className={`flex-1 py-3 px-4 rounded-full text-xs font-bold border transition-all ${payMethod === 'saved_card' ? 'bg-[#0A0A0A] text-white border-[#0A0A0A] shadow-warm-xs' : 'bg-white text-[#8A857F] border-[#E8E4DE]'
+                        }`}
                     >
                       Pay with Saved Card
                     </button>

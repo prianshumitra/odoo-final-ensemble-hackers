@@ -34,7 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: 'Products', path: '/' },
+    { name: 'Products', path: '/products' },
     { name: 'Terms & Condition', path: '/terms' },
     { name: 'About Us', path: '/about' },
     { name: 'Contact Us', path: '/contact' },
@@ -51,7 +51,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center justify-between h-20 gap-4">
           
           {/* Brand Logo & Title */}
-          <Link to="/" className="flex items-center gap-3 shrink-0 group">
+          <Link to="/landing" className="flex items-center gap-3 shrink-0 group" title="Go to Landing Page">
             <img 
               src={logoImg} 
               alt="EZRent Logo" 
@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Desktop Navigation Links */}
           <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-[#1C1C1C]">
             {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
+              const isActive = location.pathname === link.path || (link.path === '/products' && location.pathname === '/');
               return (
                 <Link
                   key={link.name}

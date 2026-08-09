@@ -17,37 +17,37 @@ export const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-[#FAF7F2]/95 backdrop-blur-md border-t-2 border-[#FAF7F2] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] pt-14 pb-8 mt-auto">
+    <footer className="bg-[#FAF8F5] border-t border-[#E8E4DE] shadow-warm-xs pt-14 pb-8 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Value Proposition Highlights */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-10 border-b border-[#E4DFD6]">
-          <div className="flex items-center gap-4 bg-[#EFE9F6] p-5 rounded-2xl border border-[#D4C4ED] shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-white text-[#7E3AF2] flex items-center justify-center shrink-0 shadow-xs">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-10 border-b border-[#E8E4DE]">
+          <div className="flex items-center gap-4 bg-[#F3EFE8] p-5 rounded-2xl border border-[#E8E4DE] shadow-warm-xs">
+            <div className="w-12 h-12 rounded-xl bg-[#0A0A0A] text-[#E8B923] flex items-center justify-center shrink-0 shadow-warm-xs">
               <Truck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#18181B]">Free Express Delivery</h4>
-              <p className="text-xs text-[#8A8694] mt-0.5">Complimentary white-glove setup on orders over $100</p>
+              <h4 className="text-sm font-black text-[#1C1C1C]">Free Express Delivery</h4>
+              <p className="text-xs font-bold text-[#8A857F] mt-0.5">Complimentary white-glove setup on orders over Rs. 1,000</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 bg-[#EFE9F6] p-5 rounded-2xl border border-[#D4C4ED] shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-white text-[#7E3AF2] flex items-center justify-center shrink-0 shadow-xs">
+          <div className="flex items-center gap-4 bg-[#F3EFE8] p-5 rounded-2xl border border-[#E8E4DE] shadow-warm-xs">
+            <div className="w-12 h-12 rounded-xl bg-[#0A0A0A] text-[#E8B923] flex items-center justify-center shrink-0 shadow-warm-xs">
               <RefreshCw className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#18181B]">Flexible Rent & Upgrade</h4>
-              <p className="text-xs text-[#8A8694] mt-0.5">Swap, extend, or return anytime with zero hassle</p>
+              <h4 className="text-sm font-black text-[#1C1C1C]">Flexible Rent & Upgrade</h4>
+              <p className="text-xs font-bold text-[#8A857F] mt-0.5">Swap, extend, or return anytime with zero hassle</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 bg-[#EFE9F6] p-5 rounded-2xl border border-[#D4C4ED] shadow-xs">
-            <div className="w-12 h-12 rounded-xl bg-white text-[#7E3AF2] flex items-center justify-center shrink-0 shadow-xs">
+          <div className="flex items-center gap-4 bg-[#F3EFE8] p-5 rounded-2xl border border-[#E8E4DE] shadow-warm-xs">
+            <div className="w-12 h-12 rounded-xl bg-[#0A0A0A] text-[#E8B923] flex items-center justify-center shrink-0 shadow-warm-xs">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#18181B]">100% Quality Inspected</h4>
-              <p className="text-xs text-[#8A8694] mt-0.5">Sanitized & certified premium quality gear</p>
+              <h4 className="text-sm font-black text-[#1C1C1C]">100% Quality Inspected</h4>
+              <p className="text-xs font-bold text-[#8A857F] mt-0.5">Sanitized & certified premium quality gear</p>
             </div>
           </div>
         </div>
@@ -55,41 +55,42 @@ export const Footer: React.FC = () => {
         {/* Main Footer Links */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Brand Info */}
-          <div className="md:col-span-4 space-y-1 -mt-5 sm:-mt-6">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <img src={logoImg} alt="Logo" className="h-20 sm:h-24 w-auto object-contain -mt-3 -mb-1" />
+          <div className="md:col-span-4 space-y-2 -mt-4">
+            <Link to="/landing" className="inline-flex items-center gap-2 group">
+              <img src={logoImg} alt="Logo" className="h-16 sm:h-20 w-auto object-contain transition-transform group-hover:scale-105" />
             </Link>
-            <p className="text-xs text-[#6E6A78] leading-relaxed max-w-sm">
+            <p className="text-xs font-bold text-[#8A857F] leading-relaxed max-w-sm">
               EZRent is your premier subscription platform for high-end furniture, home electronics, gaming consoles, and smart appliances.
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="md:col-span-2 space-y-3">
-            <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider">Navigation</h4>
-            <ul className="space-y-2 text-xs font-medium">
-              <li><Link to="/" className="text-[#6E6A78] hover:text-[#7E3AF2] transition-colors">Products</Link></li>
-              <li><Link to="/terms" className="text-[#6E6A78] hover:text-[#7E3AF2] transition-colors">Terms & Condition</Link></li>
-              <li><Link to="/about" className="text-[#6E6A78] hover:text-[#7E3AF2] transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="text-[#6E6A78] hover:text-[#7E3AF2] transition-colors">Contact Us</Link></li>
+            <h4 className="text-xs font-black text-[#1C1C1C] uppercase tracking-wider">Navigation</h4>
+            <ul className="space-y-2 text-xs font-bold">
+              <li><Link to="/landing" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Landing</Link></li>
+              <li><Link to="/products" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Products Catalog</Link></li>
+              <li><Link to="/terms" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Terms & Condition</Link></li>
+              <li><Link to="/about" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Contact Us</Link></li>
             </ul>
           </div>
 
           {/* Categories */}
           <div className="md:col-span-2 space-y-3">
-            <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider">Categories</h4>
-            <ul className="space-y-2 text-xs font-medium text-[#6E6A78]">
-              <li className="hover:text-[#7E3AF2] cursor-pointer">Living Room Furniture</li>
-              <li className="hover:text-[#7E3AF2] cursor-pointer">4K OLED TVs</li>
-              <li className="hover:text-[#7E3AF2] cursor-pointer">Gaming & Workstations</li>
-              <li className="hover:text-[#7E3AF2] cursor-pointer">Bedrooms & Study</li>
+            <h4 className="text-xs font-black text-[#1C1C1C] uppercase tracking-wider">Categories</h4>
+            <ul className="space-y-2 text-xs font-bold text-[#8A857F]">
+              <li className="hover:text-[#0A0A0A] cursor-pointer transition-colors">Living Room Furniture</li>
+              <li className="hover:text-[#0A0A0A] cursor-pointer transition-colors">4K OLED TVs</li>
+              <li className="hover:text-[#0A0A0A] cursor-pointer transition-colors">Gaming & Workstations</li>
+              <li className="hover:text-[#0A0A0A] cursor-pointer transition-colors">Bedrooms & Study</li>
             </ul>
           </div>
 
           {/* Newsletter */}
           <div className="md:col-span-4 space-y-3">
-            <h4 className="text-xs font-bold text-[#18181B] uppercase tracking-wider">Join Newsletter</h4>
-            <p className="text-xs text-[#6E6A78]">
+            <h4 className="text-xs font-black text-[#1C1C1C] uppercase tracking-wider">Join Newsletter</h4>
+            <p className="text-xs font-bold text-[#8A857F]">
               Subscribe for exclusive member discounts and new arrival alerts.
             </p>
             <form onSubmit={handleSubscribe} className="relative">
@@ -99,19 +100,19 @@ export const Footer: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
-                className="w-full bg-[#EFE9F6] text-[#18181B] text-xs font-medium rounded-full pl-9 pr-24 py-3 border border-[#D4C4ED] focus:outline-none focus:border-[#7E3AF2] focus:bg-white transition-all shadow-xs"
+                className="w-full bg-[#F3EFE8] text-[#1C1C1C] text-xs font-bold rounded-full pl-9 pr-24 py-3 border border-[#E8E4DE] focus:outline-none focus:border-[#0A0A0A] focus:bg-white transition-all shadow-inner"
               />
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8694]" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A857F]" />
               <button
                 type="submit"
-                className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#18181B] hover:bg-[#7E3AF2] text-white text-xs font-bold px-3.5 py-2 rounded-full transition-colors flex items-center gap-1"
+                className="absolute right-1 top-1/2 -translate-y-1/2 bg-[#0A0A0A] hover:bg-[#2A2A2A] text-white text-xs font-bold px-4 py-2 rounded-full transition-colors flex items-center gap-1.5 shadow-warm-xs"
               >
                 <span>Join</span>
-                <ArrowRight className="w-3 h-3" />
+                <ArrowRight className="w-3 h-3 text-[#E8B923]" />
               </button>
             </form>
             {subscribed && (
-              <p className="text-xs text-emerald-600 font-semibold animate-in fade-in">
+              <p className="text-xs text-emerald-600 font-bold animate-in fade-in">
                 ✓ Thank you for subscribing!
               </p>
             )}
@@ -119,8 +120,8 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-[#D4C4ED] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-semibold text-[#7E3AF2]">
-          <p>© {new Date().getFullYear()} EZ Rent Inc. All rights reserved.</p>
+        <div className="pt-8 border-t border-[#E8E4DE] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-[#8A857F]">
+          <p>© {new Date().getFullYear()} EZRent Inc. All rights reserved.</p>
           <p className="flex items-center gap-1">
             Crafted with <Heart className="w-3.5 h-3.5 text-rose-500 fill-current" /> for Odoo Ensemble Hackers
           </p>

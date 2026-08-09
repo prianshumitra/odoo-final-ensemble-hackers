@@ -8,7 +8,9 @@ import { WishlistDrawer } from './components/common/WishlistDrawer';
 import { ProductDetailModal } from './components/common/ProductDetailModal';
 import { AddProductModal } from './components/vendor/AddProductModal';
 import { AuthPromptModal } from './components/common/AuthPromptModal';
+import { SplashScreen } from './components/common/SplashScreen';
 import { Home } from './pages/Home/Home';
+import { Landing } from './pages/Landing/Landing';
 import { Terms } from './pages/Terms/Terms';
 import { About } from './pages/About/About';
 import { Contact } from './pages/Contact/Contact';
@@ -38,6 +40,7 @@ import { VendorReports } from './pages/Vendor/VendorReports';
 import { VendorNotifications } from './pages/Vendor/VendorNotifications';
 import { VendorSettings } from './pages/Vendor/VendorSettings';
 import type { CartItem, Product } from './types';
+import { INITIAL_PRODUCTS } from './data/products';
 import { productService } from './services/api';
 import { getSocket } from './services/socket';
 import { useAuth } from './context/AuthContext';
@@ -102,7 +105,16 @@ function VendorRouteGuard({ children }: { children: React.ReactNode }) {
 function AppContent() {
   const { user, isAuthenticated } = useAuth();
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [showSplash, setShowSplash] = useState(() => {
+    return !sessionStorage.getItem('ezrent_splash_shown');
+  });
+
+  const handleSplashFinish = () => {
+    sessionStorage.setItem('ezrent_splash_shown', 'true');
+    setShowSplash(false);
+  };
+
+  const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
@@ -123,9 +135,13 @@ function AppContent() {
   const fetchProducts = useCallback(async () => {
     try {
       const data = await productService.getProducts();
-      setProducts(data);
+      if (data && data.length > 0) {
+        setProducts(data);
+      } else {
+        setProducts(INITIAL_PRODUCTS);
+      }
     } catch {
-      setProducts([]);
+      setProducts(INITIAL_PRODUCTS);
     }
   }, []);
 
@@ -290,6 +306,23 @@ function AppContent() {
                       />
                     }
                   />
+                  <Route
+                    path="/products"
+                    element={
+                      <Home
+                        products={products}
+                        searchQuery={searchQuery}
+                        wishlistIds={wishlistIds}
+                        onToggleWishlist={handleToggleWishlist}
+                        onAddToCart={handleAddToCart}
+                        onSelectProduct={setSelectedProduct}
+                        isSignedIn={isAuthenticated}
+                        userRole={userRole}
+                        onRequireAuth={handleRequireAuth}
+                      />
+                    }
+                  />
+                  <Route path="/landing" element={<Landing />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
@@ -378,6 +411,8 @@ function AppContent() {
                 onClose={() => setIsAuthPromptOpen(false)}
                 actionMessage={authPromptMsg}
               />
+
+              {showSplash && <SplashScreen onFinish={handleSplashFinish} />}
             </div>
           }
         />
