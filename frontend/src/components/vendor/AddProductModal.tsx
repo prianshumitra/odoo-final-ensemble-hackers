@@ -16,8 +16,8 @@ const BRANDS = ['IKEA', 'Sony', 'Apple', 'Dell', 'HP', 'Herman Miller', 'Canon',
 const UNITS = [
   { label: 'Per Hour', value: 'hour' },
   { label: 'Per Day', value: 'day' },
-  { label: 'Per Month', value: 'Month' },
-  { label: 'Per Year', value: 'year' },
+  { label: 'Per Week', value: 'week' },
+  { label: 'Per Month', value: 'month' },
 ];
 const DURATIONS = ['1 Month', '6 Month', '1 Year', '2 Years', '3 Years'];
 const PERIODICITIES = [
@@ -35,7 +35,7 @@ const defaultForm = () => ({
   salesPrice: 1499,
   costPrice: 800,
   quantityOnHand: 10,
-  unit: 'Month' as 'hour' | 'day' | 'Month' | 'year',
+  unit: 'month' as 'hour' | 'day' | 'week' | 'month',
   duration: '6 Month' as '1 Month' | '6 Month' | '1 Year' | '2 Years' | '3 Years',
   description: '',
   imageUrls: [''] as string[], // multi-image list
@@ -111,6 +111,8 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({
       brand: form.brand,
       category: form.category,
       type: form.type,
+      pricePerUnit: Number(form.salesPrice),
+      pricingUnit: form.unit,
       salesPrice: Number(form.salesPrice),
       costPrice: Number(form.costPrice),
       quantityOnHand: Number(form.quantityOnHand),

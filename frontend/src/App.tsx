@@ -10,10 +10,6 @@ import { AddProductModal } from './components/vendor/AddProductModal';
 import { AuthPromptModal } from './components/common/AuthPromptModal';
 import { SplashScreen } from './components/common/SplashScreen';
 import { Home } from './pages/Home/Home';
-import { Landing } from './pages/Landing/Landing';
-import { Terms } from './pages/Terms/Terms';
-import { About } from './pages/About/About';
-import { Contact } from './pages/Contact/Contact';
 import { Account } from './pages/Account/Account';
 import { Orders } from './pages/Orders/Orders';
 import { Settings } from './pages/Settings/Settings';
@@ -137,13 +133,18 @@ function AppContent() {
   useEffect(() => {
     const socket = getSocket();
 
-    const onProductCreated = (newProduct: Product) => {
-      setProducts((prev) => [newProduct, ...prev]);
+    const onProductCreated = (rawProd: any) => {
+      const formatted = { ...rawProd, id: rawProd._id || rawProd.id };
+      setProducts((prev) => {
+        if (prev.some((p) => (p.id || p._id) === formatted.id)) return prev;
+        return [formatted, ...prev];
+      });
     };
 
-    const onProductUpdated = (updatedProd: Product) => {
+    const onProductUpdated = (rawProd: any) => {
+      const formatted = { ...rawProd, id: rawProd._id || rawProd.id };
       setProducts((prev) =>
-        prev.map((p) => (p.id === updatedProd.id || p._id === updatedProd._id ? updatedProd : p))
+        prev.map((p) => ((p.id || p._id) === formatted.id ? formatted : p))
       );
     };
 
@@ -372,8 +373,12 @@ function AppContent() {
               <AddProductModal
                 isOpen={isVendorModalOpen}
                 onClose={() => setIsVendorModalOpen(false)}
-                onProductAdded={(newProd) => {
-                  setProducts((prev) => [newProd, ...prev]);
+                onProductAdded={(newProd: any) => {
+                  const formatted = { ...newProd, id: newProd._id || newProd.id };
+                  setProducts((prev) => {
+                    if (prev.some((p) => (p.id || p._id) === formatted.id)) return prev;
+                    return [formatted, ...prev];
+                  });
                 }}
                 userRole={userRole}
               />

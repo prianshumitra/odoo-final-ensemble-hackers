@@ -120,7 +120,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* 4. Price Range Filter */}
       {(() => {
-        const pricePercent = Math.min(100, Math.max(0, (filters.priceRange[1] / 10000) * 100));
+        const maxCatalogPrice = Math.max(50000, ...products.map((p) => p.pricePerUnit || p.pricing?.amount || 0));
+        const pricePercent = Math.min(100, Math.max(0, (filters.priceRange[1] / maxCatalogPrice) * 100));
         return (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -134,8 +135,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <input
               type="range"
               min={0}
-              max={10000}
-              step={100}
+              max={maxCatalogPrice}
+              step={250}
               value={filters.priceRange[1]}
               onChange={(e) =>
                 onFilterChange({
@@ -149,7 +150,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             />
             <div className="flex items-center justify-between text-[11px] font-bold text-[#8A857F]">
               <span>Rs. 0</span>
-              <span>Rs. 10,000+</span>
+              <span>Rs. {maxCatalogPrice.toLocaleString()}+</span>
             </div>
           </div>
         );

@@ -38,7 +38,7 @@ export const Home: React.FC<HomeProps> = ({
     selectedBrand: searchParams.get('brand') || searchParams.get('category') || 'All Brands',
     selectedColor: searchParams.get('color') || '',
     selectedDuration: 'All Duration',
-    priceRange: [0, 10000],
+    priceRange: [0, 100000],
   });
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export const Home: React.FC<HomeProps> = ({
       selectedBrand: 'All Brands',
       selectedColor: '',
       selectedDuration: 'All Duration',
-      priceRange: [0, 10000],
+      priceRange: [0, 100000],
     });
     setCurrentPage(1);
   };
@@ -82,8 +82,8 @@ export const Home: React.FC<HomeProps> = ({
       if (q && !prod.name.toLowerCase().includes(q) && !(prod.brand && prod.brand.toLowerCase().includes(q)) && !(prod.category && prod.category.toLowerCase().includes(q))) {
         return false;
       }
-      // 2. Brand
-      if (filters.selectedBrand !== 'All Brands' && prod.brand !== filters.selectedBrand) {
+      // 2. Brand / Category
+      if (filters.selectedBrand !== 'All Brands' && prod.brand !== filters.selectedBrand && prod.category !== filters.selectedBrand) {
         return false;
       }
       // 3. Color
@@ -99,7 +99,7 @@ export const Home: React.FC<HomeProps> = ({
       }
       // 5. Price
       const price = prod.pricePerUnit || prod.pricing?.amount || 0;
-      if (price > filters.priceRange[1]) {
+      if (filters.priceRange[1] > 0 && price > filters.priceRange[1]) {
         return false;
       }
 
