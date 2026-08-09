@@ -56,7 +56,7 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Brand Info */}
           <div className="md:col-span-4 space-y-2 -mt-4">
-            <Link to="/landing" className="inline-flex items-center gap-2 group">
+            <Link to="/" className="inline-flex items-center gap-2 group">
               <img src={logoImg} alt="Logo" className="h-16 sm:h-20 w-auto object-contain transition-transform group-hover:scale-105" />
             </Link>
             <p className="text-xs font-bold text-[#8A857F] leading-relaxed max-w-sm">
@@ -68,11 +68,9 @@ export const Footer: React.FC = () => {
           <div className="md:col-span-2 space-y-3">
             <h4 className="text-xs font-black text-[#1C1C1C] uppercase tracking-wider">Navigation</h4>
             <ul className="space-y-2 text-xs font-bold">
-              <li><Link to="/landing" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Landing</Link></li>
-              <li><Link to="/products" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Products Catalog</Link></li>
-              <li><Link to="/terms" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Terms & Condition</Link></li>
-              <li><Link to="/about" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Contact Us</Link></li>
+              <li><Link to="/" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Storefront</Link></li>
+              <li><Link to="/orders" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">My Rental Orders</Link></li>
+              <li><Link to="/vendor" className="text-[#8A857F] hover:text-[#0A0A0A] transition-colors">Vendor Console</Link></li>
             </ul>
           </div>
 

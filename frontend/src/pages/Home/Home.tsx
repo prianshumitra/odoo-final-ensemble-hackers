@@ -162,6 +162,7 @@ export const Home: React.FC<HomeProps> = ({
             filters={filters}
             onFilterChange={handleFilterChange}
             onResetFilters={handleResetFilters}
+            products={products}
           />
 
           {/* Right Main Product Area */}

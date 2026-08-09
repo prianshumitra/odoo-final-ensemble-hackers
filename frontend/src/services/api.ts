@@ -133,6 +133,10 @@ export const orderService = {
     const res = await api.patch(`/orders/${id}/confirm`);
     return res.data;
   },
+  async completeOrder(id: string) {
+    const res = await api.patch(`/orders/${id}/complete`);
+    return res.data;
+  },
   async cancelOrder(id: string) {
     const res = await api.patch(`/orders/${id}/cancel`);
     return res.data;

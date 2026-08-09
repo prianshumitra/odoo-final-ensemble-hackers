@@ -29,16 +29,6 @@ import { VendorLayout } from './pages/Vendor/VendorLayout';
 import { VendorDashboard } from './pages/Vendor/VendorDashboard';
 import { VendorOrders } from './pages/Vendor/VendorOrders';
 import { VendorProducts } from './pages/Vendor/VendorProducts';
-import { VendorInvoices } from './pages/Vendor/VendorInvoices';
-import { VendorAttributes } from './pages/Vendor/VendorAttributes';
-import { VendorPricelists } from './pages/Vendor/VendorPricelists';
-import { VendorCalendar } from './pages/Vendor/VendorCalendar';
-import { VendorPickupsReturns } from './pages/Vendor/VendorPickupsReturns';
-import { VendorQuotationTemplates } from './pages/Vendor/VendorQuotationTemplates';
-import { VendorCustomers } from './pages/Vendor/VendorCustomers';
-import { VendorReports } from './pages/Vendor/VendorReports';
-import { VendorNotifications } from './pages/Vendor/VendorNotifications';
-import { VendorSettings } from './pages/Vendor/VendorSettings';
 import type { CartItem, Product } from './types';
 import { productService } from './services/api';
 import { getSocket } from './services/socket';
@@ -256,16 +246,6 @@ function AppContent() {
           <Route index element={<VendorDashboard onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
           <Route path="orders" element={<VendorOrders />} />
           <Route path="products" element={<VendorProducts onOpenAddProduct={() => setIsVendorModalOpen(true)} />} />
-          <Route path="invoices" element={<VendorInvoices />} />
-          <Route path="attributes" element={<VendorAttributes />} />
-          <Route path="pricelists" element={<VendorPricelists />} />
-          <Route path="calendar" element={<VendorCalendar />} />
-          <Route path="pickups-returns" element={<VendorPickupsReturns />} />
-          <Route path="quotation-templates" element={<VendorQuotationTemplates />} />
-          <Route path="customers" element={<VendorCustomers />} />
-          <Route path="reports" element={<VendorReports />} />
-          <Route path="notifications" element={<VendorNotifications />} />
-          <Route path="settings" element={<VendorSettings />} />
         </Route>
         <Route
           path="*"
@@ -317,10 +297,7 @@ function AppContent() {
                       />
                     }
                   />
-                  <Route path="/landing" element={<Landing />} />
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/landing" element={<Navigate to="/" replace />} />
                   <Route
                     path="/account"
                     element={

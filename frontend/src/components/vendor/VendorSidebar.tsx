@@ -4,15 +4,6 @@ import {
   LayoutDashboard,
   Package,
   ShoppingBag,
-  FileText,
-  Sliders,
-  Tag,
-  Calendar,
-  Truck,
-  FileCode,
-  BarChart3,
-  Settings,
-  Users,
   X,
 } from 'lucide-react';
 import logoImg from '../../assets/logo.png';
@@ -29,20 +20,8 @@ export const VendorSidebar: React.FC<VendorSidebarProps> = ({
 }) => {
   const mainNavItems = [
     { name: 'Dashboard', path: '/vendor', icon: LayoutDashboard, exact: true },
-    { name: 'Orders / Quotes', path: '/vendor/orders', icon: ShoppingBag },
+    { name: 'Orders / Rental Requests', path: '/vendor/orders', icon: ShoppingBag },
     { name: 'Products', path: '/vendor/products', icon: Package },
-    { name: 'Customers & Vendors', path: '/vendor/customers', icon: Users },
-    { name: 'Invoices', path: '/vendor/invoices', icon: FileText },
-    { name: 'Calendar / Schedule', path: '/vendor/calendar', icon: Calendar },
-    { name: 'Pickups & Returns', path: '/vendor/pickups-returns', icon: Truck },
-    { name: 'Reports & Export', path: '/vendor/reports', icon: BarChart3 },
-    { name: 'Settings', path: '/vendor/settings', icon: Settings },
-  ];
-
-  const configNavItems = [
-    { name: 'Attributes', path: '/vendor/attributes', icon: Sliders },
-    { name: 'Pricelists', path: '/vendor/pricelists', icon: Tag },
-    { name: 'Quote Templates', path: '/vendor/quotation-templates', icon: FileCode },
   ];
 
   return (
@@ -65,9 +44,9 @@ export const VendorSidebar: React.FC<VendorSidebarProps> = ({
               <img src={logoImg} alt="EZRent" className="h-10 w-auto object-contain" />
               <div className="flex flex-col">
                 <span className="text-xs font-black uppercase tracking-wider text-[#1C1C1C]">
-                  Operations Console
+                  Vendor Console
                 </span>
-                <span className="text-[10px] font-bold text-[#8A857F]">Vendor Suite</span>
+                <span className="text-[10px] font-bold text-[#8A857F]">EZRent Rental Suite</span>
               </div>
             </Link>
 
@@ -83,38 +62,13 @@ export const VendorSidebar: React.FC<VendorSidebarProps> = ({
 
           <nav className="space-y-1">
             <p className="px-3 text-[10px] font-black uppercase text-[#8A857F] tracking-wider mb-1">
-              Operations
+              Rental Management
             </p>
             {mainNavItems.map((item) => (
               <RouterNavLink
                 key={item.path}
                 to={item.path}
                 end={item.exact}
-                onClick={onClose}
-                className={({ isActive }) =>
-                  `flex items-center justify-between px-3.5 py-2.5 rounded-full text-xs font-bold transition-all ${
-                    isActive
-                      ? 'bg-[#0A0A0A] text-white shadow-warm-xs'
-                      : 'text-[#1C1C1C] hover:bg-white hover:text-[#0A0A0A]'
-                  }`
-                }
-              >
-                <div className="flex items-center gap-2.5">
-                  <item.icon className="w-4 h-4 text-[#E8B923]" />
-                  <span>{item.name}</span>
-                </div>
-              </RouterNavLink>
-            ))}
-          </nav>
-
-          <nav className="space-y-1 pt-2 border-t border-[#E8E4DE]">
-            <p className="px-3 text-[10px] font-black uppercase text-[#8A857F] tracking-wider mb-1">
-              Configuration
-            </p>
-            {configNavItems.map((item) => (
-              <RouterNavLink
-                key={item.path}
-                to={item.path}
                 onClick={onClose}
                 className={({ isActive }) =>
                   `flex items-center justify-between px-3.5 py-2.5 rounded-full text-xs font-bold transition-all ${

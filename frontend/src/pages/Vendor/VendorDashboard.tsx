@@ -79,7 +79,7 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
   return (
     <div className="space-y-8">
       {/* Top Welcome Header */}
-      <div className="p-[1px] rounded-3xl bg-gradient-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
+      <div className="p-px rounded-3xl bg-linear-to-r from-[#E8E4DE] via-[#F3EFE8] to-[#E8E4DE] shadow-warm-xs">
         <div className="bg-[#FAF8F5] p-6 sm:p-8 rounded-[23px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-[#E8E4DE]">
           <div>
             <span className="inline-block bg-white text-[#1C1C1C] text-xs font-black px-3 py-1 rounded-full border border-[#E8E4DE] shadow-2xs mb-2">
@@ -252,14 +252,14 @@ export const VendorDashboard: React.FC<VendorDashboardProps> = ({ onOpenAddProdu
         </button>
 
         <button
-          onClick={() => navigate('/vendor/reports')}
+          onClick={() => navigate('/vendor/orders')}
           className="p-4 bg-[#FAF8F5] hover:bg-white rounded-2xl border border-[#E8E4DE] hover:border-[#0A0A0A] transition-all text-left group shadow-warm-xs"
         >
           <div className="w-8 h-8 rounded-xl bg-[#0A0A0A] text-white flex items-center justify-center font-bold mb-2 group-hover:scale-110 transition-transform">
             <BarChart3 className="w-4 h-4 text-white" />
           </div>
-          <span className="block text-xs font-black text-[#1C1C1C]">Analytics</span>
-          <span className="text-[10px] font-bold text-[#8A857F]">Revenue & reports</span>
+          <span className="block text-xs font-black text-[#1C1C1C]">Rental Stats</span>
+          <span className="text-[10px] font-bold text-[#8A857F]">Review live requests</span>
         </button>
       </div>
 

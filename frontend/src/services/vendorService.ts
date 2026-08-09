@@ -32,7 +32,8 @@ export const vendorService = {
 
   async updateRentalStatus(id: string, status: string) {
     try {
-      if (status === 'confirmed') return await orderService.confirmOrder(id);
+      if (status === 'active' || status === 'confirmed') return await orderService.confirmOrder(id);
+      if (status === 'completed') return await orderService.completeOrder(id);
       if (status === 'cancelled') return await orderService.cancelOrder(id);
     } catch (err) {
       console.error('Update rental status error:', err);
@@ -42,11 +43,14 @@ export const vendorService = {
 
   async getStats(products: Product[], rentals: FullRentalOrder[]): Promise<VendorStats> {
     const totalProducts = products.length;
-    const activeRentals = rentals.filter((r) => r.status === 'confirmed').length;
+    const activeRentals = rentals.filter((r) => r.status === 'active').length;
+    const overdueRentals = rentals.filter((r) => r.status === 'overdue').length;
     const pendingRequests = rentals.filter((r) => r.status === 'pending').length;
     const totalRevenue = rentals
-      .filter((r) => r.status === 'confirmed')
+      .filter((r) => r.status === 'active' || r.status === 'overdue' || r.status === 'completed' || r.status === 'confirmed')
       .reduce((sum, r) => sum + (r.total || 0), 0);
+
+    const lateFeeCollection = rentals.reduce((sum, r) => sum + (r.lateFee || 0), 0);
 
     return {
       totalProducts,
@@ -54,10 +58,10 @@ export const vendorService = {
       rentalsDueToday: 0,
       upcomingPickups: 0,
       upcomingReturns: 0,
-      overdueRentals: 0,
+      overdueRentals,
       totalRevenue,
       securityDepositsHeld: 0,
-      lateFeeCollection: 0,
+      lateFeeCollection,
       pendingRequests,
     };
   },

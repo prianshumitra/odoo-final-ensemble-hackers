@@ -60,9 +60,9 @@ export const VendorLayout: React.FC<VendorLayoutProps> = ({
             </button>
 
             <button
-              onClick={() => navigate('/vendor/notifications')}
+              onClick={() => navigate('/vendor/orders')}
               className="p-2 text-[#8A857F] hover:text-[#1C1C1C] bg-[#FAF8F5] border border-[#E8E4DE] rounded-full relative transition-colors"
-              title="Notifications"
+              title="Orders & Notifications"
             >
               <Bell className="w-4 h-4" />
               <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-[#E8B923]" />

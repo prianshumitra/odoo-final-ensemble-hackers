@@ -69,9 +69,12 @@ export interface FullRentalOrder {
   customerName: string;
   customerEmail: string;
   vendorId?: string;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'quotation_sent' | 'picked_up' | string;
+  status: 'pending' | 'active' | 'overdue' | 'completed' | 'cancelled' | string;
+  rentalStart?: string;
+  rentalEnd?: string;
   lines: OrderLine[];
   total: number;
+  lateFee?: number;
   createdAt: string;
 
   // Legacy compatibility (used by existing frontend components)

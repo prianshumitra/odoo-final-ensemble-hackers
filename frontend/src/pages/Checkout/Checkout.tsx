@@ -10,8 +10,14 @@ interface CheckoutProps {
   onOrderCompleted: () => void;
 }
 
-export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderCompleted }) => {
+export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user: _user, onOrderCompleted }) => {
   const [step, setStep] = useState<'address' | 'payment' | 'confirmation'>('address');
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const defaultEndStr = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+
+  const [startDate, setStartDate] = useState(() => cartItems[0]?.startDate || todayStr);
+  const [endDate, setEndDate] = useState(() => cartItems[0]?.endDate || defaultEndStr);
 
   // Address State
   const [deliveryMethod, setDeliveryMethod] = useState<'Standard Delivery' | 'Pick up from Store'>('Standard Delivery');
@@ -24,7 +30,6 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
 
   // Billing Address (if different)
   const [billingStreet, setBillingStreet] = useState('');
-  const [billingCity] = useState('Mumbai');
 
   // Payment State
   const [payMethod, setPayMethod] = useState<'card' | 'saved_card'>('card');
@@ -39,7 +44,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
 
   // Summary Calculations
   const subtotal = cartItems.reduce(
-    (sum, item) => sum + (item.product.pricing?.amount || 0) * item.quantity,
+    (sum, item) => sum + (item.product.pricePerUnit || item.product.pricing?.amount || 0) * item.quantity,
     0
   );
   const deliveryCharge = deliveryMethod === 'Standard Delivery' ? 150 : 0;
@@ -59,41 +64,26 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
 
     try {
       const orderLines = cartItems.map((item) => ({
-        product: item.product.id || (item.product as any)._id,
-        productName: item.product.name,
-        productImage: item.product.image,
-        variant: `${item.selectedColor || 'Default'} / ${item.selectedSize || 'Standard'}`,
-        selectedColor: item.selectedColor,
-        selectedSize: item.selectedSize,
+        productId: item.product.id || (item.product as any)._id,
         quantity: item.quantity,
-        unit: item.product.pricing?.unit || 'Month',
-        unitPrice: item.product.pricing?.amount || 0,
-        amount: (item.product.pricing?.amount || 0) * item.quantity,
       }));
 
       const res = await orderService.createOrder({
-        customerName: user?.fullName || user?.name || 'Valued Customer',
-        customerEmail: user?.primaryEmailAddress?.emailAddress || user?.email || 'customer@example.com',
-        deliveryMethod,
-        invoiceAddress: sameBillingAddress
-          ? { street, city, state, zip, country }
-          : { street: billingStreet || street, city: billingCity || city, state, zip, country },
-        deliveryAddress: { street, city, state, zip, country },
+        rentalStart: startDate,
+        rentalEnd: endDate,
         lines: orderLines,
-        taxRate,
-        securityDepositAmount: securityDeposit,
       });
 
-      if (res._id) {
-        setCompletedOrderRef(res.orderRef || 'SO0010');
+      if (res.order?._id || res.order?.orderRef) {
+        setCompletedOrderRef(res.order?.orderRef || 'RO0001');
       } else {
-        setCompletedOrderRef('SO0010');
+        setCompletedOrderRef(res.orderRef || 'RO0001');
       }
 
       onOrderCompleted();
       setStep('confirmation');
     } catch (err: any) {
-      alert('Error creating order: ' + (err.response?.data?.message || err.message));
+      alert('Error creating rental request: ' + (err.response?.data?.message || err.message));
     } finally {
       setLoading(false);
     }
@@ -169,6 +159,35 @@ export const Checkout: React.FC<CheckoutProps> = ({ cartItems, user, onOrderComp
           <div className="lg:col-span-2 space-y-6">
             {step === 'address' ? (
               <form onSubmit={handleProceedToPayment} className="bg-[#FAF8F5] p-8 rounded-3xl border border-[#E8E4DE] shadow-warm-md space-y-6">
+                <div>
+                  <h2 className="text-xl font-black text-[#1C1C1C] flex items-center gap-2 mb-3">
+                    <span>Select Rental Period</span>
+                  </h2>
+                  <div className="grid grid-cols-2 gap-4 bg-white p-4 rounded-2xl border border-[#E8E4DE]">
+                    <div>
+                      <label className="block text-xs font-bold text-[#1C1C1C] mb-1">Rental Start Date</label>
+                      <input
+                        type="date"
+                        required
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="w-full bg-[#FAF8F5] px-4 py-3 border border-[#E8E4DE] text-xs font-bold rounded-xl focus:outline-none focus:border-[#0A0A0A]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-[#1C1C1C] mb-1">Rental End Date (Due Date)</label>
+                      <input
+                        type="date"
+                        required
+                        min={startDate}
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="w-full bg-[#FAF8F5] px-4 py-3 border border-[#E8E4DE] text-xs font-bold rounded-xl focus:outline-none focus:border-[#0A0A0A]"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <h2 className="text-xl font-black text-[#1C1C1C] flex items-center gap-2">
                     <Truck className="w-5 h-5 text-[#0A0A0A]" />

@@ -1,20 +1,30 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Filter, RotateCcw, Check } from 'lucide-react';
 import { CustomSelect } from './CustomSelect';
-import { BRANDS, DURATION_OPTIONS, COLOR_SWATCHES } from '../../data/products';
-import type { FilterState } from '../../types';
+import { DURATION_OPTIONS, COLOR_SWATCHES } from '../../data/products';
+import type { FilterState, Product } from '../../types';
 
 interface SidebarProps {
   filters: FilterState;
   onFilterChange: (filters: Partial<FilterState>) => void;
   onResetFilters: () => void;
+  products?: Product[];
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   filters,
   onFilterChange,
   onResetFilters,
+  products = [],
 }) => {
+  const dynamicBrands = useMemo(() => {
+    const brandsSet = new Set<string>();
+    products.forEach((p) => {
+      if (p.brand && p.brand.trim()) brandsSet.add(p.brand.trim());
+    });
+    return ['All Brands', ...Array.from(brandsSet)];
+  }, [products]);
+
   return (
     <aside className="w-full lg:w-72 bg-[#FAF8F5] rounded-3xl p-6 border border-[#E8E4DE] shadow-warm-xs space-y-7 shrink-0 self-start sticky top-24">
       {/* Sidebar Header */}
@@ -41,7 +51,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <CustomSelect
           value={filters.selectedBrand}
           onChange={(val) => onFilterChange({ selectedBrand: val })}
-          options={BRANDS}
+          options={dynamicBrands}
           placeholder="All Brands"
         />
       </div>

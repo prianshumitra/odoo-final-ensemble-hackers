@@ -34,10 +34,9 @@ export const Header: React.FC<HeaderProps> = ({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { name: 'Products', path: '/products' },
-    { name: 'Terms & Condition', path: '/terms' },
-    { name: 'About Us', path: '/about' },
-    { name: 'Contact Us', path: '/contact' },
+    { name: 'Storefront Catalog', path: '/' },
+    { name: 'My Rental Orders', path: '/orders' },
+    { name: 'Vendor Portal', path: '/vendor' },
   ];
 
   // Vendor button visibility rule:
@@ -51,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex items-center justify-between h-20 gap-4">
           
           {/* Brand Logo & Title */}
-          <Link to="/landing" className="flex items-center gap-3 shrink-0 group" title="Go to Landing Page">
+          <Link to="/" className="flex items-center gap-3 shrink-0 group" title="Go to Storefront">
             <img 
               src={logoImg} 
               alt="EZRent Logo" 

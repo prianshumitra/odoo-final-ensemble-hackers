@@ -15,9 +15,12 @@ export interface IRentalOrder extends Document {
   customerName: string;
   customerEmail: string;
   vendorId: mongoose.Types.ObjectId | string;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: 'pending' | 'active' | 'overdue' | 'completed' | 'cancelled';
+  rentalStart: Date;
+  rentalEnd: Date;
   lines: IRentalOrderLine[];
   total: number;
+  lateFee: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,11 +43,14 @@ const rentalOrderSchema = new Schema<IRentalOrder>(
     vendorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'cancelled'],
+      enum: ['pending', 'active', 'overdue', 'completed', 'cancelled'],
       default: 'pending',
     },
+    rentalStart: { type: Date, required: true, default: Date.now },
+    rentalEnd: { type: Date, required: true },
     lines: [rentalOrderLineSchema],
     total: { type: Number, default: 0 },
+    lateFee: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
